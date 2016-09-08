@@ -1,0 +1,53 @@
+# depslib dependency file v1.0
+1473109537 source:d:\codeblocks projects\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"DiGrafo.h"
+
+1473109537 "
+
+1472844688 source:d:\codeblocks projects\grafo_lista_adjacencia\arco.cpp
+
+1472860074 source:d:\codeblocks projects\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
+1473109962 
+
+1472857266 d:\codeblocks projects\grafo_lista_adjacencia\no.h
+
+1473112321 source:d:\codeblocks projects\grafo_lista_adjacencia\digrafo.cpp
+	"Digrafo.h"
+	<iostream>
+
+1473109962 d:\codeblocks projects\grafo_lista_adjacencia\digrafo.h
+	"No.h"
+	"Arco.h"
+
+1472857593 d:\codeblocks projects\grafo_lista_adjacencia\arco.h
+	"No.h"
+
+1472830288 source:/home/matus/Downloads/grafo_lista_adjacencia/Arco.cpp
+
+1473369153 source:/home/matus/Downloads/grafo_lista_adjacencia/DiGrafo.cpp
+	"DiGrafo.h"
+	<iostream>
+
+1473365699 /home/matus/Downloads/grafo_lista_adjacencia/DiGrafo.h
+	"No.h"
+	"Arco.h"
+
+1473365770 /home/matus/Downloads/grafo_lista_adjacencia/No.h
+
+1472843192 /home/matus/Downloads/grafo_lista_adjacencia/Arco.h
+	"No.h"
+
+1473368121 source:/home/matus/Downloads/grafo_lista_adjacencia/main.cpp
+	<iostream>
+	"DiGrafo.h"
+
+1473364311 source:/home/matus/Downloads/grafo_lista_adjacencia/No.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
