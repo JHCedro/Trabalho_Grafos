@@ -75,7 +75,6 @@ void DiGrafo::removeArco(unsigned int deOnde, unsigned int paraOnde){
             else{
                 ///percorrer arcos do no origem do arco buscado
                 while(arc->getProxArco()!=0 && arc->getProxArco()->getParaOnde()->getID() != paraOnde){
-                    cout<< "paraOnde:" << arc->getProxArco()->getParaOnde()->getID() << endl;
                     arc = arc->getProxArco();
                 }
                 if(arc->getProxArco()!=0){
@@ -135,4 +134,3 @@ void DiGrafo::removeNoPorID(unsigned int id){
         cout<< "grafo vazio!" <<endl;
 
 }
-

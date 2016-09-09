@@ -1,10 +1,22 @@
 #include <iostream>
 #include "DiGrafo.h"
-//#include "Arco.h"
-
-#define n_nos 7
+#include <fstream>
+#include <time.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 using namespace std;
+
+void geraArquivoDeEntrada(unsigned int n_arestas){
+    cout<< "gerando arquivo..." <<endl;
+    srand(time(0));
+    ofstream arq;
+    arq.open("dado.g");
+    for(unsigned int i=0; i<n_arestas; i++)
+        arq << rand() % n_arestas + 1 << " " << rand() % n_arestas + 1 <<endl;
+    arq.close();
+    cout<< "arquivos gerado "<<endl;
+}
 
 int main(){
     DiGrafo *di=new DiGrafo();
@@ -61,6 +73,10 @@ int main(){
 
     */
     di->imprime();
+    unsigned int n_arestas;
+    cout<< "gerar arquivo com quantas arestas aleatorias:";
+    cin>>n_arestas;
+    geraArquivoDeEntrada(n_arestas);
     unsigned int i,j;
     while(true){
         cout<< "no a ser removido:";

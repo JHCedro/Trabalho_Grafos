@@ -51,3 +51,31 @@
 	"Arco.h"
 	<iostream>
 
+1473380355 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\arco.cpp
+
+1473416091 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\digrafo.cpp
+	"DiGrafo.h"
+	<iostream>
+
+1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\digrafo.h
+	"No.h"
+	"Arco.h"
+
+1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.h
+
+1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\arco.h
+	"No.h"
+
+1473416362 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"DiGrafo.h"
+	<fstream>
+	<time.h>
+	<stdio.h>
+	<stdlib.h>
+
+1473380355 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
