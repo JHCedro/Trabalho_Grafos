@@ -51,31 +51,92 @@
 	"Arco.h"
 	<iostream>
 
-1473380355 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\arco.cpp
+1472830288 source:/home/matus/Trabalho Grafos/grafo_lista_adjacencia/Arco.cpp
 
-1473416091 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\digrafo.cpp
+1473453670 source:/home/matus/Trabalho Grafos/grafo_lista_adjacencia/DiGrafo.cpp
 	"DiGrafo.h"
 	<iostream>
-
-1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\digrafo.h
-	"No.h"
-	"Arco.h"
-
-1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.h
-
-1473380355 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\arco.h
-	"No.h"
-
-1473416362 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\main.cpp
-	<iostream>
-	"DiGrafo.h"
 	<fstream>
-	<time.h>
-	<stdio.h>
-	<stdlib.h>
+	<cmath>
 
-1473380355 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.cpp
+1473442919 /home/matus/Trabalho Grafos/grafo_lista_adjacencia/DiGrafo.h
+	"No.h"
+	"Arco.h"
+
+1473365770 /home/matus/Trabalho Grafos/grafo_lista_adjacencia/No.h
+
+1472843192 /home/matus/Trabalho Grafos/grafo_lista_adjacencia/Arco.h
+	"No.h"
+
+1473364311 source:/home/matus/Trabalho Grafos/grafo_lista_adjacencia/No.cpp
 	"No.h"
 	"Arco.h"
 	<iostream>
+
+1473455795 source:/home/matus/Trabalho Grafos/grafo_lista_adjacencia/main.cpp
+	<iostream>
+	"DiGrafo.h"
+	<stdlib.h>
+	<stdio.h>
+	<time.h>
+	<fstream>
+
+1472830288 source:g:\trabalho grafos\grafo_lista_adjacencia\arco.cpp
+
+1473460397 source:g:\trabalho grafos\grafo_lista_adjacencia\digrafo.cpp
+	"DiGrafo.h"
+	<iostream>
+	<fstream>
+	<cmath>
+
+1473442919 g:\trabalho grafos\grafo_lista_adjacencia\digrafo.h
+	"No.h"
+	"Arco.h"
+
+1473365770 g:\trabalho grafos\grafo_lista_adjacencia\no.h
+
+1472843192 g:\trabalho grafos\grafo_lista_adjacencia\arco.h
+	"No.h"
+
+1473460364 source:g:\trabalho grafos\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"DiGrafo.h"
+	<stdlib.h>
+	<stdio.h>
+	<time.h>
+	<fstream>
+
+1473364311 source:g:\trabalho grafos\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
+1472830288 source:c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\arco.cpp
+
+1473477660 source:c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\digrafo.cpp
+	"DiGrafo.h"
+	<iostream>
+	<fstream>
+	<cmath>
+
+1473442919 c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\digrafo.h
+	"No.h"
+	"Arco.h"
+
+1473365770 c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\no.h
+
+1472843192 c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\arco.h
+	"No.h"
+
+1473364311 source:c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
+1473478162 source:c:\users\mateu\google drive\codeblocks projects\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"DiGrafo.h"
+	<stdlib.h>
+	<stdio.h>
+	<fstream>
 

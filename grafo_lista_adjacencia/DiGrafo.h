@@ -9,6 +9,7 @@ private:
     No *cabeca;
 public:
     DiGrafo(){cabeca=0;};
+    void leDataArquivo(char nome[]);
     No *buscaNoPorPosicao(unsigned int pos);
     No *buscaNoPorID(unsigned int id);
     void removeNoPorID(unsigned int id);

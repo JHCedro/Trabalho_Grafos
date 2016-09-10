@@ -1,5 +1,7 @@
 #include "DiGrafo.h"
 #include <iostream>
+#include <fstream>
+#include <cmath>
 
 using namespace std;
 
@@ -36,6 +38,56 @@ No *DiGrafo::buscaNoPorID(unsigned int id){
         no = no->getProxNo();
     }
     return 0;
+}
+
+void DiGrafo::leDataArquivo(char nome[]){
+    cout<<"\n\nLEITURA DE ARQUIVO INICIADA..."<<endl;
+    unsigned int i, j, n, maior=0, porcento = 0;
+    ifstream arq;
+    arq.open(nome);
+    arq>>n;
+
+    cout<<"\nPRE-PROCESSAMENTO DO ARQUIVO:"<<endl;
+    porcento=0;
+    for(unsigned int k=0; k<2*n; k++){
+        arq>>i;
+        if(i>maior)
+            maior=i;
+        if( (int)(100.0 * k/(2*n)) > porcento ){
+            porcento = (int)(100.0 * k/(2*n));
+            cout<<"#";
+        }
+    }
+
+    arq.close();
+
+    ifstream arq2;
+    arq2.open(nome);
+
+    cout<<"\nINSERCAO DE NOS NO GRAFO"<<endl;
+    porcento=0;
+    for(unsigned int k=1; k<=maior; k++){
+        insereNo(k);
+        if( (int)(100.0 * k/maior) > porcento ){
+            porcento = (int)(100.0 * k/maior);
+            cout<<"#";
+        }
+    }
+
+    arq2>>n;
+    porcento=0;
+    cout<<"\nINSERCAO DE ARCOS NO GRAFO"<<endl;
+    for(unsigned int k=0; k<n; k++){
+        cout<<"";
+        if( (int)(100.0 * k/n) > porcento ){
+            porcento = (int)(100.0 * k/n);
+            cout<<"#";
+        }
+
+        arq2>>i>>j;
+
+        insereArco('-', i, j);
+    }
 }
 
 /**
@@ -75,6 +127,7 @@ void DiGrafo::removeArco(unsigned int deOnde, unsigned int paraOnde){
             else{
                 ///percorrer arcos do no origem do arco buscado
                 while(arc->getProxArco()!=0 && arc->getProxArco()->getParaOnde()->getID() != paraOnde){
+                    cout<< "paraOnde:" << arc->getProxArco()->getParaOnde()->getID() << endl;
                     arc = arc->getProxArco();
                 }
                 if(arc->getProxArco()!=0){
@@ -134,3 +187,4 @@ void DiGrafo::removeNoPorID(unsigned int id){
         cout<< "grafo vazio!" <<endl;
 
 }
+
