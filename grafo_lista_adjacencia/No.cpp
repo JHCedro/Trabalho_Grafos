@@ -1,16 +1,16 @@
 #include "No.h"
-#include "Arco.h"
+#include "Aresta.h"
 #include <iostream>
 
 using namespace std;
 
 void No::imprime(){
-    cout<< this->getID();
-    Arco *arc = this->getArco();
+    cout<<"( "<<"id:"<<this->getID()<<"\tgrau:"<<this->grau<<"\tpeso:"<<this->peso<<" )";
+    Aresta *arc = this->getAresta();
 
     while(arc!=0){
-        cout<< " --|" << arc->getID() << "|--> " << arc->getParaOnde()->getID() << " ";
-        arc = arc->getProxArco();
+        cout<< " --|A" << arc->getID() << "|--> " << arc->getParaOnde()->getID() << " ";
+        arc = arc->getProxAresta();
     }
     cout<<endl;
 }

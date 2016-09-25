@@ -1,11 +1,11 @@
 #include <iostream>
-#include "DiGrafo.h"
+#include "Grafo.h"
 #include <stdlib.h>
 #include <stdio.h>
 #include <fstream>
-//#include "Arco.h"
+#include <limits.h>
+//#include "Aresta.h"
 
-#define n_nos 7
 
 using namespace std;
 
@@ -37,29 +37,35 @@ void geraArquivoDeEntrada(unsigned int tam){
 }
 
 int main(){
-    bool print;
-    unsigned int k;
-    while(true){
-        cout<<"GERAR ARQUIVO DE ENTRADA COM QUANTOS VALORES:"<<endl;
-        cin>>k;
-        cout<<endl<<endl<<endl;
-        geraArquivoDeEntrada(k);
+    ///descomenta pra testar a inserção de 100.000 nos e arestas
+//    unsigned int tam=100000;
+//    cout<<"numero de nos e arestas:"<<endl;
+////    cin>>tam;
+//    geraArquivoDeEntrada(tam);
+//    Grafo *di= new Grafo();
+//    char nome[]={"data.g"};
+//    di->leArquivo(nome);
 
-        DiGrafo *di=new DiGrafo();
-        char nome[]={"data.g"};
-        di->leDataArquivo(nome);
-        //di->imprime();
-        cout<<endl<<endl<<endl;
-        delete di;
-        cout<<"DESEJA IMPRIMIR GRAFO?(1 para sim e 0 para nao)"<<endl;
-        cin>>print;
-        if(print){
-            di->imprime();
-            system("pause");
-            system("cls");
+    unsigned int n_nos;
+    cout<<"numero de nos(gerar em escadinha de forma cadaga):"<<endl;
+    cin>>n_nos;
+    Grafo *di= new Grafo();
+    for(unsigned int i=0;i<n_nos;i++)
+        di->insereNo(i);
+    for(unsigned int i=0;i<n_nos;i++){
+        for(unsigned int j=0;j<i;j++){
+            if(i!=j)di->insereArestaPorID(i+j+1,i,j);
         }
-        else
-            system("cls");
+    }
+    di->imprime();
+    int i,j;
+    while(true){
+        cout<<"remover aresta de:";
+        cin>>i;
+        cout<<"para:";
+        cin>>j;
+        di->removeArestaPorID(i,j);
+        di->imprime();
     }
     return 0;
 }

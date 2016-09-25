@@ -32,10 +32,10 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="Arco.cpp" />
-		<Unit filename="Arco.h" />
-		<Unit filename="DiGrafo.cpp" />
-		<Unit filename="DiGrafo.h" />
+		<Unit filename="Aresta.cpp" />
+		<Unit filename="Aresta.h" />
+		<Unit filename="Grafo.cpp" />
+		<Unit filename="Grafo.h" />
 		<Unit filename="No.cpp" />
 		<Unit filename="No.h" />
 		<Unit filename="main.cpp" />
