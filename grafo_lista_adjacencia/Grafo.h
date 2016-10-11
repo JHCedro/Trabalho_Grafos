@@ -19,7 +19,7 @@ public:
     bool getFlagDir(){return flagDir;};
     unsigned int getGrau(){return grau;};
     void setFlagDir(bool flag){flagDir=flag;};
-    void atualizaGrau(No *i);
+    void atualizaGrau();
     void leDataArquivo(char nome[]);
     No *buscaNoPorPosicao(unsigned int pos);
     No *buscaNoPorID(unsigned int id);
@@ -29,6 +29,9 @@ public:
     void insereArestaPorID(unsigned int id, unsigned int deOnde, unsigned int paraOnde);
     void imprime();
     void leArquivo(char nome[]);
+    void removeArestasLigadasAoNo(No *no, bool atualizarGrau);
+    void removeArestas(No *no, bool atualizarGrau);
+    void removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau);
     ~Grafo(){};
 };
 

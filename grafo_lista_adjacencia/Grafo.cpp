@@ -34,58 +34,6 @@ No *Grafo::buscaNoPorID(unsigned int id){
     return 0;
 }
 
-//void Grafo::leDataArquivo(unsigned int nome[]){
-//    cout<<"\n\nLEITURA DE ARQUIVO INICIADA..."<<endl;
-//    unsigned int i, j, n, maior=0, porcento = 0;
-//    ifstream arq;
-//    arq.open(nome);
-//    arq>>n;
-//
-//    cout<<"\nPRE-PROCESSAMENTO DO ARQUIVO:"<<endl;
-//    porcento=0;
-//    for(unsigned int k=0; k<2*n; k++){
-//        arq>>i;
-//        if(i>maior)
-//            maior=i;
-//        if( (int)(100.0 * k/(2*n)) > porcento ){
-//            porcento = (int)(100.0 * k/(2*n));
-//            cout<<"#";
-//        }
-//    }
-//
-//    arq.close();
-//
-//    ifstream arq2;
-//    arq2.open(nome);
-//
-//    cout<<"\nINSERCAO DE NOS NO GRAFO"<<endl;
-//    porcento=0;
-//    for(unsigned int k=1; k<=maior; k++){
-//        insereNo(k);
-//        if( (int)(100.0 * k/maior) > porcento ){
-//            porcento = (int)(100.0 * k/maior);
-//            cout<<"#";
-//        }
-//    }
-///*
-//    arq2>>n;
-//    porcento=0;
-//    cout<<"\nINSERCAO DE ARCOS NO GRAFO"<<endl;
-//    for(unsigned int k=0; k<n; k++){
-//        cout<<"";
-//        if( (int)(100.0 * k/n) > porcento ){
-//            porcento = (int)(100.0 * k/n);
-//            cout<<"#";
-//        }
-//
-//        arq2>>i>>j;
-//
-//        insereAresta('-', i, j);
-//    }
-//*/
-//
-//}
-
 /**
 Função que insere arco na estrutura:
 
@@ -109,101 +57,94 @@ void Grafo::insereArestaPorID(unsigned int id, unsigned int deOnde, unsigned int
     this->numeroArestas++;///atualiza numero de arestas
 }
 
-void Grafo::removeArestaPorID(unsigned int deOnde, unsigned int paraOnde){
+void Grafo::removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau = true){
+    if(deOnde!=NULL && paraOnde != NULL && deOnde->getAresta()!=NULL){
+        Aresta* arcoRemover = NULL;
+        ///se primeiro arco sera removido
+        if(deOnde->getAresta()->getParaOnde() == paraOnde){
+            arcoRemover = deOnde->getAresta();
+            deOnde->setAresta(arcoRemover->getProxAresta());
+        }else{
+            Aresta *anterior= deOnde->getAresta();
+            while(anterior->getProxAresta() != NULL &&
+                  anterior->getProxAresta()->getParaOnde() != paraOnde)
+                anterior=anterior->getProxAresta();
 
-    ///ELSES estao comentados
-
-    No *no = buscaNoPorID(deOnde);
-    ///se o no nao e nulo
-    if(no!=NULL){
-        Aresta *arc = no->getAresta();
-        ///se existe arco no no origem do arco buscado
-        if(arc!=NULL){
-            ///se o primeiro arco do no e o arco buscado
-            if(arc->getParaOnde()->getID() == paraOnde){
-                Aresta *aux = arc->getProxAresta();
-                no->setAresta(aux);
-                delete arc;
-                no->alteraGrau(-1);///atualiza grau do no
-                this->numeroArestas--;///atualiza numero de arestas
-                ///atualiza grau do grafo
-                this->grau=0;
-                for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
-                    if(i->getGrau() > grau)
-                        grau=i->getGrau();
-                }
-            }
-            else{
-                ///percorrer arcos do no origem do arco buscado
-                while(arc->getProxAresta()!=NULL && arc->getProxAresta()->getParaOnde()->getID() != paraOnde){
-                    arc = arc->getProxAresta();
-                }
-                if(arc->getProxAresta()!=NULL){
-                    Aresta *aux = arc->getProxAresta();
-                    arc->setProxAresta(aux->getProxAresta());
-                    delete aux;
-                    no->alteraGrau(-1);///atualiza grau do no
-                    this->numeroArestas--;///atualiza numero de arestas
-                    ///atualiza grau do grafo
-                    this->grau=0;
-                    for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
-                        if(i->getGrau() > grau)
-                            grau=i->getGrau();
-                    }
-                }
-                //else
-                    //cout<< "arco nao existe no grafo(percurso total)" << endl;
+            /// arco existe no no
+            if(anterior->getProxAresta()!=NULL){
+                Aresta *sucessor = anterior->getProxAresta()->getProxAresta();
+                arcoRemover = anterior->getProxAresta();
+                anterior->setProxAresta(sucessor);
             }
         }
-        //else
-            //cout<< "arco nao existe no grafo(nao tem arco)" << endl;
+        if(arcoRemover != NULL){
+            delete arcoRemover;
+            this->numeroArestas--;
+            deOnde->setGrau(deOnde->getGrau() - 1);
+
+            if(atualizarGrau)
+                this->atualizaGrau();
+            }
     }
-    //else
-        //cout<< "arco nao existe no grafo(no vazio)" << endl;
+}
+
+void Grafo::removeArestaPorID(unsigned int deOnde, unsigned int paraOnde){
+    this->removeAresta(buscaNoPorID(deOnde), buscaNoPorID(paraOnde));
+}
+
+void Grafo::removeArestasLigadasAoNo(No *no, bool atualizaGrau = true){
+    No *aux=this->cabeca;
+    while(aux != NULL){
+        this->removeAresta(aux, no, false);
+        aux=aux->getProxNo();
+    }
+    if(atualizaGrau)
+        this->atualizaGrau();
+}
+
+void Grafo::removeArestas(No *no, bool atualizarGrau = true){
+    this->numeroArestas -= no->getGrau();
+    no->removeArestas();
+    if(atualizarGrau)
+        this->atualizaGrau();
+}
+
+void Grafo::atualizaGrau(){
+    this->grau=0;
+    for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
+        if(i->getGrau() > grau)
+            grau=i->getGrau();
+    }
 }
 
 void Grafo::removeNoPorID(unsigned int id){
-    if(cabeca!=NULL){
-        No *no = cabeca;
+    No *noRemover=NULL;
+    ///se a cabeca eh o no a ser removido
+    if(cabeca->getID()==id){
+        noRemover = cabeca;
+        cabeca = cabeca->getProxNo();
+    }
+    else{
+        No *anterior= cabeca;
+        while(anterior->getProxNo()!=NULL &&
+              anterior->getProxNo()->getID()!=id)
+            anterior=anterior->getProxNo();
 
-        ///se o no a ser removido é a cabeca do grafo
-        if(no->getID() == id){
-            cabeca = cabeca->getProxNo();
-
-            ///remove todas os arcos que estao conectados ao no removido
-            for(No *i=cabeca; i!=NULL; i = i->getProxNo())
-                removeArestaPorID(i->getID(), no->getID());
-
-            delete no;
-            this->numeroNos--;///atualiza numero de vertices(nos)
-        }
-        else{
-
-            ///procurar o proximo no do grafo que tenha o id buscado
-            while(no->getProxNo()!=NULL && no->getProxNo()->getID() != id){
-                no = no->getProxNo();
-            }
-
-            ///se o no a ser removido existe no grafo
-            if(no->getProxNo()!=NULL){
-                No *aux = no->getProxNo()->getProxNo();
-
-                ///remove todas os arcos que estao conectados ao no removido
-                for(No *i=cabeca; i!=NULL; i = i->getProxNo())
-                    removeArestaPorID(i->getID(), no->getProxNo()->getID());
-
-                delete no->getProxNo();
-                no->setProxNo(aux);
-                this->numeroNos--;///atualiza numero de vertices(nos)
-            }
-            ///se o no a ser removido nao existe no grafo
-            else
-                cout << "no nao encontrado no grafo!" <<endl;
+        /// no existe no grafo
+        if(anterior->getProxNo() != NULL){
+            No *sucessor = anterior->getProxNo()->getProxNo();
+            noRemover = anterior->getProxNo();
+            anterior->setProxNo(sucessor);
         }
     }
-    else
-        cout<< "grafo vazio!" <<endl;
-
+    if(noRemover!=NULL){
+//        cout <<"\nremovendo no com id:" << noRemover->getID()<<endl;
+        this->removeArestas(noRemover, false);
+        this->removeArestasLigadasAoNo(noRemover, false);
+        this->atualizaGrau();
+        delete noRemover;
+        this->numeroNos--;
+    }
 }
 
 void Grafo::imprime(){
@@ -217,17 +158,16 @@ void Grafo::imprime(){
 }
 
 void Grafo::leArquivo(char nome[]){
-    unsigned int i,j;
+    unsigned int i,j,n_nos;
     ifstream arq;
     arq.open(nome);
     if(arq.good()==false)
         cout<<"arquivo nao encontrado"<<endl;
+    arq>>n_nos;
+    for(unsigned int i=1;i<=n_nos;i++)
+        insereNo(i);
     while(arq.good()){
         arq>>i>>j;
-        if(buscaNoPorID(i)==NULL)
-            insereNo(i);
-        if(buscaNoPorID(j)==NULL)
-            insereNo(j);
         insereArestaPorID(numeroArestas+1,i,j);
     }
 }

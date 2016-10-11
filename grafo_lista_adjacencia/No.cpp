@@ -14,3 +14,14 @@ void No::imprime(){
     }
     cout<<endl;
 }
+
+void No::removeArestas(){
+    Aresta *aux1, *aux2=this->getAresta();
+    while(aux2!=NULL){
+        aux1 = aux2;
+        aux2 = aux2->getProxAresta();
+        delete aux1;
+    }
+    this->grau = 0;
+    this->setAresta(NULL);
+}

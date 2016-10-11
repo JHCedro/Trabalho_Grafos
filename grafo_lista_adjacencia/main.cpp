@@ -46,26 +46,46 @@ int main(){
 //    char nome[]={"data.g"};
 //    di->leArquivo(nome);
 
-    unsigned int n_nos;
-    cout<<"numero de nos(gerar em escadinha de forma cadaga):"<<endl;
-    cin>>n_nos;
-    Grafo *di= new Grafo();
-    for(unsigned int i=0;i<n_nos;i++)
-        di->insereNo(i);
-    for(unsigned int i=0;i<n_nos;i++){
-        for(unsigned int j=0;j<i;j++){
-            if(i!=j)di->insereArestaPorID(i+j+1,i,j);
-        }
-    }
-    di->imprime();
-    int i,j;
-    while(true){
-        cout<<"remover aresta de:";
-        cin>>i;
-        cout<<"para:";
-        cin>>j;
-        di->removeArestaPorID(i,j);
-        di->imprime();
+
+    ///testar na mao
+//    unsigned int n_nos;
+//    cout<<"numero de nos(gerar em escadinha de forma cadaga):"<<endl;
+//    cin>>n_nos;
+//    Grafo *di= new Grafo();
+//    for(unsigned int i=0;i<n_nos;i++)
+//        di->insereNo(i);
+//    for(unsigned int i=0;i<n_nos;i++){
+//        for(unsigned int j=0;j<i;j++){
+//            if(i!=j)di->insereArestaPorID(i+j+1,i,j);
+//        }
+//    }
+//    di->imprime();
+//    int i,j;
+//    while(true){
+////        cout<<"remover aresta de:";
+////        cin>>i;
+////        cout<<"para:";
+////        cin>>j;
+////        di->removeArestaPorID(i,j);
+////        di->imprime();
+//        cout<<"remover no:"<<endl;
+//        cin>>i;
+//        di->removeNoPorID(i);
+//        di->imprime();
+//    }
+
+//
+    Grafo *di=new Grafo();
+    char nome[50];
+    for(int i=10;i<=16;i++){
+        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
+        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
+        di->leArquivo(nome);
+        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
+        system("pause");
+        for(int i=1;i<=10000;i++)
+            di->removeNoPorID(i);
+        system("pause");
     }
     return 0;
 }

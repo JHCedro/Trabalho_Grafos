@@ -186,3 +186,34 @@
 1474760148 c:\users\mateus96mt\documents\trabalho-grafos\grafo_lista_adjacencia\aresta.h
 	"No.h"
 
+1476117003 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\aresta.cpp
+
+1476147223 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"Grafo.h"
+	<stdlib.h>
+	<stdio.h>
+	<fstream>
+	<limits.h>
+
+1476136455 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.h
+	"No.h"
+	"Aresta.h"
+	<iostream>
+
+1476146515 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.h
+
+1476117003 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\aresta.h
+	"No.h"
+
+1476140031 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Aresta.h"
+	<iostream>
+
+1476146973 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.cpp
+	"Grafo.h"
+	<iostream>
+	<fstream>
+	<cmath>
+

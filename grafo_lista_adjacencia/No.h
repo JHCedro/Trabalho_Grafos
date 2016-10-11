@@ -16,7 +16,8 @@ public:
     No(unsigned int id){this->id=id; proxNo=0; arco=0; grau=0; peso=0;};
     unsigned int getGrau(){return grau;};
     double getPeso(){return peso;};
-    void alteraGrau(int i){grau+=i;};
+    void alteraGrau(int i){grau+=i;};///    QUE PORRA E ESSA
+    void setGrau(int i){grau=i;};
     void imprime();
     ///gets
     unsigned int getID(){return this->id;};
@@ -25,6 +26,7 @@ public:
     void setProxNo(No *proxNo){this->proxNo=proxNo;};
     void setAresta(Aresta *arco){this->arco=arco;};
     Aresta *getAresta(){return this->arco;};
+    void removeArestas();
     ~No(){};
 };
 
