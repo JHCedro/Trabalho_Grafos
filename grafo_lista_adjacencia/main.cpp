@@ -77,11 +77,14 @@ int main(){
 //
     Grafo *di=new Grafo();
     char nome[50];
-    for(int i=10;i<=16;i++){
+    unsigned int i;
+    for(int i=11;i<=16;i++){
         if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
         else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
         di->leArquivo(nome);
         cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
+        cin>>i;
+        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNoPorID(i)->getGrau()<<endl;
         system("pause");
         for(int i=1;i<=10000;i++)
             di->removeNoPorID(i);
