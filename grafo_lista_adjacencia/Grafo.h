@@ -32,6 +32,8 @@ public:
     void removeArestasLigadasAoNo(No *no, bool atualizarGrau);
     void removeArestas(No *no, bool atualizarGrau);
     void removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau);
+    bool saoAdjacentes(unsigned int id1, unsigned int id2);
+    bool saoAdjacentes(No *no1, No *no2);
     ~Grafo(){};
 };
 

@@ -171,3 +171,14 @@ void Grafo::leArquivo(char nome[]){
         insereArestaPorID(numeroArestas+1,i,j);
     }
 }
+
+bool Grafo::saoAdjacentes(unsigned int id1, unsigned int id2){
+    No *no1=buscaNoPorID(id1);
+    No *no2=buscaNoPorID(id2);
+    return saoAdjacentes(no1, no2);
+}
+
+bool Grafo::saoAdjacentes(No *no1, No *no2){
+    ///ser ou não digrafo não interfere na resposta
+    return no1->ehAdjacente(no2)||no2->ehAdjacente(no1);
+}

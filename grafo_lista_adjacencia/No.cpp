@@ -25,3 +25,14 @@ void No::removeArestas(){
     this->grau = 0;
     this->setAresta(NULL);
 }
+
+bool No::ehAdjacente(No *no){
+    ///pesquisa na lista de adjacencia do nó
+    Aresta *aux=this->arco;
+    while(aux!=NULL){
+        if(no==aux->getParaOnde())
+            return true;
+        aux=aux->getProxAresta();
+    }
+    return false;
+}

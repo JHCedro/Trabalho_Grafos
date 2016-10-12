@@ -27,6 +27,7 @@ public:
     void setAresta(Aresta *arco){this->arco=arco;};
     Aresta *getAresta(){return this->arco;};
     void removeArestas();
+    bool ehAdjacente(No *no);
     ~No(){};
 };
 
