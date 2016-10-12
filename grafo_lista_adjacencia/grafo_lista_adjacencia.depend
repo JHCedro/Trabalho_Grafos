@@ -188,7 +188,7 @@
 
 1476117003 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\aresta.cpp
 
-1476147847 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\main.cpp
+1476217692 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\main.cpp
 	<iostream>
 	"Grafo.h"
 	<stdlib.h>
@@ -196,55 +196,24 @@
 	<fstream>
 	<limits.h>
 
-1476136455 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.h
+1476220962 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.h
 	"No.h"
 	"Aresta.h"
 	<iostream>
 
-1476146515 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.h
+1476220548 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.h
 
 1476117003 c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\aresta.h
 	"No.h"
 
-1476140031 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.cpp
+1476220508 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\no.cpp
 	"No.h"
 	"Aresta.h"
 	<iostream>
 
-1476147334 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.cpp
+1476220939 source:c:\users\mateu\onedrive\documentos\trabalho-grafos\grafo_lista_adjacencia\grafo.cpp
 	"Grafo.h"
 	<iostream>
 	<fstream>
 	<cmath>
-
-1476058607 source:c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\aresta.cpp
-
-1476281901 source:c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\grafo.cpp
-	"Grafo.h"
-	<iostream>
-	<fstream>
-	<cmath>
-
-1476281901 c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\grafo.h
-	"No.h"
-	"Aresta.h"
-	<iostream>
-
-1476281409 c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\no.h
-
-1476058607 c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\aresta.h
-	"No.h"
-
-1476282187 source:c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\main.cpp
-	<iostream>
-	"Grafo.h"
-	<stdlib.h>
-	<stdio.h>
-	<fstream>
-	<limits.h>
-
-1476281409 source:c:\users\eduar\google drive\ufjf\teoria dos grafos\trabalho\grafo_lista_adjacencia\no.cpp
-	"No.h"
-	"Aresta.h"
-	<iostream>
 

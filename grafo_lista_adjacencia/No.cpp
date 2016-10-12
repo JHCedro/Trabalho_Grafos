@@ -26,13 +26,9 @@ void No::removeArestas(){
     this->setAresta(NULL);
 }
 
-bool No::ehAdjacente(No *no){
-    ///pesquisa na lista de adjacencia do nó
-    Aresta *aux=this->arco;
-    while(aux!=NULL){
-        if(no==aux->getParaOnde())
-            return true;
-        aux=aux->getProxAresta();
-    }
-    return false;
+void No::insereAresta(No* noDestino, unsigned int id){
+    Aresta *novaAresta = new Aresta(id);
+    novaAresta->setParaOnde(noDestino);
+    novaAresta->setProxAresta(this->arco);
+    this->setAresta(novaAresta);
 }

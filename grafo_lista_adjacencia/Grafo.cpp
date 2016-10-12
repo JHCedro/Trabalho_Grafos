@@ -6,11 +6,12 @@
 using namespace std;
 
 ///Função que insere nó no inicio(cabeça) do grafo
-void Grafo::insereNo(unsigned int id){
+No *Grafo::insereNo(unsigned int id){
     No *no=new No(id);
     no->setProxNo(cabeca);
     cabeca=no;
     this->numeroNos++;///atualiza numero de vertices(nos)
+    return cabeca;
 }
 
 ///Função imprime percorre todos os nós e chama á função imprime de cada nó
@@ -55,6 +56,78 @@ void Grafo::insereArestaPorID(unsigned int id, unsigned int deOnde, unsigned int
     if(no->getGrau()>this->grau)///atualiza grau do grafo
         this->grau=no->getGrau();
     this->numeroArestas++;///atualiza numero de arestas
+}
+
+bool Grafo::verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(unsigned int id1, unsigned int id2){
+    No *i1=buscaNoPorID(id1), *i2=buscaNoPorID(id2);
+    if(i1!=NULL && i2!=NULL)
+        return verificarSeDoisNosEstaoNaMesmaComponenteConexa(i1, i2);
+    else
+        return false;
+}
+
+bool Grafo::verificarSeDoisNosEstaoNaMesmaComponenteConexa(No *i1, No *i2){
+    ///desmarcar os nos do grafo
+    for(No *i=cabeca; i!=NULL; i=i->getProxNo())
+        i->setMarcado(false);
+
+    bool result=mesmaComponenteConexa(i1,i2);
+
+    ///desmarcar os nos do grafo
+    for(No *i=cabeca; i!=NULL; i=i->getProxNo())
+        i->setMarcado(false);
+    return result;
+}
+
+bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
+    if(i1->getID()==i2->getID()){
+        cout<<"i1:"<<i1->getID()<<" e i2:"<<i2->getID()<<endl;
+        return true;
+    }
+
+    /// se o no nao esta marcado pular para ele
+    if(i1->getMarcado()==false){
+        i1->setMarcado(true);
+        for(Aresta *a=i1->getAresta(); a!=NULL; a=a->getProxAresta())
+            return mesmaComponenteConexa(a->getParaOnde(), i2);
+    }
+}
+
+Grafo *Grafo::retornaSubGrafoInduzido(unsigned int E[], unsigned int tam){
+    Grafo *induzido=new Grafo();
+    for(unsigned int i=0; i<tam; i++)
+        induzido->insereNo(E[i]);
+    No *no;
+    for(unsigned int i=0; i<tam; i++){
+        no=this->buscaNoPorID(E[i]);
+        ///procura arestas do grafo que ligam os vertices do grafo induzido
+        for(Aresta *a=no->getAresta(); a!=NULL; a=a->getProxAresta()){
+            for(unsigned int j=0; j<tam; j++){
+                if(a->getParaOnde()==buscaNoPorID(E[j]))
+                    induzido->insereArestaPorID(99, no->getID(), a->getParaOnde()->getID());
+            }
+        }
+    }
+    return induzido;
+}
+
+void Grafo::insereAresta(No* noOrigem, No* noDestino, unsigned int id, bool atualizarGrau = true){
+    noOrigem->insereAresta(noDestino, id);
+    this->numeroArestas++;
+    if (atualizarGrau)
+        this->atualizaGrau();
+}
+
+bool Grafo::verificarSeGrafoEKRegular(unsigned int k){
+    for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
+        if(i->getGrau()!=k)
+            return false;
+    }
+    return true;
+}
+
+bool Grafo::verificarSeGrafoECompleto(){
+    return verificarSeGrafoEKRegular(this->numeroNos-1);
 }
 
 void Grafo::removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau = true){
@@ -170,15 +243,4 @@ void Grafo::leArquivo(char nome[]){
         arq>>i>>j;
         insereArestaPorID(numeroArestas+1,i,j);
     }
-}
-
-bool Grafo::saoAdjacentes(unsigned int id1, unsigned int id2){
-    No *no1=buscaNoPorID(id1);
-    No *no2=buscaNoPorID(id2);
-    return saoAdjacentes(no1, no2);
-}
-
-bool Grafo::saoAdjacentes(No *no1, No *no2){
-    ///ser ou não digrafo não interfere na resposta
-    return no1->ehAdjacente(no2)||no2->ehAdjacente(no1);
 }
