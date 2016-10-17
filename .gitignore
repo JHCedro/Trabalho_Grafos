@@ -1,2 +1,7 @@
 *.cbp
+*.xml
 *.layout
+*.depend
+*.o
+grafo_lista_adjacencia/bin/
+grafo_lista_adjacencia/obj/
