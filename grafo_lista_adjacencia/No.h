@@ -22,21 +22,21 @@ public:
     double getPeso(){   return peso;};
     void setPeso(double peso){  this->peso = peso;};
 
-    unsigned int getID(){return this->id;};
-    void setID(double id){  this->id = id;};
+    unsigned int getID(){   return this->id;    };
+    void setID(double id){  this->id = id;  };
 
-    No *getProxNo(){return this->proxNo;};
-    void setProxNo(No *proxNo){this->proxNo=proxNo;};
+    No *getProxNo(){    return this->proxNo;    };
+    void setProxNo(No *proxNo){this->proxNo=proxNo; };
 
-    void setListaArcos(Arco *listaNos){this->listaNos=listaNos;};
-    Arco *getListaArcos(){return this->listaNos;};
+    void setListaArcos(Arco *listaNos){ this->listaNos=listaNos;    };
+    Arco *getListaArcos(){  return this->listaNos;    };
 
     void insereArco(No* noDestino, unsigned int id);
 
     void removeArcos();
 
-    void setMarcado(bool marcado){this->marcado=marcado;};
-    bool getMarcado(){return this->marcado;};
+    void setMarcado(bool marcado){  this->marcado=marcado;  };
+    bool getMarcado(){  return this->marcado;   };
 
     void imprime();
     ~No(){};

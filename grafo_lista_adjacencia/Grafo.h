@@ -12,7 +12,7 @@ private:
     unsigned int numeroNos;///n
     unsigned int numeroArcos;///m
     bool flagDir;///flag indicando se o grafo é direcionado ou não
-    bool mesmaComponenteConexa(No *i1, No *i2);
+    bool auxMesmaComponenteConexa(No *i1, No *i2);
 public:
     Grafo();
     unsigned int getGrau(){     return grau;    };
@@ -30,6 +30,7 @@ public:
     void imprime();
 
     void atualizaGrau();
+    void desmarcaNos();
     void leArquivo(char nome[]);
 
     void insereArco(unsigned int idOrigem, unsigned int idDestino, unsigned int id);
@@ -40,12 +41,13 @@ public:
     void removeArcos(No *no, bool atualizarGrau);
     void removeArcosLigadasAoNo(No *no, bool atualizarGrau);
 
-    bool verificarSeGrafoECompleto();
-    bool verificarSeGrafoEKRegular(unsigned int k);
-    bool verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(unsigned int id1, unsigned int id2);
-    bool verificarSeDoisNosEstaoNaMesmaComponenteConexa(No *i1, No *i2);
 
-    Grafo *retornaSubGrafoInduzido(unsigned int E[], unsigned int tam);
+    bool ehGrafoCompleto();
+    bool ehGrafoKReguar(unsigned int k);
+    bool mesmaComponenteConexa(unsigned int id1, unsigned int id2);
+    bool mesmaComponenteConexa(No *i1, No *i2);
+
+    Grafo *subGrafoInduzido(unsigned int E[], unsigned int tam);
 
     unsigned int* sequenciaGrau();
 

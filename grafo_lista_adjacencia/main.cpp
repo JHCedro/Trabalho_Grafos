@@ -120,7 +120,7 @@ void testarGrafoCompleto(){
     Grafo *di= criarGrafoCompleto();
 
     while(true){
-        cout<<" o grafo " << (di->verificarSeGrafoECompleto() ? "eh " : "nao eh ") << "completo"<<endl;
+        cout<<" o grafo " << (di->ehGrafoCompleto() ? "eh " : "nao eh ") << "completo"<<endl;
         cout<<"remover Arco de:"; cin>>i;
         cout<<"para:";  cin>>j;
         di->imprime();
@@ -135,7 +135,7 @@ void testarGrafoInduzido(){
     unsigned int v[3]={1,2,3};
 
     while(true){
-        induzido = di->retornaSubGrafoInduzido(v, 3);
+        induzido = di->subGrafoInduzido(v, 3);
         cout<<" grafo induzido:"<<endl;
         induzido->imprime();
 
@@ -169,7 +169,7 @@ void testarInstanciasStenio(){
         else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
         di->leArquivo(nome);
         cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
-        cout<<" o grafo e completo?"  << di->verificarSeGrafoECompleto()<<"   (0= nao completo, 1=completo)"<<endl;
+        cout<<" o grafo e completo?"  << di->ehGrafoCompleto()<<"   (0= nao completo, 1=completo)"<<endl;
         system("pause");
 //        cin>>i;
 //        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;

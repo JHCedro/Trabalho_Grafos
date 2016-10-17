@@ -54,28 +54,26 @@ void Grafo::insereArco(unsigned int idOrigem, unsigned int idDestino, unsigned i
     this->insereArco(noOrigem, noDestino, id, true);
 }
 
-bool Grafo::verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(unsigned int id1, unsigned int id2){
-    No *i1=buscaNo(id1), *i2=buscaNo(id2);
+/** desmarcar os nos do grafo */
+void Grafo::desmarcaNos(){
+    for(No *i = listaNos; i != NULL; i = i->getProxNo())
+        i->setMarcado(false);
+}
+
+bool Grafo::mesmaComponenteConexa(unsigned int id1, unsigned int id2){
+    No *i1 = buscaNo(id1), *i2 = buscaNo(id2);
     if(i1!=NULL && i2!=NULL)
-        return verificarSeDoisNosEstaoNaMesmaComponenteConexa(i1, i2);
+        return mesmaComponenteConexa(i1, i2);
     else
         return false;
 }
 
-bool Grafo::verificarSeDoisNosEstaoNaMesmaComponenteConexa(No *i1, No *i2){
-    ///desmarcar os nos do grafo
-    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
-        i->setMarcado(false);
-
-    bool result=mesmaComponenteConexa(i1,i2);
-
-    ///desmarcar os nos do grafo
-    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
-        i->setMarcado(false);
-    return result;
+bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
+    this->desmarcaNos();
+    return auxMesmaComponenteConexa(i1,i2);
 }
 
-bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
+bool Grafo::auxMesmaComponenteConexa(No *i1, No *i2){
     if(i1->getID()==i2->getID()){
         cout<<"i1:"<<i1->getID()<<" e i2:"<<i2->getID()<<endl;
         return true;
@@ -85,11 +83,11 @@ bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
     if(i1->getMarcado()==false){
         i1->setMarcado(true);
         for(Arco *a=i1->getListaArcos(); a!=NULL; a=a->getProxArco())
-            return mesmaComponenteConexa(a->getNoDestino(), i2);
+            return auxMesmaComponenteConexa(a->getNoDestino(), i2);
     }
 }
 
-Grafo *Grafo::retornaSubGrafoInduzido(unsigned int E[], unsigned int tam){
+Grafo *Grafo::subGrafoInduzido(unsigned int E[], unsigned int tam){
     Grafo *induzido=new Grafo();
     for(unsigned int i=0; i<tam; i++)
         induzido->insereNo(E[i]);
@@ -107,7 +105,7 @@ Grafo *Grafo::retornaSubGrafoInduzido(unsigned int E[], unsigned int tam){
     return induzido;
 }
 
-bool Grafo::verificarSeGrafoEKRegular(unsigned int k){
+bool Grafo::ehGrafoKReguar(unsigned int k){
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau()!=k)
             return false;
@@ -115,8 +113,8 @@ bool Grafo::verificarSeGrafoEKRegular(unsigned int k){
     return true;
 }
 
-bool Grafo::verificarSeGrafoECompleto(){
-    return verificarSeGrafoEKRegular(this->numeroNos-1);
+bool Grafo::ehGrafoCompleto(){
+    return ehGrafoKReguar(this->numeroNos-1);
 }
 
 void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true){
