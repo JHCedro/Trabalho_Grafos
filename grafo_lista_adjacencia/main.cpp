@@ -4,7 +4,8 @@
 #include <stdio.h>
 #include <fstream>
 #include <limits.h>
-//#include "Aresta.h"
+#include <vector>
+#include <string>
 
 
 using namespace std;
@@ -36,67 +37,156 @@ void geraArquivoDeEntrada(unsigned int tam){
     arq.close();
 }
 
-int main(){
-    ///descomenta pra testar a inserção de 100.000 nos e arestas
-//    unsigned int tam=100000;
-//    cout<<"numero de nos e arestas:"<<endl;
-////    cin>>tam;
-//    geraArquivoDeEntrada(tam);
-//    Grafo *di= new Grafo();
-//    char nome[]={"data.g"};
-//    di->leArquivo(nome);
-//
+/** retorna grafo escadinha com n vertices */
+Grafo* grafoEscadinha(unsigned int n){
+    Grafo* G= new Grafo();
+    vector<No*> nos;
+    for(unsigned int i=0; i < n; i++){
+        nos.push_back(G->insereNo(i));
+        for (unsigned int j=0; j < i; j++)
+            G->insereArco(nos.back(), nos[j], i+j, false);
+    }
+    G->atualizaGrau();
+    return G;
+}
 
-    ///testar na mao
+Grafo* criarGrafoEscadinha(){
     unsigned int n_nos;
-    cout<<"numero de nos(gerar em escadinha de forma cadaga):"<<endl;
-    cin>>n_nos;
-    Grafo *di= new Grafo();
-    for(unsigned int i=0;i<n_nos;i++)
-        di->insereNo(i);
-    for(unsigned int i=0;i<n_nos;i++){
-        for(unsigned int j=n_nos-1;j>0;j--){
-            if(i!=j)di->insereArestaPorID(i+j+1,i,j);
+    cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
+    cin >> n_nos;
+    Grafo *G = grafoEscadinha(n_nos);
+    G->imprime();
+
+    return G;
+}
+
+Grafo* grafoCompleto(unsigned int n){
+    Grafo* G= new Grafo();
+    vector<No*> nos;
+    for(unsigned int i=0; i < n; i++)
+        nos.push_back(G->insereNo(i));
+
+    for (unsigned int i=0; i < n; i++){
+        for (unsigned int j=0; j < n; j++){
+            if( i != j )
+                G->insereArco(nos[i], nos[j], i*n+j, false);
         }
     }
-    di->imprime();
-    int i,j;
-    Grafo *induzido;
-    unsigned int v[3]={1,2,3};
+    G->atualizaGrau();
+    return G;
+}
+
+Grafo* criarGrafoCompleto(){
+    unsigned int n_nos;
+    cout << "numero de nos(gerar grafo completo):" << endl;
+    cin >> n_nos;
+    Grafo *G = grafoCompleto(n_nos);
+    G->imprime();
+
+    return G;
+}
+
+/** testes sucessivos de remove Arco e no em grafo escadinha */
+void testeGeral(){
+    unsigned int i, j;
+    Grafo *di= criarGrafoEscadinha();
+
     while(true){
-//        cout<<"remover aresta de:";
-//        cin>>i;
-//        cout<<"para:";
-//        cin>>j;
-//        di->imprime();
-//        cout<<" o grafo e completo?"  <<di->verificarSeGrafoECompleto()<<"   (0= nao completo, 1=completo)"<<endl;
-//        cout<<"os nos:"<<i <<" e "<< j <<" estao na mesma componente fortemente conexa?"<<di->verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(i,j)<<endl;
-//        di->removeArestaPorID(i,j);
-//        di->imprime();
-        induzido=di->retornaSubGrafoInduzido(v, 3);
-        cout<<" grafo induzido:"<<endl;
-        induzido->imprime();
+        cout<<"remover Arco de:"; cin>>i;
+        cout<<"para:";  cin>>j;
+        di->removeArco(i,j);
+        di->imprime();
+
+        cout<<"remover no: ";   cin >> i;
+        di->removeNo(i);
         system("pause");
     }
+}
 
+/** testar a inserção de 100.000 nos e Arcos */
+void testarGrandeInsersao(){
+    unsigned int tam = 100000;
+    cout<<"numero de nos e Arcos:"<<endl;
+    //    cin>>tam;
+    geraArquivoDeEntrada(tam);
+    Grafo *di= new Grafo();
+    char nome[]={"data.g"};
+    di->leArquivo(nome);
+    delete di;
+}
 
+void testarGrafoCompleto(){
+    unsigned int i, j;
+    Grafo *di= criarGrafoCompleto();
 
+    while(true){
+        cout<<" o grafo " << (di->verificarSeGrafoECompleto() ? "eh " : "nao eh ") << "completo"<<endl;
+        cout<<"remover Arco de:"; cin>>i;
+        cout<<"para:";  cin>>j;
+        di->imprime();
+        di->removeArco(i,j);
+    }
+}
+
+void testarGrafoInduzido(){
+    unsigned int i, j;
+    Grafo *induzido, *di= criarGrafoEscadinha();
+
+    unsigned int v[3]={1,2,3};
+
+    while(true){
+        induzido = di->retornaSubGrafoInduzido(v, 3);
+        cout<<" grafo induzido:"<<endl;
+        induzido->imprime();
+
+        cout<<"remover Arco de:"; cin>>i;
+        cout<<"para:";  cin>>j;
+        di->removeArco(i,j);
+        di->imprime();
+
+        system("pause");
+    }
+}
+
+void testarSequenciaNos(){
+    Grafo *di= criarGrafoEscadinha();
+
+    cout << "Sequencia de nos:\n\t";
+    unsigned int* seq = di->sequenciaGrau();
+    for (unsigned int i=0; i < di->getNumeroNos(); i++){
+        cout << seq[i] << ", ";
+    }
+    delete di;
+}
+
+/** nao faco ideia do que isso ta fazendo */
+void testarInstanciasStenio(){
     ///teste de leitura de instancias do stenio
-//    Grafo *di=new Grafo();
-//    char nome[50];
-//    for(int i=1;i<=16;i++){
-//        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
-//        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
-//        di->leArquivo(nome);
-//        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
-//        cout<<" o grafo e completo?"  <<di->verificarSeGrafoECompleto()<<"   (0= nao completo, 1=completo)"<<endl;
+    Grafo *di=new Grafo();
+    char nome[50];
+    for(int i=1;i<=16;i++){
+        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
+        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
+        di->leArquivo(nome);
+        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
+        cout<<" o grafo e completo?"  << di->verificarSeGrafoECompleto()<<"   (0= nao completo, 1=completo)"<<endl;
+        system("pause");
+//        cin>>i;
+//        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;
 //        system("pause");
-////        cin>>i;
-////        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNoPorID(i)->getGrau()<<endl;
-////        system("pause");
-////        for(int i=1;i<=10000;i++)
-////            di->removeNoPorID(i);
-////        system("pause");
-//    }
+//        for(int i=1;i<=10000;i++)
+//            di->removeNoPorID(i);
+//        system("pause");
+    }
+}
+
+int main(){
+    ///testar na mao
+//    testarGrandeInsersao();
+//    testarGrafoCompleto();
+//    testarGrafoInduzido();
+    testarSequenciaNos();
+
+//    testarInstanciasStenio();
     return 0;
 }

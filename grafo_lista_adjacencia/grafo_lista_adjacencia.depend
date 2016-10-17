@@ -217,3 +217,42 @@
 	<fstream>
 	<cmath>
 
+1475801387 source:c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\aresta.cpp
+
+1476715651 source:c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\grafo.cpp
+	"Grafo.h"
+	<iostream>
+	<fstream>
+	<cmath>
+	<algorithm>
+
+1476715651 c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\grafo.h
+	"No.h"
+	"Arco.h"
+	<iostream>
+
+1476716382 c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\no.h
+
+1476707588 c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\aresta.h
+	"No.h"
+
+1476714789 source:c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\main.cpp
+	<iostream>
+	"Grafo.h"
+	<stdlib.h>
+	<stdio.h>
+	<fstream>
+	<limits.h>
+	<vector>
+	<string>
+
+1476716054 source:c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\no.cpp
+	"No.h"
+	"Arco.h"
+	<iostream>
+
+1475801387 source:c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\arco.cpp
+
+1476716366 c:\users\get\google drive\ufjf\teoria dos grafos\repositório do trabalho\grafo_lista_adjacencia\arco.h
+	"No.h"
+

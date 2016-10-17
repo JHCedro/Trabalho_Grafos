@@ -2,31 +2,29 @@
 #include <iostream>
 #include <fstream>
 #include <cmath>
+#include <algorithm>
 
 using namespace std;
+
+Grafo::Grafo(){
+    listaNos = NULL;
+    grau = 0;
+    numeroArcos = 0;
+    numeroNos = 0;
+    flagDir = true;
+}
 
 ///Função que insere nó no inicio(cabeça) do grafo
 No *Grafo::insereNo(unsigned int id){
     No *no=new No(id);
-    no->setProxNo(cabeca);
-    cabeca=no;
+    no->setProxNo(listaNos);
+    listaNos=no;
     this->numeroNos++;///atualiza numero de vertices(nos)
-    return cabeca;
+    return listaNos;
 }
 
-///Função imprime percorre todos os nós e chama á função imprime de cada nó
-
-
-No *Grafo::buscaNoPorPosicao(unsigned int pos){
-    No *no = cabeca;
-    for(unsigned int i=0;i<pos;i++){
-        no = cabeca->getProxNo();
-    }
-    return no;
-}
-
-No *Grafo::buscaNoPorID(unsigned int id){
-    No *no = cabeca;
+No *Grafo::buscaNo(unsigned int id){
+    No *no = listaNos;
     while(no!=NULL){
         if(no->getID() == id)
             return no;
@@ -35,31 +33,29 @@ No *Grafo::buscaNoPorID(unsigned int id){
     return 0;
 }
 
+void Grafo::insereArco(No* noOrigem, No* noDestino, unsigned int id, bool atualizarGrau = true){
+    noOrigem->insereArco(noDestino, id);
+    this->numeroArcos++;
+    if (atualizarGrau)
+        this->atualizaGrau();
+}
+
 /**
 Função que insere arco na estrutura:
 
-faz a busca do no entrada(deOnde) do arco no grafo [arco:(deOnde----->praOnde)]
+faz a busca do no entrada(idOrigem) do arco no grafo [arco:(idOrigem----->praOnde)]
 cria o arco que sera inserido como arco desse no encontrado na busca
-define para onde(saida) no arco com o no paraOnde
+define para onde(saida) no arco com o no idDestino
 arco inserido com sucesso
 **/
-void Grafo::insereArestaPorID(unsigned int id, unsigned int deOnde, unsigned int paraOnde){
-    No *no = buscaNoPorID(deOnde);///busca o no na lista de nos para inserir aresta
-    Aresta *arc = no->getAresta();///salva o primeiro arco do no encontrado
-
-    ///insere arco no inicio da lista de adjacencias do no
-    Aresta *aux = new Aresta(id);
-    aux->setProxAresta(arc);
-    aux->setParaOnde(buscaNoPorID(paraOnde));
-    no->setAresta(aux);
-    no->alteraGrau(1);///atualiza o grau do vertice(no)
-    if(no->getGrau()>this->grau)///atualiza grau do grafo
-        this->grau=no->getGrau();
-    this->numeroArestas++;///atualiza numero de arestas
+void Grafo::insereArco(unsigned int idOrigem, unsigned int idDestino, unsigned int id){
+    No *noOrigem = buscaNo(idOrigem);
+    No *noDestino = buscaNo(idDestino);
+    this->insereArco(noOrigem, noDestino, id, true);
 }
 
 bool Grafo::verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(unsigned int id1, unsigned int id2){
-    No *i1=buscaNoPorID(id1), *i2=buscaNoPorID(id2);
+    No *i1=buscaNo(id1), *i2=buscaNo(id2);
     if(i1!=NULL && i2!=NULL)
         return verificarSeDoisNosEstaoNaMesmaComponenteConexa(i1, i2);
     else
@@ -68,13 +64,13 @@ bool Grafo::verificarSeDoisNosPorIDEstaoNaMesmaComponenteConexa(unsigned int id1
 
 bool Grafo::verificarSeDoisNosEstaoNaMesmaComponenteConexa(No *i1, No *i2){
     ///desmarcar os nos do grafo
-    for(No *i=cabeca; i!=NULL; i=i->getProxNo())
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
         i->setMarcado(false);
 
     bool result=mesmaComponenteConexa(i1,i2);
 
     ///desmarcar os nos do grafo
-    for(No *i=cabeca; i!=NULL; i=i->getProxNo())
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
         i->setMarcado(false);
     return result;
 }
@@ -88,8 +84,8 @@ bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
     /// se o no nao esta marcado pular para ele
     if(i1->getMarcado()==false){
         i1->setMarcado(true);
-        for(Aresta *a=i1->getAresta(); a!=NULL; a=a->getProxAresta())
-            return mesmaComponenteConexa(a->getParaOnde(), i2);
+        for(Arco *a=i1->getListaArcos(); a!=NULL; a=a->getProxArco())
+            return mesmaComponenteConexa(a->getNoDestino(), i2);
     }
 }
 
@@ -99,27 +95,20 @@ Grafo *Grafo::retornaSubGrafoInduzido(unsigned int E[], unsigned int tam){
         induzido->insereNo(E[i]);
     No *no;
     for(unsigned int i=0; i<tam; i++){
-        no=this->buscaNoPorID(E[i]);
-        ///procura arestas do grafo que ligam os vertices do grafo induzido
-        for(Aresta *a=no->getAresta(); a!=NULL; a=a->getProxAresta()){
+        no=this->buscaNo(E[i]);
+        ///procura Arcos do grafo que ligam os vertices do grafo induzido
+        for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco()){
             for(unsigned int j=0; j<tam; j++){
-                if(a->getParaOnde()==buscaNoPorID(E[j]))
-                    induzido->insereArestaPorID(99, no->getID(), a->getParaOnde()->getID());
+                if(a->getNoDestino()==buscaNo(E[j]))
+                    induzido->insereArco(no->getID(), a->getNoDestino()->getID(), 99);
             }
         }
     }
     return induzido;
 }
 
-void Grafo::insereAresta(No* noOrigem, No* noDestino, unsigned int id, bool atualizarGrau = true){
-    noOrigem->insereAresta(noDestino, id);
-    this->numeroArestas++;
-    if (atualizarGrau)
-        this->atualizaGrau();
-}
-
 bool Grafo::verificarSeGrafoEKRegular(unsigned int k){
-    for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau()!=k)
             return false;
     }
@@ -130,30 +119,30 @@ bool Grafo::verificarSeGrafoECompleto(){
     return verificarSeGrafoEKRegular(this->numeroNos-1);
 }
 
-void Grafo::removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau = true){
-    if(deOnde!=NULL && paraOnde != NULL && deOnde->getAresta()!=NULL){
-        Aresta* arcoRemover = NULL;
+void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true){
+    if(noOrigem!=NULL && noDestino != NULL && noOrigem->getListaArcos()!=NULL){
+        Arco* arcoRemover = NULL;
         ///se primeiro arco sera removido
-        if(deOnde->getAresta()->getParaOnde() == paraOnde){
-            arcoRemover = deOnde->getAresta();
-            deOnde->setAresta(arcoRemover->getProxAresta());
+        if(noOrigem->getListaArcos()->getNoDestino() == noDestino){
+            arcoRemover = noOrigem->getListaArcos();
+            noOrigem->setListaArcos(arcoRemover->getProxArco());
         }else{
-            Aresta *anterior= deOnde->getAresta();
-            while(anterior->getProxAresta() != NULL &&
-                  anterior->getProxAresta()->getParaOnde() != paraOnde)
-                anterior=anterior->getProxAresta();
+            Arco *anterior= noOrigem->getListaArcos();
+            while(anterior->getProxArco() != NULL &&
+                  anterior->getProxArco()->getNoDestino() != noDestino)
+                anterior=anterior->getProxArco();
 
             /// arco existe no no
-            if(anterior->getProxAresta()!=NULL){
-                Aresta *sucessor = anterior->getProxAresta()->getProxAresta();
-                arcoRemover = anterior->getProxAresta();
-                anterior->setProxAresta(sucessor);
+            if(anterior->getProxArco()!=NULL){
+                Arco *sucessor = anterior->getProxArco()->getProxArco();
+                arcoRemover = anterior->getProxArco();
+                anterior->setProxArco(sucessor);
             }
         }
         if(arcoRemover != NULL){
             delete arcoRemover;
-            this->numeroArestas--;
-            deOnde->setGrau(deOnde->getGrau() - 1);
+            this->numeroArcos--;
+            noOrigem->setGrau(noOrigem->getGrau() - 1);
 
             if(atualizarGrau)
                 this->atualizaGrau();
@@ -161,44 +150,45 @@ void Grafo::removeAresta(No* deOnde, No* paraOnde, bool atualizarGrau = true){
     }
 }
 
-void Grafo::removeArestaPorID(unsigned int deOnde, unsigned int paraOnde){
-    this->removeAresta(buscaNoPorID(deOnde), buscaNoPorID(paraOnde));
+void Grafo::removeArco(unsigned int idOrigem, unsigned int idDestino){
+    this->removeArco(buscaNo(idOrigem), buscaNo(idDestino));
 }
 
-void Grafo::removeArestasLigadasAoNo(No *no, bool atualizaGrau = true){
-    No *aux=this->cabeca;
+void Grafo::removeArcosLigadasAoNo(No *no, bool atualizaGrau = true){
+    No *aux=this->listaNos;
     while(aux != NULL){
-        this->removeAresta(aux, no, false);
+        this->removeArco(aux, no, false);
         aux=aux->getProxNo();
     }
     if(atualizaGrau)
         this->atualizaGrau();
 }
 
-void Grafo::removeArestas(No *no, bool atualizarGrau = true){
-    this->numeroArestas -= no->getGrau();
-    no->removeArestas();
+void Grafo::removeArcos(No *no, bool atualizarGrau = true){
+    this->numeroArcos -= no->getGrau();
+    no->removeArcos();
     if(atualizarGrau)
         this->atualizaGrau();
 }
 
 void Grafo::atualizaGrau(){
     this->grau=0;
-    for(No *i=cabeca; i!=NULL; i=i->getProxNo()){
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau() > grau)
             grau=i->getGrau();
     }
 }
 
-void Grafo::removeNoPorID(unsigned int id){
+void Grafo::removeNo(unsigned int id){
     No *noRemover=NULL;
-    ///se a cabeca eh o no a ser removido
-    if(cabeca->getID()==id){
-        noRemover = cabeca;
-        cabeca = cabeca->getProxNo();
+
+    ///se a listaNos eh o no a ser removido
+    if(listaNos->getID()==id){
+        noRemover = listaNos;
+        listaNos = listaNos->getProxNo();
     }
     else{
-        No *anterior= cabeca;
+        No *anterior= listaNos;
         while(anterior->getProxNo()!=NULL &&
               anterior->getProxNo()->getID()!=id)
             anterior=anterior->getProxNo();
@@ -212,18 +202,37 @@ void Grafo::removeNoPorID(unsigned int id){
     }
     if(noRemover!=NULL){
 //        cout <<"\nremovendo no com id:" << noRemover->getID()<<endl;
-        this->removeArestas(noRemover, false);
-        this->removeArestasLigadasAoNo(noRemover, false);
+        this->removeArcos(noRemover, false);
+        this->removeArcosLigadasAoNo(noRemover, false);
         this->atualizaGrau();
         delete noRemover;
         this->numeroNos--;
     }
 }
 
+bool compareReverse(unsigned int a, unsigned int b){
+    return a >= b;
+}
+
+/** retorna a sequencia de inteiros dos graus do no */
+unsigned int* Grafo::sequenciaGrau(){
+    unsigned int* seq = new unsigned int [this->numeroNos];
+    unsigned int cont = 0;
+    No* noAux = listaNos;
+    while(noAux != NULL){
+        seq[cont] = noAux->getGrau();
+        noAux = noAux->getProxNo();
+        cont++;
+    }
+
+    sort(seq, seq+cont, compareReverse);
+    return seq;
+}
+
 void Grafo::imprime(){
-    cout<<"Grau do Grafo:"<<this->grau<<"\tnumero de nos:"<<this->numeroNos
-    <<"\tnumero de arestas"<<this->numeroArestas<<endl;
-    No *no=cabeca;
+    cout<<"Grau do Grafo: "<<this->grau<<"\tnumero de nos: "<<this->numeroNos
+    <<"\tnumero de arcos: "<<this->numeroArcos<<endl;
+    No *no=listaNos;
     while(no!=NULL){
         no->imprime();
         no=no->getProxNo();
@@ -241,6 +250,9 @@ void Grafo::leArquivo(char nome[]){
         insereNo(i);
     while(arq.good()){
         arq>>i>>j;
-        insereArestaPorID(numeroArestas+1,i,j);
+        insereArco(i,j, numeroArcos+1);
     }
 }
+
+/** IMPLEMENTAR DESTRUTOR */
+Grafo::~Grafo(){}
