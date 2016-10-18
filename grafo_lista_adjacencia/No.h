@@ -38,6 +38,8 @@ public:
     void setMarcado(bool marcado){  this->marcado=marcado;  };
     bool getMarcado(){  return this->marcado;   };
 
+    bool ehAdjacente(No *no);
+
     void imprime();
     ~No(){};
 };

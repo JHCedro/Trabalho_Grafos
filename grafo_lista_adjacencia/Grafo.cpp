@@ -252,5 +252,16 @@ void Grafo::leArquivo(char nome[]){
     }
 }
 
+bool Grafo::saoAdjacentes(unsigned int id1, unsigned int id2){
+    No *no1=buscaNo(id1);
+    No *no2=buscaNo(id2);
+    return saoAdjacentes(no1, no2);
+}
+
+bool Grafo::saoAdjacentes(No *no1, No *no2){
+    ///ser ou não digrafo não interfere na resposta
+    return no1->ehAdjacente(no2)||no2->ehAdjacente(no1);
+}
+
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

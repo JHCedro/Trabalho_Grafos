@@ -42,3 +42,14 @@ void No::imprime(){
     }
     cout<<endl;
 }
+
+bool No::ehAdjacente(No *no){
+    ///pesquisa na lista de adjacencia do nó
+    Arco *aux=this->listaNos;
+    while(aux!=NULL){
+        if(no==aux->getNoDestino())
+            return true;
+        aux=aux->getProxArco();
+    }
+    return false;
+}

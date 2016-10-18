@@ -51,6 +51,9 @@ public:
 
     unsigned int* sequenciaGrau();
 
+    bool saoAdjacentes(unsigned int id1, unsigned int id2);
+    bool saoAdjacentes(No *no1, No *no2);
+
     ~Grafo();
 };
 
