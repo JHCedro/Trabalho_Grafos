@@ -263,5 +263,39 @@ bool Grafo::saoAdjacentes(No *no1, No *no2){
     return no1->ehAdjacente(no2)||no2->ehAdjacente(no1);
 }
 
+bool Grafo::ehNoArticulacao(unsigned int id){
+    No* no=buscaNo(id);
+    if(no != NULL)
+        return this->ehNoArticulacao(buscaNo(id));
+    return false;
+}
+
+bool Grafo::ehNoArticulacao(No *no){
+    ///Marca o no como visitado e faz busca em profundidade
+    ///no seu primeiro adjacente, contando os nos visitados.
+    ///Se o numero de nos for menor que n-1, significa que
+    ///aquele no marcado no inicio eh de articulacao.
+
+    this->desmarcaNos();
+    no->setMarcado(true);
+    Arco *a=no->getListaArcos();
+    if(a==NULL) return false;
+    No *noAux=a->getNoDestino();
+    int cont=this->auxEhNoArticulacao(noAux);
+    if(cont!=this->getNumeroNos()-1) return true;
+    return false;
+}
+
+int Grafo::auxEhNoArticulacao(No *no){
+    ///Percurso em profundidade
+    if(no->getMarcado()==false){
+            no->setMarcado(true);
+            for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
+                return 1+auxEhNoArticulacao(a->getNoDestino());
+    }
+    return 0;
+}
+
+
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

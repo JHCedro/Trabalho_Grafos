@@ -159,6 +159,22 @@ void testarSequenciaNos(){
     delete di;
 }
 
+void testarNoArticulacao(){
+    Grafo *di= criarGrafoEscadinha();
+    di->insereNo(3);
+    di->insereNo(4);
+    di->insereArco(2,3,4);
+    di->insereArco(3,4,5);
+    di->imprime();
+    int id;
+    cout<<"Digite o id do no para testar se eh de articulacao:";
+    while(true){
+        cin>>id;
+        cout<<di->ehNoArticulacao(id)<<endl;
+        cout<<"Digite o id do no para testar se eh de articulacao:";
+    }
+}
+
 /** nao faco ideia do que isso ta fazendo */
 void testarInstanciasStenio(){
     ///teste de leitura de instancias do stenio
@@ -185,8 +201,8 @@ int main(){
 //    testarGrandeInsersao();
 //    testarGrafoCompleto();
 //    testarGrafoInduzido();
-    testarSequenciaNos();
-
+//    testarSequenciaNos();
+    testarNoArticulacao();
 //    testarInstanciasStenio();
     return 0;
 }
