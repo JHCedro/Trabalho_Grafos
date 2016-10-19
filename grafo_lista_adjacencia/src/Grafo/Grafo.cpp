@@ -228,13 +228,14 @@ unsigned int* Grafo::sequenciaGrau(){
 }
 
 void Grafo::imprime(){
-    cout<<"Grau do Grafo: "<<this->grau<<"\tnumero de nos: "<<this->numeroNos
+    cout<<"\nGrau do Grafo: "<<this->grau<<"\tnumero de nos: "<<this->numeroNos
     <<"\tnumero de arcos: "<<this->numeroArcos<<endl;
     No *no=listaNos;
     while(no!=NULL){
         no->imprime();
         no=no->getProxNo();
     }
+    cout << endl;
 }
 
 void Grafo::leArquivo(char nome[]){
@@ -269,29 +270,31 @@ bool Grafo::ehNoArticulacao(unsigned int id){
         return this->ehNoArticulacao(buscaNo(id));
     return false;
 }
-
+/**
+    Marca o no como visitado e faz busca em profundidade
+    no seu primeiro adjacente, contando os nos visitados.
+    Se o numero de nos for menor que n-1, significa que
+    aquele no marcado no inicio eh de articulacao.
+*/
 bool Grafo::ehNoArticulacao(No *no){
-    ///Marca o no como visitado e faz busca em profundidade
-    ///no seu primeiro adjacente, contando os nos visitados.
-    ///Se o numero de nos for menor que n-1, significa que
-    ///aquele no marcado no inicio eh de articulacao.
-
     this->desmarcaNos();
     no->setMarcado(true);
-    Arco *a=no->getListaArcos();
-    if(a==NULL) return false;
-    No *noAux=a->getNoDestino();
-    int cont=this->auxEhNoArticulacao(noAux);
-    if(cont!=this->getNumeroNos()-1) return true;
+    Arco *a = no->getListaArcos();
+    if(a == NULL) return false;
+
+    No *noAux = a->getNoDestino();
+    int cont = this->auxEhNoArticulacao(noAux);
+    if(cont < this->getNumeroNos()-1) return true;
+
     return false;
 }
 
 int Grafo::auxEhNoArticulacao(No *no){
     ///Percurso em profundidade
-    if(no->getMarcado()==false){
-            no->setMarcado(true);
-            for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
-                return 1+auxEhNoArticulacao(a->getNoDestino());
+    if(no->getMarcado() == false){
+        no->setMarcado(true);
+        for(Arco *a = no->getListaArcos(); a != NULL; a = a->getProxArco())
+            return 1 + auxEhNoArticulacao(a->getNoDestino());
     }
     return 0;
 }

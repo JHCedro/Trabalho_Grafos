@@ -15,6 +15,7 @@ private:
     bool auxMesmaComponenteConexa(No *i1, No *i2);
 public:
     Grafo();
+    No* getListaNos(){  return this->listaNos;  };
     unsigned int getGrau(){     return grau;    };
     unsigned int getNumeroNos(){    return numeroNos;   };
     unsigned int getNumeroArcos(){    return numeroArcos;   };
@@ -33,8 +34,8 @@ public:
     void desmarcaNos();
     void leArquivo(char nome[]);
 
-    void insereArco(unsigned int idOrigem, unsigned int idDestino, unsigned int id);
     void insereArco(No* noOrigem, No* noDestino, unsigned int id, bool atualizarGrau);
+    void insereArco(unsigned int idOrigem, unsigned int idDestino, unsigned int id);
 
     void removeArco(unsigned int idOrigem, unsigned int idDestino);
     void removeArco(No* noOrigem, No* noDestino, bool atualizarGrau);
