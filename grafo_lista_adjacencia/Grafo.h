@@ -12,9 +12,9 @@ private:
     unsigned int numeroNos;///n
     unsigned int numeroArcos;///m
     bool flagDir;///flag indicando se o grafo é direcionado ou não
-    bool auxMesmaComponenteConexa(No *i1, No *i2);
 public:
     Grafo();
+    No *getListaNos(){return this->listaNos;};
     unsigned int getGrau(){     return grau;    };
     unsigned int getNumeroNos(){    return numeroNos;   };
     unsigned int getNumeroArcos(){    return numeroArcos;   };
@@ -44,8 +44,8 @@ public:
 
     bool ehGrafoCompleto();
     bool ehGrafoKReguar(unsigned int k);
-    bool mesmaComponenteConexa(unsigned int id1, unsigned int id2);
-    bool mesmaComponenteConexa(No *i1, No *i2);
+    bool mesmaComponenteFortementeConexa(unsigned int id1, unsigned int id2);
+    bool mesmaComponenteFortementeConexa(No *i1, No *i2);
 
     Grafo *subGrafoInduzido(unsigned int E[], unsigned int tam);
 
@@ -54,10 +54,17 @@ public:
     bool saoAdjacentes(unsigned int id1, unsigned int id2);
     bool saoAdjacentes(No *no1, No *no2);
 
+    unsigned int NosComponenteFortementeConexa(No *no);
     bool ehNoArticulacao(unsigned int id);
     bool ehNoArticulacao(No* no);
     int auxEhNoArticulacao(No* no);
 
+    bool EhFortementeConexo();
+    unsigned int rubustezVertice(unsigned int *ids);
+    unsigned int rubustezAresta();
+
+
+    void BuscaProfundidade(No *inicio);
     ~Grafo();
 };
 

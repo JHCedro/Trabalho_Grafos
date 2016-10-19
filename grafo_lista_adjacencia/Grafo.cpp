@@ -60,30 +60,40 @@ void Grafo::desmarcaNos(){
         i->setMarcado(false);
 }
 
-bool Grafo::mesmaComponenteConexa(unsigned int id1, unsigned int id2){
+bool Grafo::mesmaComponenteFortementeConexa(unsigned int id1, unsigned int id2){
     No *i1 = buscaNo(id1), *i2 = buscaNo(id2);
     if(i1!=NULL && i2!=NULL)
-        return mesmaComponenteConexa(i1, i2);
+        return mesmaComponenteFortementeConexa(i1, i2);
     else
         return false;
 }
 
-bool Grafo::mesmaComponenteConexa(No *i1, No *i2){
+bool Grafo::mesmaComponenteFortementeConexa(No *i1, No *i2){
+    ///Se existe caminho de i1 pra i2
     this->desmarcaNos();
-    return auxMesmaComponenteConexa(i1,i2);
+    BuscaProfundidade(i1);
+    bool result1=i2->getMarcado();
+
+    ///Se existe caminho de i2 pra i1
+    this->desmarcaNos();
+    BuscaProfundidade(i2);
+    bool result2=i1->getMarcado();
+
+    this->desmarcaNos();
+    return result1 && result2;
 }
+/**
+Percorre grafo a partir de um nó e sai marcando todo mundo da mesma componente conexa
+*/
+void Grafo::BuscaProfundidade(No *inicio){
 
-bool Grafo::auxMesmaComponenteConexa(No *i1, No *i2){
-    if(i1->getID()==i2->getID()){
-        cout<<"i1:"<<i1->getID()<<" e i2:"<<i2->getID()<<endl;
-        return true;
-    }
-
-    /// se o no nao esta marcado pular para ele
-    if(i1->getMarcado()==false){
-        i1->setMarcado(true);
-        for(Arco *a=i1->getListaArcos(); a!=NULL; a=a->getProxArco())
-            return auxMesmaComponenteConexa(a->getNoDestino(), i2);
+    if(inicio==NULL)
+        cout<<" e null porra"<<endl;
+    if(inicio->getMarcado()==false){
+//        cout<<"marcando:"<<inicio->getID()<<endl;
+        inicio->setMarcado(true);
+        for(Arco *a=inicio->getListaArcos(); a!=NULL; a=a->getProxArco())
+                BuscaProfundidade(a->getNoDestino());
     }
 }
 
@@ -270,20 +280,67 @@ bool Grafo::ehNoArticulacao(unsigned int id){
     return false;
 }
 
-bool Grafo::ehNoArticulacao(No *no){
-    ///Marca o no como visitado e faz busca em profundidade
-    ///no seu primeiro adjacente, contando os nos visitados.
-    ///Se o numero de nos for menor que n-1, significa que
-    ///aquele no marcado no inicio eh de articulacao.
+/**
+FUNÇÃO AUXILIAR PARA FAZER A FUNÇÃO DO DUARDO FUNCIONAR.
+Recebe um nó e retorna o numero de nos da componente conexa que o nó esta presente.
+*/
+unsigned int Grafo::NosComponenteFortementeConexa(No *no){
+    No *inicio=no;
+    unsigned int n_nos=0;
+    for(No *inicio2=this->listaNos; inicio2!=NULL; inicio2=inicio2->getProxNo()){
+        if(this->mesmaComponenteFortementeConexa(inicio, inicio2) && this->mesmaComponenteFortementeConexa(inicio2, inicio))
+            n_nos++;
+    }
+    return n_nos;
+}
 
-    this->desmarcaNos();
-    no->setMarcado(true);
-    Arco *a=no->getListaArcos();
-    if(a==NULL) return false;
-    No *noAux=a->getNoDestino();
-    int cont=this->auxEhNoArticulacao(noAux);
-    if(cont!=this->getNumeroNos()-1) return true;
-    return false;
+/**
+ESSA FUNÇÃO DO JEITO QUE ESTAVA ANTES NÃO FUNCIONAVA!!!!!
+Marca o nó, faz a busca em profundidade e ve se o numero de nos marcados e menor do que o numero de nos da componente conexa,
+se for verdade o no e de articulacao.
+*/
+bool Grafo::ehNoArticulacao(No *no){
+    if(no!=NULL){
+        unsigned int cont=0;
+        this->desmarcaNos();
+        no->setMarcado(true);
+    //    cout<<"busca em progundidade começando em:"<<no->getListaArcos()->getNoDestino()->getID()<<endl;
+        if(no->getListaArcos()!=NULL){
+            this->BuscaProfundidade(no->getListaArcos()->getNoDestino());
+            for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+                if(i->getMarcado()==true)
+                    cont++;
+            }
+        //    cout<<"cont de nos marcados:"<<cont<<endl;
+        //    cout<<"numero de nos de "<< no->getID()<<" e:"<<NosComponenteConexa(no)<<endl;
+            bool result = (cont<this->NosComponenteFortementeConexa(no));
+            this->desmarcaNos();
+            return result;
+        }
+        else
+            return false;
+    }
+    else return false;
+
+
+
+
+    ///COMO O MELAO TINHA FEITO2
+//    ///Marca o no como visitado e faz busca em profundidade
+//    ///no seu primeiro adjacente, contando os nos visitados.
+//    ///Se o numero de nos for menor que n-1, significa que
+//    ///aquele no marcado no inicio eh de articulacao.
+//
+//    this->desmarcaNos();
+//    no->setMarcado(true);
+//    Arco *a=no->getListaArcos();
+//    if(a==NULL) return false;
+//    No *noAux=a->getNoDestino();
+//    unsigned int cont=this->auxEhNoArticulacao(noAux);
+//    ///tem que verificar no final se todos os nós da mesma componente conexa estao marcados no final.
+//    if(cont<this->NosComponenteConexa(no)) { cout<<"cont:"<<cont<<endl; return true;};
+//    return false;
+//    this->desmarcaNos();///MELÃO ESQUECEU DE DESMARCAR OS NÓS DEPOIS
 }
 
 int Grafo::auxEhNoArticulacao(No *no){
@@ -294,6 +351,48 @@ int Grafo::auxEhNoArticulacao(No *no){
                 return 1+auxEhNoArticulacao(a->getNoDestino());
     }
     return 0;
+}
+
+/**
+Se o grafo é fortemente conexo cada par de vertice (a,b) estao na mesma conponente conexa.
+*/
+bool Grafo::EhFortementeConexo(){
+    for(No *inicio1=listaNos; inicio1!=NULL; inicio1=inicio1->getProxNo()){
+        for(No *inicio2=listaNos; inicio2!=NULL; inicio2=inicio2->getProxNo()){
+            if(!this->mesmaComponenteFortementeConexa(inicio1, inicio2))
+                return false;
+        }
+    }
+    return true;
+}
+
+/**
+Função para retornar a rubustez de um grafo baseado nas vertices.
+A rubustez baseada em vertices indica o numero maximo de vertices que podem ser removidos do grafo mantendo a conexividade.
+Se o no a ser removido nao for no de articulação entao o numero de componentes conexas apos a remoção do nó se mantem.
+Assim qualquer no que nao seja de articulação pode ser removido e o grafo ainda se mantem conexo, a rubustez e entao
+o numero maximo de nos menos o numero de nos de articulacao.
+Coloquei pra receber os ids dos nos de articulacao pra conferir na função '' do main se esta funcionando.
+
+IMPORTANTE!!!!
+No caso a função retorna o numero de nos que voce pode retirar considerando todas as componentes conexas.
+Se uma componente conexa pode ter 5 nos removidos e a outra pode ter 6 a função retorna 11.
+recebe um vetor de ids pra salvar os ids daqueles nos que nao podem ser removidos e sao de articulacao
+*/
+unsigned int Grafo::rubustezVertice(unsigned int *ids){
+    unsigned int rubustez=this->numeroNos, i=0;
+    ids=new unsigned int[this->numeroNos];
+    for(No *inicio=this->listaNos; inicio!=NULL; inicio=inicio->getProxNo()){
+        cout<< ( (float)( 1001 - inicio->getID() )/this->numeroNos ) * 100 <<"%"<<endl;
+        if(this->ehNoArticulacao(inicio)){
+            cout<<"achou articulacao"<<endl;
+            rubustez--;
+            ids[i]=inicio->getID();///armazenar id dos nos de articulação
+            i++;
+        }
+    }
+
+    return rubustez;
 }
 
 

@@ -196,13 +196,164 @@ void testarInstanciasStenio(){
     }
 }
 
+void testeComponenteConexa(){
+    Grafo *di=new Grafo();
+    for(int i=1;i<=8;i++)
+        di->insereNo(i);
+    di->insereArco(1,2,1);
+    di->insereArco(2,1,1);
+
+    di->insereArco(1,4,2);
+    di->insereArco(4,1,2);
+
+    di->insereArco(2,4,3);
+    di->insereArco(4,2,3);
+
+//    di->insereArco(2,3,4);
+//    di->insereArco(3,2,4);
+//
+//    di->insereArco(3,4,5);
+//    di->insereArco(4,3,5);
+
+    di->insereArco(3,5,6);
+    di->insereArco(5,3,6);
+
+    di->insereArco(3,6,7);
+    di->insereArco(6,3,7);
+
+    di->insereArco(5,8,8);
+    di->insereArco(8,5,8);
+
+    di->insereArco(6,7,9);
+    di->insereArco(7,6,9);
+
+    di->insereArco(7,3,10);
+    di->insereArco(3,7,10);
+
+    di->insereArco(6,7,11);
+    di->insereArco(7,6,11);
+
+    di->imprime();
+
+    for(int i=1;i<=8;i++){
+        for(int j=1;j<=i;j++){
+            if(i!=j && di->mesmaComponenteFortementeConexa(i,j))
+                cout<<i<<"e "<<j<<" estao na mesma componente fortemente conexa"<<endl;
+        }
+    }
+}
+
+void testeBuscaEmprofundidade(){
+    Grafo *di=new Grafo();
+    for(int i=1;i<=8;i++)
+        di->insereNo(i);
+    di->insereArco(1,2,1);
+    di->insereArco(2,1,1);
+
+    di->insereArco(1,4,2);
+    di->insereArco(4,1,2);
+
+    di->insereArco(2,4,3);
+    di->insereArco(4,2,3);
+
+//    di->insereArco(2,3,4);
+//    di->insereArco(3,2,4);
+//
+//    di->insereArco(3,4,5);
+//    di->insereArco(4,3,5);
+
+    di->insereArco(3,5,6);
+    di->insereArco(5,3,6);
+
+    di->insereArco(3,6,7);
+    di->insereArco(6,3,7);
+
+    di->insereArco(5,8,8);
+    di->insereArco(8,5,8);
+
+    di->insereArco(6,7,9);
+    di->insereArco(7,6,9);
+
+    di->insereArco(7,3,10);
+    di->insereArco(3,7,10);
+
+    di->insereArco(6,7,11);
+    di->insereArco(7,6,11);
+
+    cout<<"busca a partir de 1"<<endl;
+    di->BuscaProfundidade(di->buscaNo(1));
+    di->desmarcaNos();
+    cout<<"busca a partir de 3 marcando o 5"<<endl;
+    di->buscaNo(5)->setMarcado(true);
+    di->BuscaProfundidade(di->buscaNo(3));
+    di->desmarcaNos();
+}
+
+void testeNoArticulacao(){
+    Grafo *di=new Grafo();
+    for(int i=1;i<=8;i++)
+        di->insereNo(i);
+    di->insereArco(1,2,1);
+    di->insereArco(2,1,1);
+
+    di->insereArco(1,4,2);
+    di->insereArco(4,1,2);
+
+    di->insereArco(2,4,3);
+    di->insereArco(4,2,3);
+
+//    di->insereArco(2,3,4);
+//    di->insereArco(3,2,4);
+//
+//    di->insereArco(3,4,5);
+//    di->insereArco(4,3,5);
+
+    di->insereArco(3,5,6);
+    di->insereArco(5,3,6);
+
+    di->insereArco(3,6,7);
+    di->insereArco(6,3,7);
+
+    di->insereArco(5,8,8);
+    di->insereArco(8,5,8);
+
+    di->insereArco(6,7,9);
+    di->insereArco(7,6,9);
+
+    di->insereArco(7,3,10);
+    di->insereArco(3,7,10);
+
+    di->insereArco(6,7,11);
+    di->insereArco(7,6,11);
+    for(int i=1;i<=8;i++)
+        cout<<"numero de nos da componente fortemente conexa de "<<i<<":"<<di->NosComponenteFortementeConexa(di->buscaNo(i))<<endl;
+
+    for(int i=1;i<=8;i++)
+        cout<<"O no:"<<i<<" e no de articulacao?"<<di->ehNoArticulacao(i)<<endl;
+}
+
+void testeRubustezVertice(){
+    Grafo *di=new Grafo();
+    unsigned int *ids;
+    char nome[50];
+    sprintf(nome, "instancias/grafo_1000_%d.txt", 1);
+    di->leArquivo(nome);
+    cout<<"arquivo:"<<nome<<" lido"<<endl;
+    cout<<" calculando a rubustez de vertices desse grafo enorme!!! vai demorar para um caralho!"<<endl;
+    cout<<"rubustes de vertice:"<<di->rubustezVertice(ids);
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
 //    testarGrafoCompleto();
 //    testarGrafoInduzido();
 //    testarSequenciaNos();
-    testarNoArticulacao();
+//    testarNoArticulacao();
 //    testarInstanciasStenio();
+//    testeComponenteConexa();
+//    testeBuscaEmprofundidade();
+//    testeNoArticulacao();
+    testeRubustezVertice();
     return 0;
 }
