@@ -7,7 +7,6 @@
 #include <vector>
 #include <string>
 
-
 using namespace std;
 
 bool buscaVetor(unsigned int j, unsigned int aux[], unsigned int tam){
