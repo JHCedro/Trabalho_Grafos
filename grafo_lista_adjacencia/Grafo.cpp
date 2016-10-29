@@ -18,7 +18,7 @@ Grafo::Grafo(){
 No *Grafo::insereNo(unsigned int id){
     No *no=new No(id);
     no->setProxNo(listaNos);
-    listaNos=no;
+    listaNos=no;  ///nao deveria ser um setListaDeNos(this->listaNos)???
     this->numeroNos++;///atualiza numero de vertices(nos)
     return listaNos;
 }
