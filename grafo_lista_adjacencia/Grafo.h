@@ -65,6 +65,9 @@ public:
 
 
     void BuscaProfundidade(No *inicio);
+
+
+    bool ehGrafoKReguar();
     ~Grafo();
 };
 

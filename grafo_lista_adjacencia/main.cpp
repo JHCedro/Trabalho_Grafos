@@ -342,17 +342,32 @@ void testeRubustezVertice(){
     cout<<"rubustes de vertice:"<<di->rubustezVertice(ids);
 }
 
+void verificaGrafoKRegular(){
+    Grafo *G = criarGrafoEscadinha();
+    cout << endl << "Grafo completo? " << G->ehGrafoKReguar() << endl;
+}
+
+void verificarGrafoConexo(){
+    Grafo *G = criarGrafoCompleto();
+    cout << endl << "Grafo conexo? " << G->EhFortementeConexo() << endl;
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
 //    testarGrafoCompleto();
-//    testarGrafoInduzido();
-//    testarSequenciaNos();
-//    testarNoArticulacao();
+//    testarGrafoInduzido(); ///entender
+//    testarSequenciaNos();  ///entender o sort
+//    testarNoArticulacao(); ///ta dando certo nao né?
 //    testarInstanciasStenio();
 //    testeComponenteConexa();
 //    testeBuscaEmprofundidade();
 //    testeNoArticulacao();
-    testeRubustezVertice();
+//    testeRubustezVertice();
+
+///Funcoes em Grafos.cpp ja estavam programadas pra rodar as funcoes abaixo neh!?
+//    verificaGrafoKRegular();
+    verificarGrafoConexo();
+
     return 0;
 }

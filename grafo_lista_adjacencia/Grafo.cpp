@@ -123,6 +123,12 @@ bool Grafo::ehGrafoKReguar(unsigned int k){
     return true;
 }
 
+///Funcao Iago
+bool Grafo::ehGrafoKReguar(){
+    No* inicio = this->listaNos;
+    return ehGrafoKReguar(inicio->getGrau());
+}
+
 bool Grafo::ehGrafoCompleto(){
     return ehGrafoKReguar(this->numeroNos-1);
 }
@@ -394,7 +400,6 @@ unsigned int Grafo::rubustezVertice(unsigned int *ids){
 
     return rubustez;
 }
-
 
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}
