@@ -352,6 +352,22 @@ void verificarGrafoConexo(){
     cout << endl << "Grafo conexo? " << G->EhFortementeConexo() << endl;
 }
 
+void vizinhancaAberta(){
+    Grafo* G = criarGrafoCompleto();
+    int id;
+    cout<<"Digite o id do no para verificar vizinhanca aberta:";
+    cin>>id;
+    G->vizinhancaAberta(id);
+}
+
+void vizinhancaFechada(){
+    Grafo* G = criarGrafoCompleto();
+    int id;
+    cout<<"Digite o id do no para verificar vizinhanca aberta:";
+    cin>>id;
+    G->vizinhancaFechada(id);
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -367,7 +383,9 @@ int main(){
 
 ///Funcoes em Grafos.cpp ja estavam programadas pra rodar as funcoes abaixo neh!?
 //    verificaGrafoKRegular();
-    verificarGrafoConexo();
+//    verificarGrafoConexo();
+//    vizinhancaAberta();
+    vizinhancaFechada();
 
     return 0;
 }

@@ -401,5 +401,19 @@ unsigned int Grafo::rubustezVertice(unsigned int *ids){
     return rubustez;
 }
 
+void Grafo::vizinhancaAberta(unsigned int id){
+    No* no=buscaNo(id);
+    if(no != NULL)
+        for(Arco *a=no->getListaArcos()->getProxArco(); a!=NULL; a=a->getProxArco())
+            cout << "|A" << a->getID() << "|" << "\t";
+}
+
+void Grafo::vizinhancaFechada(unsigned int id){
+    No* no=buscaNo(id);
+    if(no != NULL)
+        for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
+            cout << "|A" << a->getID() << "|" << "\t";
+}
+
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

@@ -66,7 +66,8 @@ public:
 
     void BuscaProfundidade(No *inicio);
 
-
+    void vizinhancaAberta(unsigned int id);
+    void vizinhancaFechada(unsigned int id);
     bool ehGrafoKReguar();
     ~Grafo();
 };
