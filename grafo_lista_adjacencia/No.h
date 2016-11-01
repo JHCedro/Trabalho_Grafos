@@ -8,7 +8,7 @@ class No
 {
 private:
     unsigned int id;
-    unsigned int grau;
+    unsigned int grau, grauEntrada, grauSaida;
     No *proxNo;
     Arco *listaNos;
     bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
@@ -18,6 +18,12 @@ public:
 
     unsigned int getGrau(){ return grau;    };
     void setGrau(int grau){    this->grau = grau;};
+
+    unsigned int getGrauEntrada(){ return grauEntrada;    };
+    void setGrauEntrada(int grauEntrada){    this->grauEntrada = grauEntrada;};
+
+    unsigned int getGrauSaida(){ return grauSaida;    };
+    void setGrauSaida(int grauSaida){    this->grauSaida = grauSaida;};
 
     double getPeso(){   return peso;};
     void setPeso(double peso){  this->peso = peso;};

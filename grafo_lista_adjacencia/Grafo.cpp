@@ -115,7 +115,7 @@ Grafo *Grafo::subGrafoInduzido(unsigned int E[], unsigned int tam){
     return induzido;
 }
 
-bool Grafo::ehGrafoKReguar(unsigned int k){
+bool Grafo::ehGrafoKRegular(unsigned int k){
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau()!=k)
             return false;
@@ -124,13 +124,13 @@ bool Grafo::ehGrafoKReguar(unsigned int k){
 }
 
 ///Funcao Iago
-bool Grafo::ehGrafoKReguar(){
+bool Grafo::ehGrafoKRegular(){
     No* inicio = this->listaNos;
-    return ehGrafoKReguar(inicio->getGrau());
+    return ehGrafoKRegular(inicio->getGrau());
 }
 
 bool Grafo::ehGrafoCompleto(){
-    return ehGrafoKReguar(this->numeroNos-1);
+    return ehGrafoKRegular(this->numeroNos-1);
 }
 
 void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true){
@@ -190,6 +190,23 @@ void Grafo::atualizaGrau(){
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau() > grau)
             grau=i->getGrau();
+    }
+}
+
+///Faz a atualização dos graus de Entrada e Saida do digrafo para deteccao de nos fonte e sinks
+void Grafo::atualizaGrausEntradaSaidaDosNos(){
+    ///Zerar todos os graus de entrada e de saida
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
+        i->setGrauEntrada(0);
+        i->setGrauSaida(0);
+    }
+
+    ///Percorrer todos os nos e suas listas de adjacencia incrementando os graus de entrada e de saida
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
+        for(Arco *j=i->getListaArcos(); j!=NULL; j=j->getProxArco()){
+            i->setGrauSaida(i->getGrauSaida()+1);
+            j->getNoDestino()->setGrauEntrada(j->getNoDestino()->getGrauEntrada()+1);
+        }
     }
 }
 
@@ -414,6 +431,8 @@ void Grafo::vizinhancaFechada(unsigned int id){
         for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
             cout << "|A" << a->getID() << "|" << "\t";
 }
+
+
 
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

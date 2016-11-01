@@ -344,7 +344,7 @@ void testeRubustezVertice(){
 
 void verificaGrafoKRegular(){
     Grafo *G = criarGrafoEscadinha();
-    cout << endl << "Grafo completo? " << G->ehGrafoKReguar() << endl;
+    cout << endl << "Grafo completo? " << G->ehGrafoKRegular() << endl;
 }
 
 void verificarGrafoConexo(){

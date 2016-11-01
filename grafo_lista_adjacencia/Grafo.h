@@ -30,6 +30,7 @@ public:
     void imprime();
 
     void atualizaGrau();
+    void atualizaGrausEntradaSaidaDosNos();
     void desmarcaNos();
     void leArquivo(char nome[]);
 
@@ -43,7 +44,7 @@ public:
 
 
     bool ehGrafoCompleto();
-    bool ehGrafoKReguar(unsigned int k);
+    bool ehGrafoKRegular(unsigned int k);
     bool mesmaComponenteFortementeConexa(unsigned int id1, unsigned int id2);
     bool mesmaComponenteFortementeConexa(No *i1, No *i2);
 
@@ -68,7 +69,7 @@ public:
 
     void vizinhancaAberta(unsigned int id);
     void vizinhancaFechada(unsigned int id);
-    bool ehGrafoKReguar();
+    bool ehGrafoKRegular();
     ~Grafo();
 };
 
