@@ -3,6 +3,7 @@
 #include <fstream>
 #include <cmath>
 #include <algorithm>
+#include <vector>
 
 using namespace std;
 
@@ -432,7 +433,27 @@ void Grafo::vizinhancaFechada(unsigned int id){
             cout << "|A" << a->getID() << "|" << "\t";
 }
 
+///Cria um novo Grafo, com os mesmos nós e arestas (por id) do grafo atual
+Grafo* Grafo::clonaGrafo(){
+    Grafo* G=new Grafo();
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
+        G->insereNo(i->getID());
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
+        for(Arco *j=i->getListaArcos(); j!=NULL; j=j->getProxArco()){
+            G->insereArco(i->getID(), j->getNoDestino()->getID(), j->getID());
+        }
+    }
 
+    ///Precisa retirar algumas atribuicoes redundantes?
+    G->setFlagDir(this->flagDir);
+    G->grau=this->grau;
+    G->numeroNos=this->getNumeroNos();
+    G->numeroArcos=this->getNumeroArcos();
+}
+
+No* Grafo::ordenacaoTopologicaDAG(){
+    //Vai ser implementada
+}
 
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

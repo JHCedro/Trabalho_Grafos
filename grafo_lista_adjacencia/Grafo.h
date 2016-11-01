@@ -3,6 +3,8 @@
 #include "No.h"
 #include "Arco.h"
 #include <iostream>
+#include <vector>
+using namespace std;
 
 class Grafo
 {
@@ -70,6 +72,11 @@ public:
     void vizinhancaAberta(unsigned int id);
     void vizinhancaFechada(unsigned int id);
     bool ehGrafoKRegular();
+
+    Grafo* clonaGrafo();
+
+    No* ordenacaoTopologicaDAG();
+
     ~Grafo();
 };
 
