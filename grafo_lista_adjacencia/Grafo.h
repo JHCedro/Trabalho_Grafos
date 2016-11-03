@@ -75,7 +75,7 @@ public:
 
     Grafo* clonaGrafo();
 
-    No* ordenacaoTopologicaDAG();
+    vector<No*> ordenacaoTopologicaDAG();
 
     ~Grafo();
 };

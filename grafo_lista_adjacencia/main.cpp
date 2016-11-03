@@ -368,6 +368,22 @@ void vizinhancaFechada(){
     G->vizinhancaFechada(id);
 }
 
+void testeOrdenacaoTopologicaDAG(){
+    Grafo *di=new Grafo();
+    for(int i=1;i<=5;i++)
+        di->insereNo(i);
+    di->insereArco(1,2,1);
+    di->insereArco(1,3,2);
+    di->insereArco(1,5,3);
+    di->insereArco(3,2,4);
+    di->insereArco(3,4,5);
+    di->insereArco(3,5,6);
+    di->insereArco(4,5,7);
+    di->insereArco(5,2,8);
+    di->ordenacaoTopologicaDAG();
+    delete di;
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -385,7 +401,8 @@ int main(){
 //    verificaGrafoKRegular();
 //    verificarGrafoConexo();
 //    vizinhancaAberta();
-    vizinhancaFechada();
+//    vizinhancaFechada();
+    testeOrdenacaoTopologicaDAG();
 
     return 0;
 }

@@ -451,8 +451,32 @@ Grafo* Grafo::clonaGrafo(){
     G->numeroArcos=this->getNumeroArcos();
 }
 
-No* Grafo::ordenacaoTopologicaDAG(){
-    //Vai ser implementada
+///Detecta todos os nós fontes e adiciona aos candidatos.
+///A cada iteracao, pega um candidato, coloca na solucao,
+///remove ele do grafo e verifica novos candidatos.
+vector<No*> Grafo::ordenacaoTopologicaDAG(){
+    vector<No*> solucao;
+    vector<unsigned int> candidatos;
+    Grafo* G=this->clonaGrafo();
+    for(int k=0;k<this->getNumeroNos();k++){ //Se der erro, foi aqui
+        G->atualizaGrausEntradaSaidaDosNos();
+        for(No *i=G->listaNos; i!=NULL; i=i->getProxNo()){
+            if(i->getGrauEntrada()==0){
+                candidatos.push_back(i->getID());
+                G->removeNo(i->getID());
+            }
+        }
+        solucao.push_back(this->buscaNo(candidatos[0]));//Vou colocar na solucao ponteiros do grafo original(this)
+        //cout<<candidatos.size()<<endl;
+        candidatos.erase(candidatos.begin());
+        //cout<<candidatos.size()<<endl;
+    }
+    cout<<"Ordenacao topologica do DAG por ID:"<<endl;
+    for(int m=0;m<this->getNumeroNos();m++){
+        cout<<solucao[m]->getID()<<endl;
+    }
+    delete G;
+    return solucao;
 }
 
 /** IMPLEMENTAR DESTRUTOR */
