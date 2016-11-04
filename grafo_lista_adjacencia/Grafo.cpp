@@ -419,18 +419,19 @@ unsigned int Grafo::rubustezVertice(unsigned int *ids){
     return rubustez;
 }
 
-void Grafo::vizinhancaAberta(unsigned int id){
-    No* no=buscaNo(id);
-    if(no != NULL)
-        for(Arco *a=no->getListaArcos()->getProxArco(); a!=NULL; a=a->getProxArco())
-            cout << "|A" << a->getID() << "|" << "\t";
+vector<No*>  Grafo::vizinhancaAberta(unsigned int id, bool fechada = false){
+    return vizinhancaFechada(id, fechada);
 }
 
-void Grafo::vizinhancaFechada(unsigned int id){
+vector<No*> Grafo::vizinhancaFechada(unsigned int id, bool fechada = true){
     No* no=buscaNo(id);
+    vector<No*> nos;
+    if(fechada)
+        nos.push_back(no);
     if(no != NULL)
         for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
-            cout << "|A" << a->getID() << "|" << "\t";
+            nos.push_back(a->getNoDestino());
+    return nos;
 }
 
 ///Cria um novo Grafo, com os mesmos nós e arestas (por id) do grafo atual

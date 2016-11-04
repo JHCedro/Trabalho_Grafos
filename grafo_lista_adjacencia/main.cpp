@@ -352,20 +352,30 @@ void verificarGrafoConexo(){
     cout << endl << "Grafo conexo? " << G->EhFortementeConexo() << endl;
 }
 
+void imprimeVizinhanca(vector<No*> nos){
+    for(int i = 0; i< nos.size(); i++)
+        cout << nos[i]->getID() << "\t";
+    cout << endl;
+}
+
 void vizinhancaAberta(){
-    Grafo* G = criarGrafoCompleto();
+    Grafo* G = criarGrafoEscadinha();
     int id;
-    cout<<"Digite o id do no para verificar vizinhanca aberta:";
+    cout<<"Digite o id do no para verificar vizinhanca aberta: ";
     cin>>id;
-    G->vizinhancaAberta(id);
+    vector<No*> nos = G->vizinhancaAberta(id, false);///ver pq nao da pra usar o default nessa caralha
+
+    imprimeVizinhanca(nos);
 }
 
 void vizinhancaFechada(){
     Grafo* G = criarGrafoCompleto();
     int id;
-    cout<<"Digite o id do no para verificar vizinhanca aberta:";
+    cout<<"Digite o id do no para verificar vizinhanca fechada: ";
     cin>>id;
-    G->vizinhancaFechada(id);
+    vector<No*> nos = G->vizinhancaFechada(id, true);///ver pq nao da pra usar o default nessa caralha
+
+    imprimeVizinhanca(nos);
 }
 
 void testeOrdenacaoTopologicaDAG(){
@@ -397,12 +407,11 @@ int main(){
 //    testeNoArticulacao();
 //    testeRubustezVertice();
 
-///Funcoes em Grafos.cpp ja estavam programadas pra rodar as funcoes abaixo neh!?
 //    verificaGrafoKRegular();
 //    verificarGrafoConexo();
-//    vizinhancaAberta();
+    vizinhancaAberta();
 //    vizinhancaFechada();
-    testeOrdenacaoTopologicaDAG();
+//    testeOrdenacaoTopologicaDAG();
 
     return 0;
 }

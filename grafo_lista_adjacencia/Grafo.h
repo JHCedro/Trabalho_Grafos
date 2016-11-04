@@ -69,8 +69,8 @@ public:
 
     void BuscaProfundidade(No *inicio);
 
-    void vizinhancaAberta(unsigned int id);
-    void vizinhancaFechada(unsigned int id);
+    vector<No*> vizinhancaAberta(unsigned int id, bool fechada);
+    vector<No*> vizinhancaFechada(unsigned int id, bool fechada);
     bool ehGrafoKRegular();
 
     Grafo* clonaGrafo();
