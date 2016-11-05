@@ -24,10 +24,19 @@ void No::removeArcos(){
     this->setListaArcos(NULL);
 }
 
+double No::hashing(unsigned int id){
+    unsigned int valor = 0;
+    int primos[7] = {251,337,157,193,229,263,127};
+    for(double i = 0; i < id; i+=0.01)
+        valor = valor*primos[valor%7] + id;
+    return valor%101;
+}
+
 void No::insereArco(No* noDestino, unsigned int id){
     Arco *novaArco = new Arco(id);
     novaArco->setNoDestino(noDestino);
     novaArco->setProxArco(this->listaNos);
+    novaArco->setPeso(hashing(id));
     this->setListaArcos(novaArco);
     this->grau++;
 }
@@ -37,7 +46,7 @@ void No::imprime(){
     Arco *arc = this->getListaArcos();
 
     while(arc!=0){
-        cout<< " --|A" << arc->getID() << "|--> " << arc->getNoDestino()->getID() << " ";
+        cout<< " --|A" << arc->getID() << "|--> " << arc->getNoDestino()->getID() << " " << "Peso: " << arc->getPeso() << " ";
         arc = arc->getProxArco();
     }
     cout<<endl;

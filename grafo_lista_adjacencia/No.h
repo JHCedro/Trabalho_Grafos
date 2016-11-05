@@ -46,6 +46,8 @@ public:
 
     bool ehAdjacente(No *no);
 
+    double hashing(unsigned int id);
+
     void imprime();
     ~No(){};
 };

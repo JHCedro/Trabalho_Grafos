@@ -77,6 +77,11 @@ public:
 
     vector<No*> ordenacaoTopologicaDAG();
 
+    Arco* buscaArco(unsigned int id1, unsigned int id2);
+    Arco* buscaArco(No* no1, No* no2);
+    double** algoritmoFloyd();
+    double consultaMenorCaminhoEntreDoisNos(unsigned int i, unsigned int j);
+
     ~Grafo();
 };
 

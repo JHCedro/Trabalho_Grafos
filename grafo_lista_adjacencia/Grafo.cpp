@@ -4,6 +4,7 @@
 #include <cmath>
 #include <algorithm>
 #include <vector>
+#include <math.h>
 
 using namespace std;
 
@@ -479,6 +480,79 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
     delete G;
     return solucao;
 }
+
+Arco* Grafo::buscaArco(unsigned int id1, unsigned int id2){
+    No *no1=buscaNo(id1);
+    No *no2=buscaNo(id2);
+    return buscaArco(no1, no2);
+}
+
+Arco* Grafo::buscaArco(No* no1, No* no2){
+    Arco *aux = no1->getListaArcos();
+    while(aux!=NULL){
+        if(no2 == aux->getNoDestino())
+            return aux;
+        aux = aux->getProxArco();
+    }
+    return NULL;
+}
+
+double Grafo::consultaMenorCaminhoEntreDoisNos(unsigned int i, unsigned int j){
+    double **menorCaminho = algoritmoFloyd();
+    return menorCaminho[i][j];
+}
+
+
+double** Grafo::algoritmoFloyd(){
+    double infinito = HUGE_VAL;
+    Arco *aux;
+    int n = this->getNumeroNos();
+    double **mat = new double*[n];
+    for(int i = 0; i < n; i++){
+        mat[i] = new double[n];
+        for(int j = 0; j < n; j++){
+            if(i == j) ///Assumindo que nao vai existir selfie loop
+                mat[i][j] = 0;
+            else{
+                aux = buscaArco(i, j);
+                if(aux != NULL)
+                    mat[i][j] = aux->getPeso();
+                else
+                    mat[i][j] = infinito;
+            }
+        }
+    }
+    for(int k = 0; k < n; k++){
+        for(int i = 0; i < n; i++){
+            for(int j = 0; j < n; j++){
+                if(mat[i][j] > mat[i][k] + mat[k][j])
+                    mat[i][j] = mat[i][k] + mat[k][j];
+            }
+        }
+    }
+    return mat;
+}
+
+
+
+/***********************************
+ROTINA fw(Inteiro[1..n,1..n] grafo)
+    # Inicialização
+    VAR Inteiro[1..n,1..n] dist := grafo
+    VAR Inteiro[1..n,1..n] pred
+    PARA i DE 1 A n
+        PARA j DE 1 A n
+            SE dist[i,j] < Infinito ENTÃO
+                pred[i,j] := i
+    # Laço principal do algoritmo
+    PARA k DE 1 A n
+        PARA i DE 1 A n
+            PARA j DE 1 A n
+                SE dist[i,j] > dist[i,k] + dist[k,j] ENTÃO
+                    dist[i,j] = dist[i,k] + dist[k,j]
+                    pred[i,j] = pred[k,j]
+    RETORNE dist
+*******************************************/
 
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

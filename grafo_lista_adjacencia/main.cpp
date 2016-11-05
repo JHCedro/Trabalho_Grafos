@@ -394,6 +394,18 @@ void testeOrdenacaoTopologicaDAG(){
     delete di;
 }
 
+void menorCaminho(){
+    Grafo* G = criarGrafoCompleto();
+    int id1, id2;
+    do{
+    cout << "Digite o no inicial: ";
+    cin >> id1;
+    cout << "Digite o no final: ";
+    cin >> id2;
+    cout << G->consultaMenorCaminhoEntreDoisNos(id1, id2) << endl;
+    }while(true);
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -409,9 +421,10 @@ int main(){
 
 //    verificaGrafoKRegular();
 //    verificarGrafoConexo();
-    vizinhancaAberta();
+//    vizinhancaAberta();
 //    vizinhancaFechada();
 //    testeOrdenacaoTopologicaDAG();
+    menorCaminho();
 
     return 0;
 }
