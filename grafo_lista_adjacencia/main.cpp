@@ -325,7 +325,7 @@ void testeNoArticulacao(){
     di->insereArco(6,7,11);
     di->insereArco(7,6,11);
     for(int i=1;i<=8;i++)
-        cout<<"numero de nos da componente fortemente conexa de "<<i<<":"<<di->NosComponenteFortementeConexa(di->buscaNo(i))<<endl;
+        cout<<"numero de nos da componente fortemente conexa de "<<i<<":"<<di->numeroNosComponenteFortementeConexa(di->buscaNo(i))<<endl;
 
     for(int i=1;i<=8;i++)
         cout<<"O no:"<<i<<" e no de articulacao?"<<di->ehNoArticulacao(i)<<endl;
@@ -398,11 +398,11 @@ void menorCaminho(){
     Grafo* G = criarGrafoCompleto();
     int id1, id2;
     do{
-    cout << "Digite o no inicial: ";
-    cin >> id1;
-    cout << "Digite o no final: ";
-    cin >> id2;
-    cout << G->consultaMenorCaminhoEntreDoisNos(id1, id2) << endl;
+        cout << "Digite o no inicial: ";
+        cin >> id1;
+        cout << "Digite o no final: ";
+        cin >> id2;
+        cout << G->consultaMenorCaminhoEntreDoisNos(id1, id2) << endl;
     }while(true);
 }
 

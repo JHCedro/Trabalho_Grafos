@@ -57,7 +57,7 @@ public:
     bool saoAdjacentes(unsigned int id1, unsigned int id2);
     bool saoAdjacentes(No *no1, No *no2);
 
-    unsigned int NosComponenteFortementeConexa(No *no);
+    unsigned int numeroNosComponenteFortementeConexa(No *no);
     bool ehNoArticulacao(unsigned int id);
     bool ehNoArticulacao(No* no);
     int auxEhNoArticulacao(No* no);
@@ -76,6 +76,8 @@ public:
     Grafo* clonaGrafo();
 
     vector<No*> ordenacaoTopologicaDAG();
+
+    int numeroComponentesConexas();
 
     Arco* buscaArco(unsigned int id1, unsigned int id2);
     Arco* buscaArco(No* no1, No* no2);

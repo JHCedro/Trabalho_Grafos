@@ -195,7 +195,7 @@ void Grafo::atualizaGrau(){
     }
 }
 
-///Faz a atualização dos graus de Entrada e Saida do digrafo para deteccao de nos fonte e sinks
+///Faz a atualização dos graus de Entrada e Saida do digrafo para deteccao de nós fonte e sinks
 void Grafo::atualizaGrausEntradaSaidaDosNos(){
     ///Zerar todos os graus de entrada e de saida
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
@@ -309,7 +309,7 @@ bool Grafo::ehNoArticulacao(unsigned int id){
 FUNÇÃO AUXILIAR PARA FAZER A FUNÇÃO DO DUARDO FUNCIONAR.
 Recebe um nó e retorna o numero de nos da componente conexa que o nó esta presente.
 */
-unsigned int Grafo::NosComponenteFortementeConexa(No *no){
+unsigned int Grafo::numeroNosComponenteFortementeConexa(No *no){
     No *inicio=no;
     unsigned int n_nos=0;
     for(No *inicio2=this->listaNos; inicio2!=NULL; inicio2=inicio2->getProxNo()){
@@ -338,7 +338,7 @@ bool Grafo::ehNoArticulacao(No *no){
             }
         //    cout<<"cont de nos marcados:"<<cont<<endl;
         //    cout<<"numero de nos de "<< no->getID()<<" e:"<<NosComponenteConexa(no)<<endl;
-            bool result = (cont<this->NosComponenteFortementeConexa(no));
+            bool result = (cont<this->numeroNosComponenteFortementeConexa(no));
             this->desmarcaNos();
             return result;
         }
@@ -453,14 +453,14 @@ Grafo* Grafo::clonaGrafo(){
     G->numeroArcos=this->getNumeroArcos();
 }
 
-///Detecta todos os nós fontes e adiciona aos candidatos.
+///Detecta todos os nós fonte e adiciona aos candidatos.
 ///A cada iteracao, pega um candidato, coloca na solucao,
 ///remove ele do grafo e verifica novos candidatos.
 vector<No*> Grafo::ordenacaoTopologicaDAG(){
     vector<No*> solucao;
     vector<unsigned int> candidatos;
     Grafo* G=this->clonaGrafo();
-    for(int k=0;k<this->getNumeroNos();k++){ //Se der erro, foi aqui
+    for(int k=0;k<this->getNumeroNos();k++){
         G->atualizaGrausEntradaSaidaDosNos();
         for(No *i=G->listaNos; i!=NULL; i=i->getProxNo()){
             if(i->getGrauEntrada()==0){
@@ -469,9 +469,7 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
             }
         }
         solucao.push_back(this->buscaNo(candidatos[0]));//Vou colocar na solucao ponteiros do grafo original(this)
-        //cout<<candidatos.size()<<endl;
         candidatos.erase(candidatos.begin());
-        //cout<<candidatos.size()<<endl;
     }
     cout<<"Ordenacao topologica do DAG por ID:"<<endl;
     for(int m=0;m<this->getNumeroNos();m++){
@@ -479,6 +477,21 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
     }
     delete G;
     return solucao;
+}
+
+///Percorre todos os nós do grafo e, para cada nó, incrementa o contador e
+///realiza a busca em profundidade caso ele não esteja marcado. A busca em profundidade marca
+///os nós pertencentes a uma mesma componente conexa, logo o contator não vai ser incrementado ao passar por um nó já percorrido.
+int Grafo::numeroComponentesConexas(){
+    this->desmarcaNos();
+    int num=0;
+    for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+        if(i->getMarcado()==false){
+            num++;
+            BuscaProfundidade(i);
+        }
+    }
+    return num;
 }
 
 Arco* Grafo::buscaArco(unsigned int id1, unsigned int id2){
