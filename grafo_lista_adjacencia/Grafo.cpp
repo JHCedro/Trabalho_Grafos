@@ -546,26 +546,66 @@ double** Grafo::algoritmoFloyd(){
     return mat;
 }
 
+vector<No*> Grafo::algorimoPrim(){
+///tratar caso onde um vértice tem dois outros vertices com os pesos as arestas iguais
+    vector<No*> candidatos;
+    vector<No*> solucao;
+    vector<Arco*> arcosSolucao;
+    double valorMenorPeso = HUGE_VAL;
+    unsigned int retirar = 0;
+    No* nos = this->listaNos;
+    No* noDestinoSolucao;
+    bool jaTaNaSolucao = false;
+    solucao.push_back(nos);
+    for(nos->getProxNo(); nos != NULL; nos->getProxNo())
+        candidatos.push_back(nos);
 
+   while(candidatos.size() > 0){
+        valorMenorPeso = HUGE_VAL;
+        for(unsigned int i = 0; i < solucao.size(); i++){
+            for(Arco *a=solucao[i]->getListaArcos(); a!=NULL; a=a->getProxArco()){
+                jaTaNaSolucao = false;
+                for(unsigned int j = 0; j < solucao.size() || jaTaNaSolucao; j++){
+                    if(a->getNoDestino() == solucao[j])
+                        jaTaNaSolucao = true;
+                }
+                if(a->getPeso() < valorMenorPeso && !jaTaNaSolucao){
+                    valorMenorPeso = a->getPeso();
+                    noDestinoSolucao = a->getNoDestino();
+                    retirar = i;
+                }
+            }
+        solucao.push_back(noDestinoSolucao);
+        candidatos.erase(solucao.begin());
+//        delete candidatos[noDestinoSolucao->getID()];
+        }
+   }
 
-/***********************************
-ROTINA fw(Inteiro[1..n,1..n] grafo)
-    # Inicialização
-    VAR Inteiro[1..n,1..n] dist := grafo
-    VAR Inteiro[1..n,1..n] pred
-    PARA i DE 1 A n
-        PARA j DE 1 A n
-            SE dist[i,j] < Infinito ENTÃO
-                pred[i,j] := i
-    # Laço principal do algoritmo
-    PARA k DE 1 A n
-        PARA i DE 1 A n
-            PARA j DE 1 A n
-                SE dist[i,j] > dist[i,k] + dist[k,j] ENTÃO
-                    dist[i,j] = dist[i,k] + dist[k,j]
-                    pred[i,j] = pred[k,j]
-    RETORNE dist
-*******************************************/
+   return solucao;
+}
+
+/***
+prim(G) # G eh grafo
+    # Escolhe qualquer vértice do grafo como vertice inicial/de partida
+    s <- seleciona-um-elemento(vertices(G))
+
+    para todo v E vertices(G)
+        pi[v] <- nulo
+    Q <- {(0, s)}
+    S <- nulo
+
+    enquanto Q != nulo
+        v <- extrair-mín(Q)
+        S <- S U {v}
+
+        para cada u adjacente a v
+            se u !E S e pesoDaAresta(pi[u]->u) > pesoDaAresta(v->u)
+                Q <- Q \ {(pesoDaAresta(pi[u]->u), u)}
+                Q <- Q U {(pesoDaAresta(v->u), u)}
+                pi[u] <- v
+
+    retorna {(pi[v], v) | v E vertices(G) e pi[v] != nulo}
+***/
 
 /** IMPLEMENTAR DESTRUTOR */
 Grafo::~Grafo(){}

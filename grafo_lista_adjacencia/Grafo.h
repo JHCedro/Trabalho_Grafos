@@ -84,6 +84,8 @@ public:
     double** algoritmoFloyd();
     double consultaMenorCaminhoEntreDoisNos(unsigned int i, unsigned int j);
 
+    vector<No*> algorimoPrim();
+
     ~Grafo();
 };
 

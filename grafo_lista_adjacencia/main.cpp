@@ -406,6 +406,18 @@ void menorCaminho(){
     }while(true);
 }
 
+void imprimeArvore(vector<No*> nos){
+    for(int i = 0; i< nos.size(); i++)
+        cout << nos[i]->getID() << "\t";
+    cout << endl;
+}
+
+void arvoreGeradoraMinima(){
+    Grafo* G = criarGrafoCompleto();
+    vector<No*> nos = G->algorimoPrim();
+    imprimeArvore(nos);
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -424,7 +436,8 @@ int main(){
 //    vizinhancaAberta();
 //    vizinhancaFechada();
 //    testeOrdenacaoTopologicaDAG();
-    menorCaminho();
+//    menorCaminho();
+    arvoreGeradoraMinima();
 
     return 0;
 }
