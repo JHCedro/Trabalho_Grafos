@@ -546,42 +546,47 @@ double** Grafo::algoritmoFloyd(){
     return mat;
 }
 
-vector<No*> Grafo::algorimoPrim(){
+/***
+funcionando parciamente para grafos direcioandos. Internet diz que o algoritmo so serve para grafos nao direcionado. Verificar.
+Verificar complexidade do algoritmo.
+***/
+vector<Arco*> Grafo::algorimoPrim(){
 ///tratar caso onde um vértice tem dois outros vertices com os pesos as arestas iguais
-    vector<No*> candidatos;
     vector<No*> solucao;
     vector<Arco*> arcosSolucao;
-    double valorMenorPeso = HUGE_VAL;
-    unsigned int retirar = 0;
-    No* nos = this->listaNos;
-    No* noDestinoSolucao;
-    bool jaTaNaSolucao = false;
-    solucao.push_back(nos);
-    for(nos->getProxNo(); nos != NULL; nos->getProxNo())
-        candidatos.push_back(nos);
 
-   while(candidatos.size() > 0){
+    double valorMenorPeso = HUGE_VAL;
+
+    No* nos = this->listaNos;
+    No *noDestinoSolucao, *noOrigemSolucao;
+
+    this->desmarcaNos();
+    nos->setMarcado(true);
+
+    solucao.push_back(nos);
+    unsigned int qtdCandidatos = getNumeroNos()-solucao.size();
+
+    while(qtdCandidatos > 0){
         valorMenorPeso = HUGE_VAL;
         for(unsigned int i = 0; i < solucao.size(); i++){
             for(Arco *a=solucao[i]->getListaArcos(); a!=NULL; a=a->getProxArco()){
-                jaTaNaSolucao = false;
-                for(unsigned int j = 0; j < solucao.size() || jaTaNaSolucao; j++){
-                    if(a->getNoDestino() == solucao[j])
-                        jaTaNaSolucao = true;
-                }
-                if(a->getPeso() < valorMenorPeso && !jaTaNaSolucao){
+                if(a->getPeso() < valorMenorPeso && !a->getNoDestino()->getMarcado()){
                     valorMenorPeso = a->getPeso();
+                    noOrigemSolucao = solucao[i];
                     noDestinoSolucao = a->getNoDestino();
-                    retirar = i;
                 }
             }
-        solucao.push_back(noDestinoSolucao);
-        candidatos.erase(solucao.begin());
-//        delete candidatos[noDestinoSolucao->getID()];
         }
+        if(valorMenorPeso != HUGE_VAL){
+            noDestinoSolucao->setMarcado(true);
+            solucao.push_back(noDestinoSolucao);
+            arcosSolucao.push_back(buscaArco(noOrigemSolucao, noDestinoSolucao));
+            qtdCandidatos--;
+        }
+        else qtdCandidatos = 0;
    }
-
-   return solucao;
+    cout << arcosSolucao.size() << endl;
+   return arcosSolucao;
 }
 
 /***

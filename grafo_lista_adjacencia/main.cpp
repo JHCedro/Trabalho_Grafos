@@ -406,16 +406,34 @@ void menorCaminho(){
     }while(true);
 }
 
-void imprimeArvore(vector<No*> nos){
-    for(int i = 0; i< nos.size(); i++)
-        cout << nos[i]->getID() << "\t";
+void imprimeArvoreMinima(vector<Arco*> arco){
+    for(unsigned int i = 0; i < arco.size(); i++)
+        cout << "|A" << arco[i]->getID() << "|" << "\t";
     cout << endl;
 }
 
 void arvoreGeradoraMinima(){
-    Grafo* G = criarGrafoCompleto();
-    vector<No*> nos = G->algorimoPrim();
-    imprimeArvore(nos);
+    bool completo = true;
+    Grafo *di=new Grafo();
+    if(completo)
+        di = grafoCompleto(1000);
+    else{
+        for(int i=1;i<=5;i++)
+            di->insereNo(i);
+        di->insereArco(1,2,1);
+        di->insereArco(1,3,2);
+        di->insereArco(1,5,3);
+        di->insereArco(3,2,4);
+        di->insereArco(3,4,5);
+        di->insereArco(3,5,6);
+        di->insereArco(4,5,7);
+        di->insereArco(5,2,8);
+        di->insereArco(5,1,9);
+    }
+
+    di->imprime();
+    vector<Arco*> arco = di->algorimoPrim();
+    imprimeArvoreMinima(arco);
 }
 
 int main(){
