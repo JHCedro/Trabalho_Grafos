@@ -4,6 +4,8 @@
 #include "Arco.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
+
 using namespace std;
 
 class Grafo
@@ -85,6 +87,14 @@ public:
     double consultaMenorCaminhoEntreDoisNos(unsigned int i, unsigned int j);
 
     vector<Arco*> algorimoPrim();
+
+
+    /**
+    Retorna o subgrafo (ou floresta de subgrafos se o grafo nao e não-conexo)
+    contendo as arestas de peso minimo que ligam todos os nos do grafo
+    que formam a arvore/floresta
+    */
+    Grafo *Kruskal();
 
     ~Grafo();
 };

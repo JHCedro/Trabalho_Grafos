@@ -35,6 +35,7 @@ double No::hashing(unsigned int id){
 void No::insereArco(No* noDestino, unsigned int id){
     Arco *novaArco = new Arco(id);
     novaArco->setNoDestino(noDestino);
+    novaArco->setNoOrigem(this);
     novaArco->setProxArco(this->listaNos);
     novaArco->setPeso(hashing(id));
     this->setListaArcos(novaArco);
@@ -45,7 +46,7 @@ void No::imprime(){
     cout<<"( "<<"id:"<<this->getID()<<"\tgrau:"<<this->grau<<"\tpeso:"<<this->peso<<" )";
     Arco *arc = this->getListaArcos();
 
-    while(arc!=0){
+    while(arc!=NULL){
         cout<< " --|A" << arc->getID() << "|--> " << arc->getNoDestino()->getID() << " " << "Peso: " << arc->getPeso() << " ";
         arc = arc->getProxArco();
     }

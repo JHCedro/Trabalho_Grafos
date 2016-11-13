@@ -437,9 +437,12 @@ vector<No*> Grafo::vizinhancaFechada(unsigned int id, bool fechada = true){
 
 ///Cria um novo Grafo, com os mesmos nós e arestas (por id) do grafo atual
 Grafo* Grafo::clonaGrafo(){
+    int idArvore=1;
     Grafo* G=new Grafo();
-    for(No *i=listaNos; i!=NULL; i=i->getProxNo())
-        G->insereNo(i->getID());
+    for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
+        G->insereNo(i->getID())->setIdArvore(idArvore);///id auxiliar para algoritmo de kruskal
+        idArvore++;
+    }
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         for(Arco *j=i->getListaArcos(); j!=NULL; j=j->getProxArco()){
             G->insereArco(i->getID(), j->getNoDestino()->getID(), j->getID());
@@ -451,6 +454,8 @@ Grafo* Grafo::clonaGrafo(){
     G->grau=this->grau;
     G->numeroNos=this->getNumeroNos();
     G->numeroArcos=this->getNumeroArcos();
+
+    return G;
 }
 
 ///Detecta todos os nós fonte e adiciona aos candidatos.
@@ -587,6 +592,53 @@ vector<Arco*> Grafo::algorimoPrim(){
    }
     cout << arcosSolucao.size() << endl;
    return arcosSolucao;
+}
+
+///operador para ordenar as arestas por peso (Usado no algoritmo de Kruskal)
+bool operadorArcos(Arco *a1, Arco *a2){return ( a1->getPeso() < a2->getPeso() );};
+
+Grafo *Grafo::Kruskal(){
+    Grafo *arvMin = new Grafo();
+
+    ///todos os arcos para ordenacao e 'solucao' que e a solucao (os arcos que forma as arvore/floresta)
+    vector<Arco*> arcos;
+
+    ///cria uma copia do grafo original com todos os nos e arestas, as arestas que nao estiverem na solucao serao retiradas do grafo
+    arvMin=this->clonaGrafo();
+
+    for(No *i=arvMin->getListaNos(); i!=NULL; i=i->getProxNo()){
+        for(Arco *a=i->getListaArcos(); a!=NULL; a=a->getProxArco())
+            arcos.push_back(a);
+    }
+
+    sort(arcos.begin(), arcos.end(), operadorArcos);
+
+    ///nos origem e destino para cada arco
+    No *orig, *dest;
+    unsigned int id_orig, id_dest;
+
+    for(int pos=0; pos <arcos.size(); pos+=2){
+        orig=arcos.at(pos)->getNoOrigem();
+        dest=arcos.at(pos)->getNoDestino();
+
+        id_orig=orig->getIdArvore();
+        id_dest=dest->getIdArvore();
+
+        ///se arco conecta nos de componentes conexas diferentes ele esta na solucao
+        if(id_orig!=id_dest){
+            ///coloca ids iguais para nos em mesma componente conexa
+            for(No *i=arvMin->getListaNos(); i!=NULL; i=i->getProxNo()){
+                if(i->getIdArvore()==id_orig)
+                    i->setIdArvore(id_dest);
+            }
+        }
+        else{
+            arvMin->removeArco(orig,dest);
+            arvMin->removeArco(dest,orig);
+        }
+    }
+
+    return arvMin;
 }
 
 /***

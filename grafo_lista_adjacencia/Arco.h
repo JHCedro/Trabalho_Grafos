@@ -7,7 +7,7 @@ class Arco
 private:
     unsigned int id;
     Arco *proxArco;
-    No *noDestino;
+    No *noOrigem, *noDestino;
     double peso;
 public:
     Arco(unsigned int id){
@@ -27,6 +27,10 @@ public:
 
     No *getNoDestino(){ return this->noDestino; };
     void setNoDestino(No *no){  this->noDestino=no; };
+
+    No *getNoOrigem(){ return this->noOrigem; };
+    void setNoOrigem(No *no){  this->noOrigem=no; };
+
     ~Arco(){};
 };
 

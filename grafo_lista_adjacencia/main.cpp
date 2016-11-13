@@ -6,6 +6,7 @@
 #include <limits.h>
 #include <vector>
 #include <string>
+#include <ctime>
 
 using namespace std;
 
@@ -416,7 +417,7 @@ void arvoreGeradoraMinima(){
     bool completo = true;
     Grafo *di=new Grafo();
     if(completo)
-        di = grafoCompleto(1000);
+        di = grafoCompleto(6);
     else{
         for(int i=1;i<=5;i++)
             di->insereNo(i);
@@ -434,6 +435,81 @@ void arvoreGeradoraMinima(){
     di->imprime();
     vector<Arco*> arco = di->algorimoPrim();
     imprimeArvoreMinima(arco);
+}
+
+void testarKruskalMuitosNos(){
+    Grafo *g=new Grafo();
+    int tam;
+    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
+    cin>>tam;
+    cout<<"Criando grafo..."<<endl;
+    for(int i=1;i<=tam;i++){
+        g->insereNo(i);
+    }
+    for(int i=1;i<tam;i++){
+        g->insereArco(i,i+1,i);
+        g->insereArco(i+1,i,i);
+    }
+    cout<<"\n\nassim que apertar qualquer tecla kruskal comeca a rodar!"<<endl;
+    system("pause");
+    clock_t begin = clock();
+
+    Grafo *arvMin=g->Kruskal();
+
+    clock_t end = clock();
+    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
+    cout<<"tempo gasto com kruskal para grafo de:"<<tam<<" nos e "<<tam-1<<" arestas:"<<elapsed_secs<<" segundos!"<<endl;
+}
+
+void testarKruskalNaMao(){
+    Grafo *di=new Grafo();
+
+    for(int i=1;i<=7;i++)
+        di->insereNo(i);
+
+    di->insereArco(1,2,1);
+    di->insereArco(2,1,1);
+
+    di->insereArco(1,3,2);
+    di->insereArco(3,1,2);
+
+    di->insereArco(2,3,3);
+    di->insereArco(3,2,3);
+
+    di->insereArco(2,4,4);
+    di->insereArco(4,2,4);
+
+    di->insereArco(3,4,5);
+    di->insereArco(4,3,5);
+
+    di->insereArco(2,6,6);
+    di->insereArco(6,2,6);
+
+    di->insereArco(4,6,7);
+    di->insereArco(6,4,7);
+
+    di->insereArco(3,5,8);
+    di->insereArco(5,3,8);
+
+    di->insereArco(4,5,9);
+    di->insereArco(5,4,9);
+
+    di->insereArco(5,7,10);
+    di->insereArco(7,5,10);
+
+    di->insereArco(4,7,11);
+    di->insereArco(7,4,11);
+
+    di->insereArco(6,7,12);
+    di->insereArco(7,6,12);
+
+    cout<<"\n\n\ngrafo:\n\n"<<endl;
+    di->imprime();
+
+    Grafo *arvMin=di->Kruskal();
+
+    cout<<"\n\n\narvMin:\n\n"<<endl;
+    arvMin->imprime();
 }
 
 int main(){
@@ -455,7 +531,8 @@ int main(){
 //    vizinhancaFechada();
 //    testeOrdenacaoTopologicaDAG();
 //    menorCaminho();
-    arvoreGeradoraMinima();
-
+//    arvoreGeradoraMinima();
+    testarKruskalNaMao();
+//    testarKruskalMuitosNos();
     return 0;
 }

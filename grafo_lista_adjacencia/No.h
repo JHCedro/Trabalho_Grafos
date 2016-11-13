@@ -11,10 +11,14 @@ private:
     unsigned int grau, grauEntrada, grauSaida;
     No *proxNo;
     Arco *listaNos;
+    unsigned int idArvore;///id para auxiliar no algoritmo de Kruskal
     bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
     double peso;
 public:
     No(unsigned int id);
+
+    unsigned int getIdArvore(){return idArvore;};
+    void setIdArvore(unsigned id){this->idArvore=id;};
 
     unsigned int getGrau(){ return grau;    };
     void setGrau(int grau){    this->grau = grau;};
