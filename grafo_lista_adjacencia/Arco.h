@@ -2,15 +2,16 @@
 #define ARCO_H_INCLUDED
 #include "No.h"
 
+typedef unsigned int u_int;
 class Arco
 {
 private:
-    unsigned int id;
+    u_int id;
     Arco *proxArco;
     No *noOrigem, *noDestino;
     double peso;
 public:
-    Arco(unsigned int id){
+    Arco(u_int id){
         this->id=id;
         this->proxArco=0;
         this->noDestino=0;
@@ -20,7 +21,7 @@ public:
     double getPeso(){   return peso;    };
     void setPeso(double peso){  this->peso = peso;};
 
-    unsigned int getID(){   return this->id;    };
+    u_int getID(){   return this->id;    };
 
     Arco *getProxArco(){    return this->proxArco;  };
     void setProxArco(Arco *arc){    this->proxArco=arc; };
