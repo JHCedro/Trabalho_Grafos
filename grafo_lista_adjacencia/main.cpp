@@ -191,7 +191,7 @@ void testarGrafoCompleto(){
 
 void testarGrafoInduzido(){
     u_int i, j;
-    Grafo *induzido, *di= criarGrafoEscadinha();
+    Grafo *induzido, *di= criarGrafoCompleto();
 
     u_int v[3]={1,2,3};
 
@@ -341,7 +341,7 @@ void verificarGrafoConexo(){
 }
 
 void imprimeVizinhanca(vector<No*> nos){
-    for(int i = 0; i< nos.size(); i++)
+    for(u_int i = 0; i< nos.size(); i++)
         cout << nos[i]->getID() << "\t";
     cout << endl;
 }
@@ -394,6 +394,19 @@ void menorCaminho(){
     }while(true);
 }
 
+void testarDijkstra(){
+    Grafo* G = grafoDuardo();
+//    G->insereArcoID(8,1,22);
+    G->insereArcoID(1,8,21);
+    G->imprime();
+
+    cout << "menor percurso de "<< 4 << ":\n";// << " para "<< 2 << ":\n\t";
+    Dijkstra* resultado = G->dijkstra(4);
+//    cout << resultado->distancia(6);
+    resultado->imprimeDistancias();
+    resultado->imprimePercurso();
+}
+
 void imprimeArvoreMinima(vector<Arco*> arco){
     for(u_int i = 0; i < arco.size(); i++)
         cout << "|A" << arco[i]->getID() << "|" << "\t";
@@ -427,7 +440,7 @@ void arvoreGeradoraMinima(){
 void testarKruskalMuitosNos(){
     Grafo *g=new Grafo();
     int tam;
-    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
+    cout<<"\n\nTESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
     cin>>tam;
     cout<<"Criando grafo..."<<endl;
     for(int i=1;i<=tam;i++){
@@ -507,12 +520,12 @@ int main(){
 //    testarSequenciaNos();  ///entender o sort
 //    testarNoArticulacao(); ///ta dando certo nao né?
 //    testarInstanciasStenio();
-    testeComponenteConexa();
+//    testeComponenteConexa();
 //    testePercursoProfundidade();
 //    testeBuscaProdundidadeLargura();
 //    testeNoArticulacao();
 //    testeRubustezVertice();
-
+    testarDijkstra();
 //    verificaGrafoKRegular();
 //    verificarGrafoConexo();
 //    vizinhancaAberta();

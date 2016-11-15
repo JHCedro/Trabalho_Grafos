@@ -6,6 +6,9 @@
 #include <vector>
 #include <queue>
 #include <math.h>
+#include <map>
+#include <set>
+#define INFINITO HUGE_VAL
 
 using namespace std;
 
@@ -18,7 +21,7 @@ Grafo::Grafo(){
 }
 
 ///Função que insere nó no inicio(cabeça) do grafo
-No *Grafo::insereNo(unsigned int id){
+No *Grafo::insereNo(u_int id){
     No *no=new No(id);
     no->setProxNo(listaNos);
     listaNos=no;  ///nao deveria ser um setListaDeNos(this->listaNos)???
@@ -31,7 +34,7 @@ No *Grafo::insereNo(unsigned int id){
  *   Insere no em um no pai
  *   Consequentemente insere aresta
 *
-NoArv *Arvore::insereNo(NoArv* pai, unsigned int id){
+NoArv *Arvore::insereNo(NoArv* pai, u_int id){
     NoArv *no = new NoArv(id);
     this->insereArco(pai, no, this->numeroArcos);
     no->setProxNo(listaNos);
@@ -43,7 +46,7 @@ NoArv *Arvore::insereNo(NoArv* pai, unsigned int id){
     return no;
 }*/
 
-No *Grafo::buscaNo(unsigned int id){
+No *Grafo::buscaNo(u_int id){
     No *no = listaNos;
     while(no!=NULL){
         if(no->getID() == id)
@@ -53,7 +56,7 @@ No *Grafo::buscaNo(unsigned int id){
     return 0;
 }
 
-void Grafo::insereArco(No* noOrigem, No* noDestino, unsigned int id, bool atualizarGrau){
+void Grafo::insereArco(No* noOrigem, No* noDestino, u_int id, bool atualizarGrau){
     noOrigem->insereArco(noDestino, id);
     this->numeroArcos++;
     if (atualizarGrau)
@@ -68,7 +71,7 @@ cria o arco que sera inserido como arco desse no encontrado na busca
 define para onde(saida) no arco com o no idDestino
 arco inserido com sucesso
 **/
-void Grafo::insereArcoID(unsigned int idOrigem, unsigned int idDestino, unsigned int id){
+void Grafo::insereArcoID(u_int idOrigem, u_int idDestino, u_int id){
     No *noOrigem = buscaNo(idOrigem);
     No *noDestino = buscaNo(idDestino);
     this->insereArco(noOrigem, noDestino, id, true);
@@ -80,7 +83,7 @@ void Grafo::desmarcaNos(){
         i->setMarcado(false);
 }
 
-bool Grafo::mesmaComponenteFortementeConexa(unsigned int id1, unsigned int id2){
+bool Grafo::mesmaComponenteFortementeConexa(u_int id1, u_int id2){
     No *i1 = buscaNo(id1), *i2 = buscaNo(id2);
     if(i1!=NULL && i2!=NULL)
         return mesmaComponenteFortementeConexa(i1, i2);
@@ -106,15 +109,17 @@ bool Grafo::mesmaComponenteFortementeConexa(No *i1, No *i2){
 /**
 Percorre grafo a partir de um nó e sai marcando todo mundo da mesma componente conexa
 */
-void Grafo::percursoProfundidade(No *no,  void(Grafo::*funcao)(No*)){
+//void Grafo::percursoProfundidade(No *no,  void(Grafo::*funcao)(No*)){
+void Grafo::percursoProfundidade(No *no){
     if(no == NULL)
         cout<<"\n No NULL \n"<<endl;
     else{
         if(no->getMarcado() == false){
 //            cout<<"marcando: "<<no->getID()<<endl;
             no->setMarcado(true);
-            if (funcao != NULL)
-                (this->*funcao)(no);
+            this->contAux++;
+//            if (funcao != NULL)
+//                (this->*funcao)(no);
             for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
                     percursoProfundidade(a->getNoDestino());
         }
@@ -199,25 +204,26 @@ Grafo* Grafo::BuscaEmLargura(No *noGrafo){
     return Arv;
 }
 
-Grafo *Grafo::subGrafoInduzido(unsigned int E[], unsigned int tam){
+Grafo *Grafo::subGrafoInduzido(u_int E[], u_int tam){
     Grafo *induzido=new Grafo();
-    for(unsigned int i=0; i<tam; i++)
+    for(u_int i=0; i<tam; i++)
         induzido->insereNo(E[i]);
     No *no;
-    for(unsigned int i=0; i<tam; i++){
+    for(u_int i=0; i<tam; i++){
         no=this->buscaNo(E[i]);
         ///procura Arcos do grafo que ligam os vertices do grafo induzido
         for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco()){
-            for(unsigned int j=0; j<tam; j++){
-                if(a->getNoDestino()==buscaNo(E[j]))
-                    induzido->insereArcoID(no->getID(), a->getNoDestino()->getID(), 99);
+            for(u_int j=0; j<tam; j++){
+//                if(a->getNoDestino() == this->buscaNo(E[j]))
+                if(a->getNoDestino()->getID() == E[j])
+                    induzido->insereArcoID(no->getID(), a->getNoDestino()->getID(), a->getID());
             }
         }
     }
     return induzido;
 }
 
-bool Grafo::ehGrafoKRegular(unsigned int k){
+bool Grafo::ehGrafoKRegular(u_int k){
     for(No *i=listaNos; i!=NULL; i=i->getProxNo()){
         if(i->getGrau()!=k)
             return false;
@@ -266,7 +272,7 @@ void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau){
     }
 }
 
-void Grafo::removeArco(unsigned int idOrigem, unsigned int idDestino){
+void Grafo::removeArco(u_int idOrigem, u_int idDestino){
     this->removeArco(buscaNo(idOrigem), buscaNo(idDestino));
 }
 
@@ -312,7 +318,7 @@ void Grafo::atualizaGrausEntradaSaidaDosNos(){
     }
 }
 
-void Grafo::removeNo(unsigned int id){
+void Grafo::removeNo(u_int id){
     No *noRemover=NULL;
 
     ///se a listaNos eh o no a ser removido
@@ -343,14 +349,14 @@ void Grafo::removeNo(unsigned int id){
     }
 }
 
-bool compareReverse(unsigned int a, unsigned int b){
+bool compareReverse(u_int a, u_int b){
     return a >= b;
 }
 
 /** retorna a sequencia de inteiros dos graus do no */
-unsigned int* Grafo::sequenciaGrau(){
-    unsigned int* seq = new unsigned int [this->numeroNos];
-    unsigned int cont = 0;
+u_int* Grafo::sequenciaGrau(){
+    u_int* seq = new u_int [this->numeroNos];
+    u_int cont = 0;
     No* noAux = listaNos;
     while(noAux != NULL){
         seq[cont] = noAux->getGrau();
@@ -373,13 +379,13 @@ void Grafo::imprime(){
 }
 
 void Grafo::leArquivo(char nome[]){
-    unsigned int i,j,n_nos;
+    u_int i,j,n_nos;
     ifstream arq;
     arq.open(nome);
     if(arq.good()==false)
         cout<<"arquivo nao encontrado"<<endl;
     arq>>n_nos;
-    for(unsigned int i=1;i<=n_nos;i++)
+    for(u_int i=1;i<=n_nos;i++)
         insereNo(i);
     while(arq.good()){
         arq>>i>>j;
@@ -387,7 +393,7 @@ void Grafo::leArquivo(char nome[]){
     }
 }
 
-bool Grafo::saoAdjacentes(unsigned int id1, unsigned int id2){
+bool Grafo::saoAdjacentes(u_int id1, u_int id2){
     No *no1=buscaNo(id1);
     No *no2=buscaNo(id2);
     return saoAdjacentes(no1, no2);
@@ -398,30 +404,31 @@ bool Grafo::saoAdjacentes(No *no1, No *no2){
     return no1->ehAdjacente(no2)||no2->ehAdjacente(no1);
 }
 
-bool Grafo::ehNoArticulacao(unsigned int id){
-    No* no=buscaNo(id);
-    if(no != NULL)
-        return this->ehNoArticulacao(buscaNo(id));
-    return false;
-}
-
 /**
 FUNÇÃO AUXILIAR PARA FAZER A FUNÇÃO DO DUARDO FUNCIONAR.
 Recebe um nó e retorna o numero de nos da componente conexa que o nó esta presente.
 */
-unsigned int Grafo::numeroNosComponenteFortementeConexa(No *no){
-    No *inicio=no;
-    unsigned int n_nos=0;
-    for(No *inicio2=this->listaNos; inicio2!=NULL; inicio2=inicio2->getProxNo()){
-        if(this->mesmaComponenteFortementeConexa(inicio, inicio2) && this->mesmaComponenteFortementeConexa(inicio2, inicio))
+u_int Grafo::numeroNosComponenteFortementeConexa(No *no1){
+    u_int n_nos=0;
+    for(No *no2=this->listaNos; no2!=NULL; no2=no2->getProxNo()){
+        if(this->mesmaComponenteFortementeConexa(no1, no2))// && this->mesmaComponenteFortementeConexa(no2, no1))
             n_nos++;
     }
     return n_nos;
 }
 
-void Grafo::incrementaContador(No* n){
-    this->contAux++;
+int Grafo::auxEhNoArticulacao(No *no){
+    ///Percurso em profundidade
+    if(no->getMarcado()==false){
+            no->setMarcado(true);
+            for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
+                return 1+auxEhNoArticulacao(a->getNoDestino());
+    }
+    return 0;
 }
+//void Grafo::incrementaContador(No* n){
+//    this->contAux++;
+//}
 
 /**
 ESSA FUNÇÃO DO JEITO QUE ESTAVA ANTES NÃO FUNCIONAVA!!!!!
@@ -429,35 +436,27 @@ Marca o nó, faz a busca em profundidade e ve se o numero de nos marcados e menor
 se for verdade o no e de articulacao.
 */
 bool Grafo::ehNoArticulacao(No *no){
-    this->desmarcaNos();
-    this->setContAux(0);
-    No* primAdjacente = no->getListaArcos()->getNoDestino();
-    this->percursoProfundidade(
-                               primAdjacente,
-                                &(this->incrementaContador()));
-
-    ///COMO MATEUS TINHA FEITO
-//    if(no!=NULL){
-//        unsigned int cont=0;
-//        this->desmarcaNos();
-//        no->setMarcado(true);
-//    //    cout<<"busca em progundidade começando em:"<<no->getListaArcos()->getNoDestino()->getID()<<endl;
-//        if(no->getListaArcos()!=NULL){
-//            this->percursoProfundidade(no->getListaArcos()->getNoDestino());
-//            for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
-//                if(i->getMarcado()==true)
-//                    cont++;
-//            }
-//        //    cout<<"cont de nos marcados:"<<cont<<endl;
-//        //    cout<<"numero de nos de "<< no->getID()<<" e:"<<NosComponenteConexa(no)<<endl;
-//            bool result = (cont<this->numeroNosComponenteFortementeConexa(no));
-//            this->desmarcaNos();
-//            return result;
-//        }
-//        else
-//            return false;
-//    }
-//    else return false;
+    if(no!=NULL){
+        u_int cont=0;
+        this->desmarcaNos();
+        no->setMarcado(true);
+    //    cout<<"busca em progundidade começando em:"<<no->getListaArcos()->getNoDestino()->getID()<<endl;
+        if(no->getListaArcos()!=NULL){
+            this->percursoProfundidade(no->getListaArcos()->getNoDestino());
+            for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+                if(i->getMarcado()==true)
+                    cont++;
+            }
+        //    cout<<"cont de nos marcados:"<<cont<<endl;
+        //    cout<<"numero de nos de "<< no->getID()<<" e:"<<NosComponenteConexa(no)<<endl;
+            bool result = (cont<this->numeroNosComponenteFortementeConexa(no));
+            this->desmarcaNos();
+            return result;
+        }
+        else
+            return false;
+    }
+    else return false;
 
     ///COMO O MELAO TINHA FEITO2
 //    ///Marca o no como visitado e faz busca em profundidade
@@ -470,22 +469,33 @@ bool Grafo::ehNoArticulacao(No *no){
 //    Arco *a=no->getListaArcos();
 //    if(a==NULL) return false;
 //    No *noAux=a->getNoDestino();
-//    unsigned int cont=this->auxEhNoArticulacao(noAux);
+//    u_int cont=this->auxEhNoArticulacao(noAux);
 //    ///tem que verificar no final se todos os nós da mesma componente conexa estao marcados no final.
 //    if(cont<this->NosComponenteConexa(no)) { cout<<"cont:"<<cont<<endl; return true;};
 //    return false;
 //    this->desmarcaNos();///MELÃO ESQUECEU DE DESMARCAR OS NÓS DEPOIS
 }
 
-int Grafo::auxEhNoArticulacao(No *no){
-    ///Percurso em profundidade
-    if(no->getMarcado()==false){
-            no->setMarcado(true);
-            for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
-                return 1+auxEhNoArticulacao(a->getNoDestino());
-    }
-    return 0;
+bool Grafo::ehNoArticulacao(u_int id){
+    No* no=buscaNo(id);
+    if(no != NULL)
+        return this->ehNoArticulacao(buscaNo(id));
+    return false;
 }
+
+/** PENSANDO...
+bool Grafo::ehArcoPonte(Arco* arco){
+    this->desmarcaNos();
+    ///Verificar se componente fortemente conexa tem ordem = 2
+    arco->getNoDestino()->setMarcado(true);
+    this->setContAux(0);
+    this->percursoProfundidade(arco->getNoOrigem());
+    bool 2_conexo = this->contAux == 0;
+
+
+    return ehNoArticulacao(arco->getNoDestino());
+}
+*/
 
 /**
 Se o grafo é fortemente conexo cada par de vertice (a,b) estao na mesma conponente conexa.
@@ -513,9 +523,9 @@ No caso a função retorna o numero de nos que voce pode retirar considerando toda
 Se uma componente conexa pode ter 5 nos removidos e a outra pode ter 6 a função retorna 11.
 recebe um vetor de ids pra salvar os ids daqueles nos que nao podem ser removidos e sao de articulacao
 */
-unsigned int Grafo::rubustezVertice(unsigned int *ids){
-    unsigned int rubustez=this->numeroNos, i=0;
-    ids=new unsigned int[this->numeroNos];
+u_int Grafo::rubustezVertice(u_int *ids){
+    u_int rubustez=this->numeroNos, i=0;
+    ids=new u_int[this->numeroNos];
     for(No *inicio=this->listaNos; inicio!=NULL; inicio=inicio->getProxNo()){
         cout<< ( (float)( 1001 - inicio->getID() )/this->numeroNos ) * 100 <<"%"<<endl;
         if(this->ehNoArticulacao(inicio)){
@@ -529,11 +539,11 @@ unsigned int Grafo::rubustezVertice(unsigned int *ids){
     return rubustez;
 }
 
-vector<No*>  Grafo::vizinhancaAberta(unsigned int id, bool fechada){
+vector<No*>  Grafo::vizinhancaAberta(u_int id, bool fechada){
     return vizinhancaFechada(id, fechada);
 }
 
-vector<No*> Grafo::vizinhancaFechada(unsigned int id, bool fechada){
+vector<No*> Grafo::vizinhancaFechada(u_int id, bool fechada){
     No* no=buscaNo(id);
     vector<No*> nos;
     if(fechada)
@@ -573,9 +583,9 @@ Grafo* Grafo::clone(){
  */
 vector<No*> Grafo::ordenacaoTopologicaDAG(){
     vector<No*> solucao;
-    vector<unsigned int> candidatos;
+    vector<u_int> candidatos;
     Grafo* G=this->clone();
-    for(int k=0;k<this->getNumeroNos();k++){
+    for(u_int k=0;k<this->getNumeroNos();k++){
         G->atualizaGrausEntradaSaidaDosNos();
         for(No *i=G->listaNos; i!=NULL; i=i->getProxNo()){
             if(i->getGrauEntrada()==0){
@@ -587,7 +597,7 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
         candidatos.erase(candidatos.begin());
     }
     cout<<"Ordenacao topologica do DAG por ID:"<<endl;
-    for(int m=0;m<this->getNumeroNos();m++){
+    for(u_int m=0;m<this->getNumeroNos();m++){
         cout<<solucao[m]->getID()<<endl;
     }
     delete G;
@@ -611,7 +621,7 @@ int Grafo::numeroComponentesConexas(){
     return num;
 }
 
-Arco* Grafo::buscaArco(unsigned int id1, unsigned int id2){
+Arco* Grafo::buscaArco(u_int id1, u_int id2){
     No *no1=buscaNo(id1);
     No *no2=buscaNo(id2);
     return buscaArco(no1, no2);
@@ -627,14 +637,89 @@ Arco* Grafo::buscaArco(No* no1, No* no2){
     return NULL;
 }
 
-double Grafo::consultaMenorCaminhoEntreDoisNos(unsigned int i, unsigned int j){
+double Grafo::consultaMenorCaminhoEntreDoisNos(u_int i, u_int j){
     double **menorCaminho = algoritmoFloyd();
     return menorCaminho[i][j];
 }
 
+double Grafo::dijkstra(No* origem, No* destino){
+    if(origem != NULL && destino != NULL)
+        Dijkstra* D = this->dijkstra(origem);
+    else
+        return -1.0;
+}
+
+double Grafo::dijkstra(u_int origem, u_int destino){
+    return this->dijkstra(buscaNo(origem), buscaNo(destino));
+}
+
+/**
+* Usa Algoritmo de Dijkstra para criar informações de menor distância (e se caminho)
+* para todos oa nos do Grafo
+*/
+Dijkstra* Grafo::dijkstra(No* origem){
+    this->desmarcaNos();
+    ///mapeamento (id -> pos) nos vetores (distancias) e (naoVisitados)
+    map<u_int, u_int> pos;
+    double *distancias = new double [this->numeroNos];
+
+    /*** LEMBRAR DE OTIMIZAR CONJUNTO DE NAO VISITADOS ***/
+    u_int s = 0;    ///numero de nos na solucao
+    No* nos[this->numeroNos];
+
+    /// Auxiliar para guardar o caminho
+    Arco** proximo = new Arco*[this->numeroNos];
+
+    ///Inicializa conjuntos
+    u_int i = 0;
+    for( No* no=listaNos; no != NULL; no = no->getProxNo(), i++){
+        pos[no->getID()] = i;         ///mapeia ids com posicoes
+        distancias[i] = INFINITO;     ///distancia "infinita"
+        nos[i] = no;         ///todos os nos
+        proximo[i] = NULL;
+    }
+
+    distancias[ pos[origem->getID()] ] = 0;
+
+    ///enquanto solução não estiver completa
+    while(s < this->numeroNos){
+
+        ///busca vertice com menor distancia
+        u_int posMaisProx = 0;
+        while(nos[posMaisProx] != NULL && nos[posMaisProx]->getMarcado()){
+            posMaisProx++;  ///primeira posicao desmarcada
+        }
+
+        for (u_int i=posMaisProx+1; i < this->numeroNos ; i++){
+            if (!nos[i]->getMarcado() && distancias[i] < distancias[posMaisProx]){
+                posMaisProx = i;
+            }
+        }
+
+        ///"remove" dos na visitados
+        No* maisProx = nos[posMaisProx];
+        maisProx->setMarcado(true);
+        s++;
+
+        /// para cada adjacencia de (maisProx)
+        for (Arco* arco = maisProx->getListaArcos(); arco != NULL; arco = arco->getProxArco()){
+            ///distância de (origem) passando por (maisProx)
+            double auxDist = distancias[posMaisProx] + arco->getPeso();
+            u_int posAux = pos[arco->getNoDestino()->getID()];
+            ///se (auxDist) for menor que o caminho atual
+            if ( auxDist < distancias[posAux] ){
+                distancias[posAux] = auxDist;
+                proximo[posAux] = arco;
+            }
+        }
+    }
+
+    ///Retorna estrutura Dijkstra
+    return new Dijkstra(this, pos, distancias, proximo);
+}
 
 double** Grafo::algoritmoFloyd(){
-    double infinito = HUGE_VAL;
+    double infinito = INFINITO;
     Arco *aux;
     int n = this->getNumeroNos();
     double **mat = new double*[n];
@@ -672,7 +757,7 @@ vector<Arco*> Grafo::algorimoPrim(){
     vector<No*> solucao;
     vector<Arco*> arcosSolucao;
 
-    double valorMenorPeso = HUGE_VAL;
+    double valorMenorPeso = INFINITO;
 
     No* nos = this->listaNos;
     No *noDestinoSolucao, *noOrigemSolucao;
@@ -681,11 +766,11 @@ vector<Arco*> Grafo::algorimoPrim(){
     nos->setMarcado(true);
 
     solucao.push_back(nos);
-    unsigned int qtdCandidatos = getNumeroNos()-solucao.size();
+    u_int qtdCandidatos = getNumeroNos()-solucao.size();
 
     while(qtdCandidatos > 0){
-        valorMenorPeso = HUGE_VAL;
-        for(unsigned int i = 0; i < solucao.size(); i++){
+        valorMenorPeso = INFINITO;
+        for(u_int i = 0; i < solucao.size(); i++){
             for(Arco *a=solucao[i]->getListaArcos(); a!=NULL; a=a->getProxArco()){
                 if(a->getPeso() < valorMenorPeso && !a->getNoDestino()->getMarcado()){
                     valorMenorPeso = a->getPeso();
@@ -694,7 +779,7 @@ vector<Arco*> Grafo::algorimoPrim(){
                 }
             }
         }
-        if(valorMenorPeso != HUGE_VAL){
+        if(valorMenorPeso != INFINITO){
             noDestinoSolucao->setMarcado(true);
             solucao.push_back(noDestinoSolucao);
             arcosSolucao.push_back(buscaArco(noOrigemSolucao, noDestinoSolucao));
@@ -727,9 +812,9 @@ Grafo *Grafo::Kruskal(){
 
     ///nos origem e destino para cada arco
     No *orig, *dest;
-    unsigned int id_orig, id_dest;
+    u_int id_orig, id_dest;
 
-    for(int pos=0; pos <arcos.size(); pos+=2){
+    for(u_int pos=0; pos <arcos.size(); pos+=2){
         orig=arcos.at(pos)->getNoOrigem();
         dest=arcos.at(pos)->getNoDestino();
 

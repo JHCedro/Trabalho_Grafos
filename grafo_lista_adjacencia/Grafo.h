@@ -2,12 +2,15 @@
 #define DIGRAFO_H_INCLUDED
 #include "No.h"
 #include "Arco.h"
+#include "Dijkstra.h"
 #include <iostream>
 #include <vector>
+#include <map>
 #include <algorithm>
 
 using namespace std;
 typedef unsigned int u_int;
+struct Dijkstra;
 
 class Grafo
 {
@@ -21,6 +24,7 @@ private:
     int auxEhNoArticulacao(No* no);
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
 //    void incrementaContador(No* n);
+    void atualizaDist(No* u, map<u_int, No*> Q, map<u_int, double> distancias);
 public:
     Grafo();
     No *getListaNos(){return this->listaNos;};
@@ -93,6 +97,12 @@ public:
 
     Arco* buscaArco(u_int id1, u_int id2);
     Arco* buscaArco(No* no1, No* no2);
+
+    Dijkstra* dijkstra(No* origem);
+    Dijkstra* dijkstra(u_int origem);
+    double dijkstra(u_int origem, u_int destino);
+    double dijkstra(No* origem, No* destino);
+
     double** algoritmoFloyd();
     double consultaMenorCaminhoEntreDoisNos(u_int i, u_int j);
 
@@ -107,6 +117,28 @@ public:
 
     ~Grafo();
 };
+
+    ///ARRUMAR PERCURSO
+    /** caguei! */
+//    void ordenaPercurso(){
+//        percurso[ pos[noOrigem->getID()] ] = percurso[0];
+//        No* aux = noOrigem;
+//        u_int p=0;
+//        for (int j=0; j <= p; j++){
+//            Arco* aux = percurso[j];
+//            int i=p+1;
+//            while(i < pos.size()){
+//                if(percurso[i] = aux){
+//                    percurso[p] = percurso[i];
+//                    p++;
+//                    percurso[i] = percurso[p];
+//                    i=p+1;
+//                }
+//                i++;
+//            }
+//        }
+//    }
+
 /*
 class Arvore : public Grafo{
 public:

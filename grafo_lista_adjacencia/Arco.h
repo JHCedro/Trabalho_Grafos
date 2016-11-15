@@ -1,5 +1,7 @@
 #ifndef ARCO_H_INCLUDED
 #define ARCO_H_INCLUDED
+#include <stdio.h>
+#include <iostream>
 #include "No.h"
 
 typedef unsigned int u_int;
@@ -31,6 +33,10 @@ public:
 
     No *getNoOrigem(){ return this->noOrigem; };
     void setNoOrigem(No *no){  this->noOrigem=no; };
+
+    void imprime(){
+        printf(" --|A%2d: peso: %2.1f|--> (%d) ", id, peso, noDestino->getID());
+    }
 
     ~Arco(){};
 };
