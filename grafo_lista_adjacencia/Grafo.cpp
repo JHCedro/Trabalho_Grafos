@@ -71,10 +71,10 @@ cria o arco que sera inserido como arco desse no encontrado na busca
 define para onde(saida) no arco com o no idDestino
 arco inserido com sucesso
 **/
-void Grafo::insereArcoID(u_int idOrigem, u_int idDestino, u_int id){
+void Grafo::insereArcoID(u_int idOrigem, u_int idDestino, u_int id, bool atualizarGrau){
     No *noOrigem = buscaNo(idOrigem);
     No *noDestino = buscaNo(idDestino);
-    this->insereArco(noOrigem, noDestino, id, true);
+    this->insereArco(noOrigem, noDestino, id, atualizarGrau);
 }
 
 /** desmarcar os nos do grafo */
@@ -791,7 +791,7 @@ vector<Arco*> Grafo::algorimoPrim(){
         }
         else qtdCandidatos = 0;
    }
-    cout << arcosSolucao.size() << endl;
+//    cout << arcosSolucao.size() << endl;
    return arcosSolucao;
 }
 

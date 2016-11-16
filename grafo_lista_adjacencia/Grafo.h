@@ -50,7 +50,7 @@ public:
     void leArquivo(char nome[]);
 
     void insereArco(No* noOrigem, No* noDestino, u_int id, bool atualizarGrau = true);
-    void insereArcoID(u_int idOrigem, u_int idDestino, u_int id);
+    void insereArcoID(u_int idOrigem, u_int idDestino, u_int id, bool atualizarGrau = true);
 
     void removeArco(u_int idOrigem, u_int idDestino);
     void removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true);
