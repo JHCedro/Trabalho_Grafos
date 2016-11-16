@@ -798,18 +798,18 @@ vector<Arco*> Grafo::algorimoPrim(){
 ///operador para ordenar as arestas por peso (Usado no algoritmo de Kruskal)
 bool menorPeso(Arco *a1, Arco *a2){return ( a1->getPeso() < a2->getPeso() );};
 
-Grafo *Grafo::Kruskal(){
-    Grafo *arvMin = new Grafo();
-
+vector<Arco*> Grafo::Kruskal(){
     ///todos os arcos para ordenacao e 'solucao' que e a solucao (os arcos que forma as arvore/floresta)
-    vector<Arco*> arcos;
+    vector<Arco*> arcos, solucao;
+    u_int idArvore=1;
 
-    ///cria uma copia do grafo original com todos os nos e arestas, as arestas que nao estiverem na solucao serao retiradas do grafo
-    arvMin=this->clone();
-
-    for(No *i=arvMin->getListaNos(); i!=NULL; i=i->getProxNo()){
+    ///joga todos os arcos no vector para depois ordenar
+    for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+        ///cada no esta inicialmente em uma arvore separada
+        i->setIdArvore(idArvore);
         for(Arco *a=i->getListaArcos(); a!=NULL; a=a->getProxArco())
-            arcos.push_back(a);
+                arcos.push_back(a);
+        idArvore++;
     }
 
     sort(arcos.begin(), arcos.end(), menorPeso);
@@ -827,19 +827,16 @@ Grafo *Grafo::Kruskal(){
 
         ///se arco conecta nos de componentes conexas diferentes ele esta na solucao
         if(id_orig!=id_dest){
+            solucao.push_back(arcos.at(pos));
             ///coloca ids iguais para nos em mesma componente conexa
-            for(No *i=arvMin->getListaNos(); i!=NULL; i=i->getProxNo()){
+            for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
                 if(i->getIdArvore()==id_orig)
                     i->setIdArvore(id_dest);
             }
         }
-        else{
-            arvMin->removeArco(orig,dest);
-            arvMin->removeArco(dest,orig);
-        }
     }
 
-    return arvMin;
+    return solucao;
 }
 
 /***

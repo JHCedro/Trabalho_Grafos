@@ -9,7 +9,7 @@
 #include <algorithm>
 
 using namespace std;
-typedef unsigned int u_int;
+typedef u_int u_int;
 struct Dijkstra;
 
 class Grafo
@@ -113,7 +113,7 @@ public:
     contendo as arestas de peso minimo que ligam todos os nos do grafo
     que formam a arvore/floresta
     */
-    Grafo *Kruskal();
+    vector<Arco*> Kruskal();
 
     ~Grafo();
 };

@@ -438,13 +438,14 @@ void arvoreGeradoraMinima(){
 }
 
 void testarKruskalMuitosNos(){
-    Grafo *g=new Grafo();
+    Grafo *g=new Grafo(), *arvMin=new Grafo();
     int tam;
-    cout<<"\n\nTESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
+    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
     cin>>tam;
     cout<<"Criando grafo..."<<endl;
     for(int i=1;i<=tam;i++){
         g->insereNo(i);
+        arvMin->insereNo(i);
     }
     for(int i=1;i<tam;i++){
         g->insereArcoID(i,i+1,i);
@@ -454,59 +455,85 @@ void testarKruskalMuitosNos(){
     system("pause");
     clock_t begin = clock();
 
-    Grafo *arvMin=g->Kruskal();
+    vector<Arco*> arcosMin = g->Kruskal();
+    cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
 
     clock_t end = clock();
     double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
     cout<<"tempo gasto com kruskal para grafo de:"<<tam<<" nos e "<<tam-1<<" arestas:"<<elapsed_secs<<" segundos!"<<endl;
+
+    system("pause");
+
+    u_int orig, dest, id;
+
+    for(int i=0;i<arcosMin.size();i++){
+        id=arcosMin.at(i)->getID();
+        orig=arcosMin.at(i)->getNoOrigem()->getID();
+        dest=arcosMin.at(i)->getNoDestino()->getID();
+        arvMin->insereArcoID(orig, dest, id);
+        arvMin->insereArcoID(dest, orig, id);
+    }
 }
 
 void testarKruskalNaMao(){
-    Grafo *di=new Grafo();
+    Grafo *g=new Grafo(), *arvMin=new Grafo();
 
-    for(int i=1;i<=7;i++)
-        di->insereNo(i);
+    for(int i=1;i<=7;i++){
+        g->insereNo(i);
+        arvMin->insereNo(i);
+    }
 
-    di->insereArcoID(1,2,1);
-    di->insereArcoID(2,1,1);
+    g->insereArcoID(1,2,1);
+    g->insereArcoID(2,1,1);
 
-    di->insereArcoID(1,3,2);
-    di->insereArcoID(3,1,2);
+    g->insereArcoID(1,3,2);
+    g->insereArcoID(3,1,2);
 
-    di->insereArcoID(2,3,3);
-    di->insereArcoID(3,2,3);
+    g->insereArcoID(2,3,3);
+    g->insereArcoID(3,2,3);
 
-    di->insereArcoID(2,4,4);
-    di->insereArcoID(4,2,4);
+    g->insereArcoID(2,4,4);
+    g->insereArcoID(4,2,4);
 
-    di->insereArcoID(3,4,5);
-    di->insereArcoID(4,3,5);
+    g->insereArcoID(3,4,5);
+    g->insereArcoID(4,3,5);
 
-    di->insereArcoID(2,6,6);
-    di->insereArcoID(6,2,6);
+    g->insereArcoID(2,6,6);
+    g->insereArcoID(6,2,6);
 
-    di->insereArcoID(4,6,7);
-    di->insereArcoID(6,4,7);
+    g->insereArcoID(4,6,7);
+    g->insereArcoID(6,4,7);
 
-    di->insereArcoID(3,5,8);
-    di->insereArcoID(5,3,8);
+    g->insereArcoID(3,5,8);
+    g->insereArcoID(5,3,8);
 
-    di->insereArcoID(4,5,9);
-    di->insereArcoID(5,4,9);
+    g->insereArcoID(4,5,9);
+    g->insereArcoID(5,4,9);
 
-    di->insereArcoID(5,7,10);
-    di->insereArcoID(7,5,10);
+    g->insereArcoID(5,7,10);
+    g->insereArcoID(7,5,10);
 
-    di->insereArcoID(4,7,11);
-    di->insereArcoID(7,4,11);
+    g->insereArcoID(4,7,11);
+    g->insereArcoID(7,4,11);
 
-    di->insereArcoID(6,7,12);
-    di->insereArcoID(7,6,12);
+    g->insereArcoID(6,7,12);
+    g->insereArcoID(7,6,12);
 
     cout<<"\n\n\ngrafo:\n\n"<<endl;
-    di->imprime();
+    g->imprime();
 
-    Grafo *arvMin=di->Kruskal();
+    vector<Arco*> arcosMin = g->Kruskal();
+    cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
+    u_int orig, dest, id;
+
+    for(int i=0;i<arcosMin.size();i++){
+        id=arcosMin.at(i)->getID();
+        orig=arcosMin.at(i)->getNoOrigem()->getID();
+        dest=arcosMin.at(i)->getNoDestino()->getID();
+        arvMin->insereArcoID(orig, dest, id);
+        arvMin->insereArcoID(dest, orig, id);
+    }
+
 
     cout<<"\n\n\narvMin:\n\n"<<endl;
     arvMin->imprime();
@@ -525,7 +552,7 @@ int main(){
 //    testeBuscaProdundidadeLargura();
 //    testeNoArticulacao();
 //    testeRubustezVertice();
-    testarDijkstra();
+//    testarDijkstra();
 //    verificaGrafoKRegular();
 //    verificarGrafoConexo();
 //    vizinhancaAberta();
@@ -534,6 +561,6 @@ int main(){
 //    menorCaminho();
 //    arvoreGeradoraMinima();
 //    testarKruskalNaMao();
-//    testarKruskalMuitosNos();
+    testarKruskalMuitosNos();
     return 0;
 }
