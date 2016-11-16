@@ -207,7 +207,7 @@ void vizinhancaAberta(){
     int id;
     cout<<"Digite o id do no para verificar vizinhanca aberta: ";
     cin>>id;
-    vector<No*> nos = G->vizinhancaAberta(id, false);///ver pq nao da pra usar o default nessa caralha
+    vector<No*> nos = G->vizinhancaAberta(id);///ver pq nao da pra usar o default nessa caralha
 
     imprimeVizinhanca(nos);
 }
@@ -217,7 +217,7 @@ void vizinhancaFechada(){
     int id;
     cout<<"Digite o id do no para verificar vizinhanca fechada: ";
     cin>>id;
-    vector<No*> nos = G->vizinhancaFechada(id, true);///ver pq nao da pra usar o default nessa caralha
+    vector<No*> nos = G->vizinhancaFechada(id);///ver pq nao da pra usar o default nessa caralha
 
     imprimeVizinhanca(nos);
 }
@@ -307,23 +307,28 @@ u_int arvoreGeradoraMinima(u_int n){
 }
 
 u_int testarKruskal(u_int n){
+    Grafo *di=new Grafo();
 //    Grafo *g=new Grafo(), *arvMin=new Grafo();
 //    int tam;
 //    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
 //    cin>>tam;
 //    cout<<"Criando grafo..."<<endl;
-//    for(int i=1;i<=tam;i++){
-//        g->insereNo(i);
-//        arvMin->insereNo(i);
+
+    di=grafoCompleto(n);
+//    for(int i=1;i<=n;i++)
+//        di->insereNo(i);
+//
+//    for(int i=1;i<n;i++){
+//        for(int j=1;j<n;j++){
+//            if(i!=j)
+//                di->insereArcoID(i,j,i, false);
+//        }
 //    }
-//    for(int i=1;i<tam;i++){
-//        g->insereArcoID(i,i+1,i);
-//        g->insereArcoID(i+1,i,i);
-//    }
+
 //    cout<<"\n\nassim que apertar qualquer tecla kruskal comeca a rodar!"<<endl;
 //    system("pause");
 //    clock_t begin = clock();
-    Grafo* di = grafoCompleto(n+1);
+//    Grafo* di = grafoCompleto(n+1);
     u_int t;
     t = clock();
     vector<Arco*> arcosMin = di->Kruskal();
@@ -447,7 +452,8 @@ int main(){
 
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
-    analiseDesempenho(testarKruskal, 100, 10, 1, "Teste Kruskal", "teste_kruskal.csv");
+//    grafoCompleto(5)->imprime();
+    analiseDesempenho(testarKruskal, 1000, 100, 1, "Teste Kruskal", "teste_kruskal.csv");
     graficoPython("teste_kruskal.csv");
 
 ////////////////    analiseDesempenho(testarKruskal, 100, 10, 1, "Teste Kruskal", "teste_kruskal.csv");

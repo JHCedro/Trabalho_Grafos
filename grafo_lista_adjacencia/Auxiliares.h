@@ -123,20 +123,36 @@ Grafo* criarGrafoEscadinha(){
 }
 
 Grafo* grafoCompleto(u_int n){
-    Grafo* G= new Grafo();
-    vector<No*> nos;
-    for(u_int i=0; i < n; i++)
-        nos.push_back(G->insereNo(i));
+    Grafo *di=new Grafo();
 
-    for (u_int i=0; i < n; i++){
-        for (u_int j=0; j < n; j++){
-            if( i != j )
-                G->insereArcoID(i, j, i*n+j, false);
-//                G->insereArco(nos[i], nos[j], i*n+j, false);
+    ///cria grafo completo na mao, o antigo nao esta funcionando
+    for(int i=1;i<=n;i++)
+        di->insereNo(i);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            if(i!=j)
+                di->insereArcoID(i,j,i, false);
         }
     }
-    G->atualizaGrau();
-    return G;
+
+    di->atualizaGrau();
+
+    return di;
+
+//    Grafo* G= new Grafo();
+//    vector<No*> nos;
+//    for(u_int i=0; i < n; i++)
+//        nos.push_back(G->insereNo(i));
+//
+//    for (u_int i=0; i < n; i++){
+//        for (u_int j=0; j < n; j++){
+//            if( i != j )
+//                G->insereArcoID(i, j, i*n+j, false);
+////                G->insereArco(nos[i], nos[j], i*n+j, false);
+//        }
+//    }
+//    G->atualizaGrau();
 }
 
 Grafo* criarGrafoCompleto(){
