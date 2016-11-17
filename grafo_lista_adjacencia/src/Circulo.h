@@ -1,40 +1,40 @@
 #ifndef ELIPSE_H_INCLUDED
 #define ELIPSE_H_INCLUDED
-#include "Auxiliares.h"
+#include "Auxiliares.hpp"
 #include <math.h>
 #include <string>
 #define v_max 5
 
 using namespace std;
 
-double angulo(double x1, double y1, double x2, double y2){
-    ///calcula a direcao do ponto (x2, y2) em relacao a (x1, x1) a partir da direita
-    double dx= x2-x1;
-    double dy= y2-y1;
-    double theta=atan( dy / dx );
-
-    ///corrige funcao atan() que esta definida de -pi/2 a pi/2
-    if (dx < 0) theta+= M_PI;
-    if (theta < 0) theta+= 2*M_PI;
-    //double raio = (a*b)/sqrt(pow(a*sin(theta), 2) + pow(b*cos(theta), 2));
-    return theta;
-}
-
-double distancia(double x1, double y1, double x2, double y2){
-    return sqrt( pow(x1-x2, 2) + pow(y1-y2, 2) );
-}
-
-double modulo(double vx, double vy){
-    return distancia(0, 0, vx, vy);
-}
-
-void ImprimeTexto(string texto, double x, double y, double esp=20,
-                  void* fonte= GLUT_BITMAP_TIMES_ROMAN_24){
-    for(int i=0; i<(int)texto.length(); i++){
-        glRasterPos2f(x + i*esp, y);
-        glutBitmapCharacter(fonte, texto[i]);
-    }
-}
+//double angulo(double x1, double y1, double x2, double y2){
+//    ///calcula a direcao do ponto (x2, y2) em relacao a (x1, x1) a partir da direita
+//    double dx= x2-x1;
+//    double dy= y2-y1;
+//    double theta=atan( dy / dx );
+//
+//    ///corrige funcao atan() que esta definida de -pi/2 a pi/2
+//    if (dx < 0) theta+= M_PI;
+//    if (theta < 0) theta+= 2*M_PI;
+//    //double raio = (a*b)/sqrt(pow(a*sin(theta), 2) + pow(b*cos(theta), 2));
+//    return theta;
+//}
+//
+//double distancia(double x1, double y1, double x2, double y2){
+//    return sqrt( pow(x1-x2, 2) + pow(y1-y2, 2) );
+//}
+//
+//double modulo(double vx, double vy){
+//    return distancia(0, 0, vx, vy);
+//}
+//
+//void ImprimeTexto(string texto, double x, double y, double esp=20,
+//                  void* fonte= GLUT_BITMAP_TIMES_ROMAN_24){
+//    for(int i=0; i<(int)texto.length(); i++){
+//        glRasterPos2f(x + i*esp, y);
+//        glutBitmapCharacter(fonte, texto[i]);
+//    }
+//}
 
 class Circulo{
 private:

@@ -4,3 +4,5 @@
 *.o
 grafo_lista_adjacencia/bin/
 grafo_lista_adjacencia/obj/
+*.save-failed
+grafo_lista_adjacencia/src/Grafo/AuxTestes.h.gch

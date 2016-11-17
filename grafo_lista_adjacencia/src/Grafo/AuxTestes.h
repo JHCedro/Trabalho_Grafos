@@ -1,33 +1,35 @@
 #ifndef AUXTESTES_H_INCLUDED
 #define AUXTESTES_H_INCLUDED
-
-#include <iostream>
-#include <stdlib.h>
-#include <stdio.h>
-#include <fstream>
-#include <limits.h>
-#include <vector>
-#include <string>
 #include "Grafo.h"
+#include <iostream>
+#include "Arco.h"
+#include <vector>
+#include <algorithm>
+#include <time.h>
+#include <string>
+#include <fstream>
+#include <random>
+#include <chrono>
+#include <stdio.h>
 
 using namespace std;
 
-bool buscaVetor(unsigned int j, unsigned int aux[], unsigned int tam){
+bool buscaVetor(u_int j, u_int aux[], u_int tam){
     cout<<"busca:"<<j<<endl;
-    for(unsigned int y=0; y<tam; y++){
+    for(u_int y=0; y<tam; y++){
         if(aux[y]==j)
             return true;
     }
     return false;
 }
 
-void geraArquivoDeEntrada(unsigned int tam){
+void geraArquivoDeEntrada(u_int tam){
     cout<<"GERACAO DE ARQUIVO DE ENTRADA"<<endl;
-    unsigned int i,j,porcento=0;
+    u_int i,j,porcento=0;
     ofstream arq;
     arq.open("data.g");
     arq<<tam<<endl;
-    for(unsigned int k=0; k< tam; k++){
+    for(u_int k=0; k< tam; k++){
         if( (int)(100.0 * k/tam) > porcento ){
             porcento = (int)(100.0 * k/tam);
             cout<<"#";
@@ -39,13 +41,71 @@ void geraArquivoDeEntrada(unsigned int tam){
     arq.close();
 }
 
-/** retorna grafo escadinha com n vertices */
-Grafo* grafoEscadinha(unsigned int n){
+/**
+* Persiste vetor de tempos em (nomeArq)
+*/
+void persisteDesempenho(double* tempos, u_int n, u_int passo, u_int amostra, string titulo, string nomeArq){
+    cout<<"\nSalvando desempenho"<<endl;
+    ofstream arq;
+    arq.open(nomeArq.c_str());
+    arq << titulo << "amostra: " << amostra << endl;
+    arq << "n; tempo\n";
+    for(u_int i=0; i< n; i+=passo){
+        arq << i << ";" << tempos[i/passo] << endl;
+    }
+    arq.close();
+}
+
+/**
+* Analisa desempenho de funcao(i) para i = 0, passo, 2*passo... i < n
+* Retorna vetor de tempos médio para cada (i) obtido da média de (amostras)
+*/
+double* analiseDesempenho(u_int(*funcao)(u_int), u_int n, u_int passo, u_int amostra){
+    cout<<"\nTeste de desempenho" <<endl;
+    double *tempos = new double[n/passo];
+    u_int t;
+    u_int porcento;
+    for (u_int i=0; i<n; i+=passo){
+        t = 0;
+        printf("\nn=%d \tamostras=", i);
+        for (u_int j=0; j < amostra; j++){
+            cout << j << ' ';
+            t += funcao(i);
+        }
+        tempos[i/passo] = (double) t/(CLOCKS_PER_SEC*amostra);
+        printf("\tclocks= %d \t tempo= %fs", t, tempos[i/passo]);
+    }
+
+    return tempos;
+}
+
+/**
+* Analisa desempenho e persiste em (nomeArq)
+*/
+double* analiseDesempenho(u_int(*funcao)(u_int), u_int n, u_int passo, u_int amostra,  string titulo, string nomeArq){
+    double* tempos = analiseDesempenho(funcao, n, passo, amostra);
+    persisteDesempenho(tempos, n, passo, amostra, titulo, nomeArq);
+    return tempos;
+}
+
+/**
+* Gera graficos a partir de um (nomeArq) persistido
+* Requer Python, matplotlib
+*/
+void graficoPython(string nomeArq, string versao = "python", string arg_plot=""){
+    cout << "\nPlotando grafico (" + nomeArq + ")..." << endl;
+    string args = versao + " plotDesempenho.py " + nomeArq + " " + arg_plot;
+    system(args.c_str());
+}
+
+
+/** retorna Grafo escadinha com n vertices */
+Grafo* GrafoEscadinha(u_int n){
     Grafo* G= new Grafo();
     vector<No*> nos;
-    for(unsigned int i=0; i < n; i++){
+    for(u_int i=0; i < n; i++){
         nos.push_back(G->insereNo(i));
-        for (unsigned int j=0; j < i; j++)
+        for (u_int j=0; j < i; j++)
             G->insereArco(nos.back(), nos[j], i+j, false);
     }
     G->atualizaGrau();
@@ -53,171 +113,118 @@ Grafo* grafoEscadinha(unsigned int n){
 }
 
 Grafo* criarGrafoEscadinha(){
-    unsigned int n_nos;
+    u_int n_nos;
     cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
     cin >> n_nos;
-    Grafo *G = grafoEscadinha(n_nos);
+    Grafo *G = GrafoEscadinha(n_nos);
     G->imprime();
 
     return G;
 }
 
-Grafo* grafoCompleto(unsigned int n){
-    Grafo* G= new Grafo();
-    vector<No*> nos;
-    for(unsigned int i=0; i < n; i++)
-        nos.push_back(G->insereNo(i));
+Grafo* GrafoCompleto(u_int n){
+    Grafo *di=new Grafo();
 
-    for (unsigned int i=0; i < n; i++){
-        for (unsigned int j=0; j < n; j++){
-            if( i != j )
-                G->insereArco(nos[i], nos[j], i*n+j, false);
+    ///cria Grafo completo na mao, o antigo nao esta funcionando
+    for(int i=1;i<=n;i++)
+        di->insereNo(i);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
+            if(i!=j)
+                di->insereArcoID(i,j,i, false);
         }
     }
-    G->atualizaGrau();
-    return G;
+
+    di->atualizaGrau();
+
+    return di;
+
+//    Grafo* G= new Grafo();
+//    vector<No*> nos;
+//    for(u_int i=0; i < n; i++)
+//        nos.push_back(G->insereNo(i));
+//
+//    for (u_int i=0; i < n; i++){
+//        for (u_int j=0; j < n; j++){
+//            if( i != j )
+//                G->insereArcoID(i, j, i*n+j, false);
+////                G->insereArco(nos[i], nos[j], i*n+j, false);
+//        }
+//    }
+//    G->atualizaGrau();
 }
 
 Grafo* criarGrafoCompleto(){
-    unsigned int n_nos;
-    cout << "numero de nos(gerar grafo completo):" << endl;
+    u_int n_nos;
+    cout << "numero de nos(gerar Grafo completo):" << endl;
     cin >> n_nos;
-    Grafo *G = grafoCompleto(n_nos);
+    Grafo *G = GrafoCompleto(n_nos);
     G->imprime();
 
     return G;
 }
 
-Grafo* grafoCircular(unsigned int n){
+Grafo* GrafoCircular(u_int n){
     Grafo* G= new Grafo();
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
-    for(unsigned int i=1; i < n; i++){
+    for(u_int i=1; i < n; i++){
         aux = G->insereNo(i);
-        G->insereArco(i-1, i, 2*i);
-        G->insereArco(i, i-1, 2*i+1);
-//        G->insereArco(ultimo, aux, 2*i);
-//        G->insereArco(aux, ultimo, 2*i+1);
+        G->insereArco(ultimo, aux, 2*i);
+        G->insereArco(aux, ultimo, 2*i+1);
         ultimo = aux;
     }
     if(ultimo != primeiro){
-        G->insereArco(n-1, 0, 2*n);
-        G->insereArco(0, n-1, 2*n+1);
-//        G->insereArco(ultimo, primeiro, 2*n);
-//        G->insereArco(primeiro, ultimo, 2*n+1);
+        G->insereArco(ultimo, primeiro, 2*n);
+        G->insereArco(primeiro, ultimo, 2*n+1);
     }
 
     G->atualizaGrau();
     return G;
 }
 
-/** testes sucessivos de remove Arco e no em grafo escadinha */
-void testeGeral(){
-    unsigned int i, j;
-    Grafo *di= criarGrafoEscadinha();
-
-    while(true){
-        cout<<"remover Arco de:"; cin>>i;
-        cout<<"para:";  cin>>j;
-        di->removeArco(i,j);
-        di->imprime();
-
-        cout<<"remover no: ";   cin >> i;
-        di->removeNo(i);
-        system("pause");
-    }
-}
-
-/** testar a inserção de 100.000 nos e Arcos */
-void testarGrandeInsersao(){
-    unsigned int tam = 100000;
-    cout<<"numero de nos e Arcos:"<<endl;
-    //    cin>>tam;
-    geraArquivoDeEntrada(tam);
-    Grafo *di= new Grafo();
-    char nome[]={"data.g"};
-    di->leArquivo(nome);
-    delete di;
-}
-
-void testarGrafoCompleto(){
-    unsigned int i, j;
-    Grafo *di= criarGrafoCompleto();
-
-    while(true){
-        cout<<" o grafo " << (di->ehGrafoCompleto() ? "eh " : "nao eh ") << "completo"<<endl;
-        cout<<"remover Arco de:"; cin>>i;
-        cout<<"para:";  cin>>j;
-        di->imprime();
-        di->removeArco(i,j);
-    }
-}
-
-void testarGrafoInduzido(){
-    unsigned int i, j;
-    Grafo *induzido, *di= criarGrafoEscadinha();
-
-    unsigned int v[3]={1,2,3};
-
-    while(true){
-        induzido = di->subGrafoInduzido(v, 3);
-        cout<<" grafo induzido:"<<endl;
-        induzido->imprime();
-
-        cout<<"remover Arco de:"; cin>>i;
-        cout<<"para:";  cin>>j;
-        di->removeArco(i,j);
-        di->imprime();
-
-        system("pause");
-    }
-}
-
-void testarSequenciaNos(){
-    Grafo *di= criarGrafoEscadinha();
-
-    cout << "Sequencia de nos:\n\t";
-    unsigned int* seq = di->sequenciaGrau();
-    for (unsigned int i=0; i < di->getNumeroNos(); i++){
-        cout << seq[i] << ", ";
-    }
-    delete di;
-}
-
-void testarNoArticulacao(){
-    Grafo *di= grafoCompleto(5);
-//    di->imprime();
-//    di->insereArco(2, 3, 98);
-//    di->insereArco(3, 4, 99);
-    di->imprime();
-    int id;
-    cout<<"Digite o id do no para testar se eh de articulacao:";
-    while(true){
-        cin>>id;
-        cout<<di->ehNoArticulacao(id)<<endl;
-        cout<<"Digite o id do no para testar se eh de articulacao:";
-    }
-}
-
-/** nao faco ideia do que isso ta fazendo */
-void testarInstanciasStenio(){
-    ///teste de leitura de instancias do stenio
+Grafo* GrafoDuardo(){
+    /// GrafoDuardo.png
     Grafo *di=new Grafo();
-    char nome[50];
-    for(int i=1;i<=16;i++){
-        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
-        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
-        di->leArquivo(nome);
-        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
-        cout<<" o grafo e completo?"  << di->ehGrafoCompleto()<<"   (0= nao completo, 1=completo)"<<endl;
-        system("pause");
-//        cin>>i;
-//        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;
-//        system("pause");
-//        for(int i=1;i<=10000;i++)
-//            di->removeNoPorID(i);
-//        system("pause");
-    }
+    for(int i=1;i<=8;i++)
+        di->insereNo(i);
+
+    di->insereArcoID(1,2,1);
+    di->insereArcoID(2,1,1);
+
+    di->insereArcoID(1,4,2);
+    di->insereArcoID(4,1,2);
+
+    di->insereArcoID(2,4,3);
+    di->insereArcoID(4,2,3);
+
+//    di->insereArcoID(2,3,4);
+//    di->insereArcoID(3,2,4);
+//
+//    di->insereArcoID(3,4,5);
+//    di->insereArcoID(4,3,5);
+
+    di->insereArcoID(3,5,6);
+    di->insereArcoID(5,3,6);
+
+    di->insereArcoID(3,6,7);
+    di->insereArcoID(6,3,7);
+
+    di->insereArcoID(5,8,8);
+    di->insereArcoID(8,5,8);
+
+    di->insereArcoID(6,7,9);
+    di->insereArcoID(7,6,9);
+
+    di->insereArcoID(7,3,10);
+    di->insereArcoID(3,7,10);
+
+    di->insereArcoID(6,7,11);
+    di->insereArcoID(7,6,11);
+
+    return di;
 }
+
 
 #endif // AUXTESTES_H_INCLUDED

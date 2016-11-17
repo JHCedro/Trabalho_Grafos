@@ -6,9 +6,7 @@
 #include <vector>
 #include "wtypes.h"
 #include "Circulo.h"
-#include "Grafo/Grafo.h"
 #include "Grafo/AuxTestes.h"
-#define rando
 
 using namespace std;
 
@@ -21,34 +19,52 @@ void GetDesktopResolution(int& horizontal, int& vertical){
 }
 
 int altura=700, largura=600, L_nos=50, n_nos=20;
-Circulo **nos, *selecionado = NULL;
+Circulo *selecionado = NULL;
 int pos[2];
-Grafo *G;
-int n = 5;
+
+int n_grafos = 3;
+Grafo *A, *B, *C, *G;
+Grafo *grafos[3];
+
+void inserirCirculos(Grafo *G){
+    double x, y, raio;
+
+    GLfloat r, g, b;
+    r = rand()%101 / 100.0;
+    g = rand()%101 / 100.0;
+    b = rand()%101 / 100.0;
+
+    for (G->itInicio(); G->getIt()!=NULL; G->itProx()){
+        raio= 30;//fmod(rand(), altura/20 + 5);
+        x= fmod(rand(), (largura-2*raio) + raio);
+        y= fmod(rand(), (altura -2*raio) + raio);
+        Circulo* noCG = new Circulo(raio, x, y);
+//        noCG->getCx();
+        noCG->setCor(r, g, b);
+        noCG->setID(G->getIt()->getID());
+        G->getIt()->setCirculo(noCG);
+        G->getIt()->getCirculo()->getCx();
+    }
+}
 
 // Inicializa opengl
 void init(void){
     GetDesktopResolution(largura, altura);
-    double x, y, r;
-    G = grafoEscadinha(n);
-    nos = new Circulo*[n];
+    A = GrafoCompleto(4);
+    A = A->buscaProfundidade(A->buscaNo(1));
+    B = GrafoEscadinha(3);
+    C = A->produtoCartesiano(B);
 
+    grafos[0] = A;
+    grafos[1] = B;
+    grafos[2] = C;
+
+//    C->imprime();
     srand(time(NULL));
-    for (int i = 0; i < n; i++){
-        r= 30;//fmod(rand(), altura/20 + 5);
-        x= fmod(rand(), (largura-2*r) + r);
-        y= fmod(rand(), (altura -2*r) + r);
-        nos[i] = new Circulo(r, x, y);
-        nos[i]->setCor(0.7, 0.8, 0.3);
-        nos[i]->setID(i);
-        for (int j=0; j < i; j++){
-            if (nos[i]->Colisao(nos[j]) != -1){
-                delete nos[i];
-                i--;
-                break;
-            }
-        }
+    for (int i=0; i < n_grafos; i++){
+        inserirCirculos(grafos[i]);
     }
+
 
     glClearColor(1.0, 1.0, 1.0, 0.0);
     glShadeModel(GL_SMOOTH);
@@ -59,28 +75,25 @@ void init(void){
     Aresta bidirecional: verde
 */
 void desenhaGrafo(Grafo *G){
-    /// desenha arestas
-    No *noAux = G->getListaNos();
     bool ehReciproco = false;
-    while(noAux != NULL){
-        Arco *arcoAux = noAux->getListaArcos();
-        while(arcoAux != NULL){
-            ehReciproco = arcoAux->getNoDestino()->ehAdjacente(noAux);
+    for(G->itInicio(); G->getIt()!=NULL; G->itProx()){
+        No *no = G->getIt();
+        for(no->itInicio(); no->getIt()!=NULL; no->itProx()){
+            Arco* arco = no->getIt();
+            ehReciproco = arco->getNoDestino()->ehAdjacente(no);
             glLineWidth(3.0);
             glBegin(GL_LINES);
                 ehReciproco ? glColor3f(0,1,0) : glColor3f(0.5,0.5,0.5);
-                glVertex2f( nos[noAux->getID()]->getCx(), nos[noAux->getID()]->getCy());
+                glVertex2f( no->getCirculo()->getCx(), no->getCirculo()->getCy());
                 if (!ehReciproco) glColor3f(0.95, 0.95, 0.95);
-                glVertex2f( nos[arcoAux->getNoDestino()->getID()]->getCx(), nos[arcoAux->getNoDestino()->getID()]->getCy());
+                glVertex2f( arco->getNoDestino()->getCirculo()->getCx(), arco->getNoDestino()->getCirculo()->getCy());
             glEnd();
-            arcoAux = arcoAux->getProxArco();
         }
-        noAux = noAux->getProxNo();
     }
 
     ///desenha vertices
-    for (int i = 0; i < n; i++)
-        nos[i]->Desenha();
+    for(G->itInicio(); G->getIt()!=NULL; G->itProx())
+        G->getIt()->getCirculo()->Desenha();
 }
 
 void display(void){
@@ -94,8 +107,11 @@ void display(void){
     glLoadIdentity();
     glOrtho(0, largura, 0, altura, -1, 1);
 
-//    desenhaGrafo(grafoEscadinha(n));
-    desenhaGrafo(grafoCircular(n));
+//    desenhaGrafo(GrafoEscadinha(n));
+
+    desenhaGrafo(A);
+    desenhaGrafo(B);
+    desenhaGrafo(C);
 
 ///   escrever algum texto na tela
 //    char aux[100];
@@ -113,10 +129,14 @@ void mouse(int button, int state, int x, int y){
     y= altura-y;
     if(state == GLUT_DOWN){
         int i = 0;
-        while(i < n && !nos[i]->Dentro(x, y))
-            i++;
-        if(i < n)
-            selecionado = nos[i];
+        for (int i=0; i < n_grafos; i++){
+            Grafo *G = grafos[i];
+            for(G->itInicio(); G->getIt()!=NULL; G->itProx())
+                if( G->getIt()->getCirculo()->Dentro(x, y) )
+                    break;
+            if(G->getIt()!=NULL)
+                selecionado = G->getIt()->getCirculo();
+        }
     }else{
         selecionado = NULL;
     }
@@ -138,8 +158,7 @@ void keyboard(unsigned char key, int x, int y){
          exit(0);
       break;
       case 'r' :
-        for (int i=0; i<n_nos; i++)
-            delete nos[i];
+        delete G;
         init();
       break;
    }

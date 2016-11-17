@@ -1,10 +1,11 @@
-#ifndef AUXILIARES_H_INCLUDED
-#define AUXILIARES_H_INCLUDED
+#include <GL/glut.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
 #include <math.h>
+    #define M_PI		3.14159265358979323846
+    #define M_PI_2		1.57079632679489661923
 #include <string>
 #include <time.h>       ///funcoes de tempo
 #include <algorithm>    ///sort do placar
@@ -47,5 +48,3 @@ float distancia(float x1, float y1, float x2, float y2){
 float modulo(float vx, float vy){
     return distancia(0, 0, vx, vy);
 }
-
-#endif // AUXILIARES_H_INCLUDED

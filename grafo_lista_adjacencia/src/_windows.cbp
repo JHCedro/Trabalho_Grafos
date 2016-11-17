@@ -37,18 +37,16 @@
 			<Add library="libglew32.dll.a" />
 			<Add directory="../lib" />
 		</Linker>
-		<Unit filename="Auxiliares.h" />
+		<Unit filename="Auxiliares.hpp" />
 		<Unit filename="Circulo.h" />
 		<Unit filename="Grafo/Arco.cpp" />
 		<Unit filename="Grafo/Arco.h" />
 		<Unit filename="Grafo/AuxTestes.h" />
-		<Unit filename="Grafo/Auxiliares" />
-		<Unit filename="Grafo/Auxiliares.h" />
+		<Unit filename="Grafo/Dijkstra.h" />
 		<Unit filename="Grafo/Grafo.cpp" />
 		<Unit filename="Grafo/Grafo.h" />
 		<Unit filename="Grafo/No.cpp" />
 		<Unit filename="Grafo/No.h" />
-		<Unit filename="Grafo/main.cpp" />
 		<Unit filename="teste.cpp" />
 		<Extensions>
 			<code_completion />
