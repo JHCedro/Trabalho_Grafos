@@ -1,5 +1,6 @@
 #ifndef NO_H_INCLUDED
 #define NO_H_INCLUDED
+#include "Arco.h"
 
 typedef unsigned int u_int;
 
@@ -11,7 +12,7 @@ private:
     u_int id;
     u_int grau, grauEntrada, grauSaida;
     No *proxNo;
-    Arco *listaArcos;
+    Arco *listaArcos, *it;  ///iterador (it) para lista de arcos
     u_int idArvore;///id para auxiliar no algoritmo de Kruskal
     u_int nivel; ///(caso grafo seja arvore)
     bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
@@ -45,6 +46,11 @@ public:
 
     void setListaArcos(Arco *listaArcos){ this->listaArcos=listaArcos;    };
     Arco *getListaArcos(){  return this->listaArcos;    };
+
+    ///funcoes de iteracao na lista de arcos
+    void itInicio();
+    Arco* getIt();
+    void itProx();
 
     void insereArco(No* noDestino, u_int id);
 

@@ -1,8 +1,9 @@
 #include "No.h"
-#include "Arco.h"
+//#include "Arco.h"
 #include <stdio.h>
 #include <iostream>
 
+class No;
 using namespace std;
 
 No::No(u_int id){
@@ -46,12 +47,12 @@ void No::insereArco(No* noDestino, u_int id){
 
 void No::imprime(){
 //    cout<<"( "<<"id:"<<this->getID()<<"\tgrau:"<<this->grau<<"\tpeso:"<<this->peso<<"\tnivel:"<<this->nivel<<" )";
-    printf("( id:%2d grau:%2d peso:%2f nivel:%2d )", id, grau, peso, nivel);
+    printf("( id:%2d grau:%2d peso: %2.1f nivel:%2d )", id, grau, peso, nivel);
     Arco *arc = this->getListaArcos();
 
     while(arc!=NULL){
 //        cout<< " --|A" << arc->getID() << "|--> " << arc->getNoDestino()->getID() << " " << "Peso: " << arc->getPeso() << " ";
-        printf(" --|A%2d : Peso%2f|--> (%2d) ", arc->getID(), arc->getPeso(), arc->getNoDestino()->getID());
+        arc->imprime();
         arc = arc->getProxArco();
     }
     cout<<endl;

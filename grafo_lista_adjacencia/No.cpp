@@ -15,6 +15,10 @@ No::No(u_int id){
     this->nivel = 0;
 }
 
+void No::itInicio(){ this->it = listaArcos;   }
+Arco* No::getIt(){   return this->it;         }
+void No::itProx(){  it = it->getProxArco();   }
+
 void No::removeArcos(){
     Arco *aux1, *aux2=this->getListaArcos();
     while(aux2!=NULL){
@@ -28,9 +32,9 @@ void No::removeArcos(){
 
 double No::hashing(u_int id){
     u_int valor = 0;
-    int primos[7] = {251,337,157,193,229,263,127};
-    for(double i = 0; i < id; i+=0.01)
-        valor = valor*primos[valor%7] + id;
+//    int primos[7] = {251,337,157,193,229,263,127};
+//    for(double i = 0; i < id; i+=0.01)
+//        valor = valor*primos[valor%7] + id;
     return valor%101;
 }
 

@@ -15,7 +15,7 @@ struct Dijkstra;
 class Grafo
 {
 private:
-    No *listaNos;
+    No *listaNos, *it;  ///iterador (it) para lista de nos
     u_int grau;///maior grau de vértice do grafo
     u_int numeroNos;///n
     u_int numeroArcos;///m
@@ -35,6 +35,11 @@ public:
     void setFlagDir(bool flag){ flagDir=flag;   };
     u_int getContAux(){  return contAux; };
     void setContAux(u_int i){ contAux=i;   };
+
+    ///funcoes de iteracao na lista de nos
+    void itInicio(){ this->it = listaNos;   };
+    No* getIt(){   return this->it;         };
+    void itProx(){  it = it->getProxNo();   };
 
     void leDataArquivo(char nome[]);
 
@@ -114,6 +119,8 @@ public:
     que formam a arvore/floresta
     */
     vector<Arco*> Kruskal();
+
+    Grafo* produtoCartesiano(Grafo* B);
 
     ~Grafo();
 };

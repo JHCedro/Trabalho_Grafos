@@ -839,6 +839,69 @@ vector<Arco*> Grafo::Kruskal(){
     return solucao;
 }
 
+/**
+ * Retorna o grafo C resultado do produto cartesiano com (this x B)
+ * ##############   FAZ ALGUM SENTIDO PARA DIGRAFOS???  #################
+*/
+Grafo* Grafo::produtoCartesiano(Grafo* B){
+    Grafo* A = this;    /// <------ pura didatica
+    /// C = A x B
+    u_int nNosA = A->getNumeroNos();
+    u_int nNosB = B->getNumeroNos();
+    u_int idAresta = 0;
+
+    map<u_int, u_int> posB; ///mapeia idB->posB
+
+    ///matriz auxiliar de nos de C
+    No ***nosC = new No**[nNosA];
+    for(u_int i = 0; i < nNosA; i++)
+        nosC[i] = new No*[nNosB];
+
+    Grafo* C = new Grafo();
+    /// Cria todos os nos de de C
+    u_int a = 0, b = 0;
+    for(A->itInicio(); A->getIt()!=NULL; A->itProx(), a++){
+        for(B->itInicio(); B->getIt()!=NULL; B->itProx(), b++){
+//            printf("\na=%d  b=%d", a, b);
+            posB[B->getIt()->getID()] = b;  ///mapeia noB
+            nosC[a][b] = C->insereNo(nNosB*a + b);
+            /// faz "conexao vertical"
+            if( a > 0 ){
+                C->insereArco(nosC[a-1][b], nosC[a][b], idAresta++, false);
+                C->insereArco(nosC[a][b], nosC[a-1][b], idAresta++, false);
+            }
+        }
+        b = 0;
+    }
+//    C->imprime();
+
+    /// faz "conexoes tranversais"
+    for(B->itInicio(); B->getIt()!=NULL; B->itProx(), b++){
+        No* noB = B->getIt();
+        for(noB->itInicio(); noB->getIt()!= NULL; noB->itProx()){
+            Arco* arcoB = noB->getIt();
+            for(u_int a = 0; a < nNosA; a++){
+                u_int auxPos1 = posB[ noB->getID() ];
+                u_int auxPos2 = posB[ arcoB->getNoDestino()->getID() ];
+//                printf("criando aresta entre %d e %d", nosC[a][auxPos1]->getID(), nosC[a][auxPos2]->getID());
+                C->insereArco( nosC[a][auxPos1], nosC[a][auxPos2], idAresta++, false);
+//                C->insereArco( nosC[a][auxPos2], nosC[a][auxPos1], idAresta++, false);
+//                C->imprime()
+;            }
+
+        }
+    }
+
+    C->atualizaGrau();
+
+    /// desaloca matriz auxiliar
+    for(u_int i = 0; i < nNosA; i++)
+        delete [] nosC[i];
+    delete [] nosC;
+
+    return C;
+}
+
 /***
 prim(G) # G eh grafo
     # Escolhe qualquer vértice do grafo como vertice inicial/de partida

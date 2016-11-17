@@ -4,9 +4,10 @@
 #include <iostream>
 #include "No.h"
 
+class No;
 typedef unsigned int u_int;
-class Arco
-{
+
+class Arco{
 private:
     u_int id;
     Arco *proxArco;
@@ -34,9 +35,7 @@ public:
     No *getNoOrigem(){ return this->noOrigem; };
     void setNoOrigem(No *no){  this->noOrigem=no; };
 
-    void imprime(){
-        printf(" --|A%2d: peso: %2.1f|--> (%d) ", id, peso, noDestino->getID());
-    }
+    void imprime();
 
     ~Arco(){};
 };

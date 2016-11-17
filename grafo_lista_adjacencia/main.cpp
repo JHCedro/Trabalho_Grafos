@@ -250,15 +250,17 @@ void menorCaminho(){
     }while(true);
 }
 
-void testarDijkstra(u_int n){
+u_int testarDijkstra(u_int n){
     /// Cria grafo com n > 0 vertices
     Grafo* G = grafoCompleto(n+1);
 
 //    G->imprime();
 
     /// Dijkstra a partir de um (id) aleatorio
-    u_int id = rand()%(n+1);
+    u_int id = rand()%(n+1)+1;
+    u_int t = clock();
     Dijkstra* resultado = G->dijkstra(id);
+    t = clock() - t;
 //    resultado->imprimeDistancias();
 
 //    G->insereArcoID(8,1,22);
@@ -270,6 +272,8 @@ void testarDijkstra(u_int n){
 //    resultado->imprimePercurso();
 
     delete G;
+
+    return t;
 }
 
 void imprimeArvoreMinima(vector<Arco*> arco){
@@ -412,14 +416,28 @@ void testarKruskalNaMao(){
         arvMin->insereArcoID(dest, orig, id);
     }
 
-
     cout<<"\n\n\narvMin:\n\n"<<endl;
     arvMin->imprime();
 }
 
-u_int testarInsercao(){
+u_int testarProdutoCartesiano(u_int n){
+    Grafo *A = grafoCompleto(n+1);
+    Grafo *B = grafoCompleto(n+1);
 
+//    cout << "Grafo A:" << endl;
+//    A->imprime();
+//    cout << "Grafo A:" << endl;
+//    B->imprime();
+//    cout << "Grafo C:" << endl;
+//    Grafo *C = A->produtoCartesiano(B);
+//    C->imprime();
 
+    u_int t = clock();
+    Grafo *C = A->produtoCartesiano(B);
+    t = clock() - t;
+
+    delete A, B, C;
+    return t;
 }
 
 int main(){
@@ -436,7 +454,7 @@ int main(){
 //    testeNoArticulacao();
 //    testeRubustezVertice();
 
-//    analiseDesempenho(testarDijkstra, 100, 10, 5, "Teste Dijkstra", "teste_dijkstra.csv");
+//    analiseDesempenho(testarDijkstra, 1000, 50, 5, "Teste Dijkstra", "teste_dijkstra.csv");
 //    graficoPython("teste_dijkstra.csv");
 
 //    verificaGrafoKRegular();
@@ -453,11 +471,10 @@ int main(){
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
 //    grafoCompleto(5)->imprime();
-    analiseDesempenho(testarKruskal, 1000, 100, 1, "Teste Kruskal", "teste_kruskal.csv");
-    graficoPython("teste_kruskal.csv");
 
-////////////////    analiseDesempenho(testarKruskal, 100, 10, 1, "Teste Kruskal", "teste_kruskal.csv");
-////////////////    graficoPython("teste_kruskal.csv");
+    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
+    graficoPython("teste_prod_cartesiano.csv");
+
 
     return 0;
 }
