@@ -14,22 +14,22 @@
 
 using namespace std;
 
-bool buscaVetor(u_int j, u_int aux[], u_int tam){
+bool buscaVetor(uint j, uint aux[], uint tam){
     cout<<"busca:"<<j<<endl;
-    for(u_int y=0; y<tam; y++){
+    for(uint y=0; y<tam; y++){
         if(aux[y]==j)
             return true;
     }
     return false;
 }
 
-void geraArquivoDeEntrada(u_int tam){
+void geraArquivoDeEntrada(uint tam){
     cout<<"GERACAO DE ARQUIVO DE ENTRADA"<<endl;
-    u_int i,j,porcento=0;
+    uint i,j,porcento=0;
     ofstream arq;
     arq.open("data.g");
     arq<<tam<<endl;
-    for(u_int k=0; k< tam; k++){
+    for(uint k=0; k< tam; k++){
         if( (int)(100.0 * k/tam) > porcento ){
             porcento = (int)(100.0 * k/tam);
             cout<<"#";
@@ -44,13 +44,13 @@ void geraArquivoDeEntrada(u_int tam){
 /**
 * Persiste vetor de tempos em (nomeArq)
 */
-void persisteDesempenho(double* tempos, u_int n, u_int passo, u_int amostra, string titulo, string nomeArq){
+void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string titulo, string nomeArq){
     cout<<"\nSalvando desempenho"<<endl;
     ofstream arq;
     arq.open(nomeArq.c_str());
     arq << titulo << "amostra: " << amostra << endl;
     arq << "n; tempo\n";
-    for(u_int i=0; i< n; i+=passo){
+    for(uint i=0; i< n; i+=passo){
         arq << i << ";" << tempos[i/passo] << endl;
     }
     arq.close();
@@ -60,15 +60,15 @@ void persisteDesempenho(double* tempos, u_int n, u_int passo, u_int amostra, str
 * Analisa desempenho de funcao(i) para i = 0, passo, 2*passo... i < n
 * Retorna vetor de tempos médio para cada (i) obtido da média de (amostras)
 */
-double* analiseDesempenho(u_int(*funcao)(u_int), u_int n, u_int passo, u_int amostra){
+double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra){
     cout<<"\nTeste de desempenho" <<endl;
     double *tempos = new double[n/passo];
-    u_int t;
-    u_int porcento;
-    for (u_int i=0; i<n; i+=passo){
+    uint t;
+    uint porcento;
+    for (uint i=0; i<=n; i+=passo){
         t = 0;
         printf("\nn=%d \tamostras=", i);
-        for (u_int j=0; j < amostra; j++){
+        for (uint j=0; j < amostra; j++){
             cout << j << ' ';
             t += funcao(i);
         }
@@ -82,7 +82,7 @@ double* analiseDesempenho(u_int(*funcao)(u_int), u_int n, u_int passo, u_int amo
 /**
 * Analisa desempenho e persiste em (nomeArq)
 */
-double* analiseDesempenho(u_int(*funcao)(u_int), u_int n, u_int passo, u_int amostra,  string titulo, string nomeArq){
+double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra,  string titulo, string nomeArq){
     double* tempos = analiseDesempenho(funcao, n, passo, amostra);
     persisteDesempenho(tempos, n, passo, amostra, titulo, nomeArq);
     return tempos;
@@ -100,12 +100,12 @@ void graficoPython(string nomeArq, string versao = "python", string arg_plot="")
 
 
 /** retorna grafo escadinha com n vertices */
-Grafo* grafoEscadinha(u_int n){
+Grafo* grafoEscadinha(uint n){
     Grafo* G= new Grafo();
     vector<No*> nos;
-    for(u_int i=0; i < n; i++){
+    for(uint i=0; i < n; i++){
         nos.push_back(G->insereNo(i));
-        for (u_int j=0; j < i; j++)
+        for (uint j=0; j < i; j++)
             G->insereArco(nos.back(), nos[j], i+j, false);
     }
     G->atualizaGrau();
@@ -113,7 +113,7 @@ Grafo* grafoEscadinha(u_int n){
 }
 
 Grafo* criarGrafoEscadinha(){
-    u_int n_nos;
+    uint n_nos;
     cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
     cin >> n_nos;
     Grafo *G = grafoEscadinha(n_nos);
@@ -122,7 +122,7 @@ Grafo* criarGrafoEscadinha(){
     return G;
 }
 
-Grafo* grafoCompleto(u_int n){
+Grafo* grafoCompleto(uint n){
     Grafo *di=new Grafo();
 
     ///cria grafo completo na mao, o antigo nao esta funcionando
@@ -142,11 +142,11 @@ Grafo* grafoCompleto(u_int n){
 
 //    Grafo* G= new Grafo();
 //    vector<No*> nos;
-//    for(u_int i=0; i < n; i++)
+//    for(uint i=0; i < n; i++)
 //        nos.push_back(G->insereNo(i));
 //
-//    for (u_int i=0; i < n; i++){
-//        for (u_int j=0; j < n; j++){
+//    for (uint i=0; i < n; i++){
+//        for (uint j=0; j < n; j++){
 //            if( i != j )
 //                G->insereArcoID(i, j, i*n+j, false);
 ////                G->insereArco(nos[i], nos[j], i*n+j, false);
@@ -156,7 +156,7 @@ Grafo* grafoCompleto(u_int n){
 }
 
 Grafo* criarGrafoCompleto(){
-    u_int n_nos;
+    uint n_nos;
     cout << "numero de nos(gerar grafo completo):" << endl;
     cin >> n_nos;
     Grafo *G = grafoCompleto(n_nos);
@@ -165,11 +165,11 @@ Grafo* criarGrafoCompleto(){
     return G;
 }
 
-Grafo* grafoCircular(u_int n){
+Grafo* grafoCircular(uint n){
     Grafo* G= new Grafo();
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
-    for(u_int i=1; i < n; i++){
+    for(uint i=1; i < n; i++){
         aux = G->insereNo(i);
         G->insereArco(ultimo, aux, 2*i);
         G->insereArco(aux, ultimo, 2*i+1);

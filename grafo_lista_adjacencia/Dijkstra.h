@@ -10,14 +10,14 @@ class Grafo;
 */
 class Dijkstra{
 private:
-    map<u_int, u_int> pos;
+    map<uint, uint> pos;
     double* distancias;
     Grafo* grafo;
     No* noOrigem;
     Arco** percurso;
 
 public:
-    Dijkstra(Grafo* G, No* noOrigem, map<u_int, u_int> pos, double distancias[], Arco* proximo[]){
+    Dijkstra(Grafo* G, No* noOrigem, map<uint, uint> pos, double distancias[], Arco* proximo[]){
         this->grafo = G;
         this->noOrigem = noOrigem;
         this->pos = pos;
@@ -28,7 +28,7 @@ public:
     Arco** getPercurso(){  return this->percurso;   };
 
     void imprimePercurso(){
-        for (u_int i=0; i < pos.size() ; i++){
+        for (uint i=0; i < pos.size() ; i++){
             cout << "\n\t" << i << ": ";
             if(percurso[i] != NULL ){
                 printf("(%d)", percurso[i]->getNoOrigem()->getID());
@@ -41,15 +41,15 @@ public:
 
     Grafo* getGrafo(){  return grafo;   };
     No* getNoOrigem(){  return noOrigem;};
-    u_int getTam(){ return pos.size(); };
+    uint getTam(){ return pos.size(); };
 
-    double distancia(u_int destino){
+    double distancia(uint destino){
         return distancias[ pos[destino] ];
     };
 
     void imprimeDistancias(){
         printf("\nDistancias de (%d) para:\n", noOrigem->getID());
-        map<u_int, u_int>::iterator it = pos.begin();
+        map<uint, uint>::iterator it = pos.begin();
         for (; it != pos.end(); ++it){
             printf("\t(%d):%f\n", it->first, distancias[it->second]);
         }

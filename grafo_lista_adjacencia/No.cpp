@@ -5,7 +5,7 @@
 
 using namespace std;
 
-No::No(u_int id){
+No::No(uint id){
     this->id = id;
     this->proxNo = NULL;
     this->listaArcos = NULL;
@@ -30,15 +30,15 @@ void No::removeArcos(){
     this->setListaArcos(NULL);
 }
 
-double No::hashing(u_int id){
-    u_int valor = 0;
+double No::hashing(uint id){
+    uint valor = 0;
 //    int primos[7] = {251,337,157,193,229,263,127};
 //    for(double i = 0; i < id; i+=0.01)
 //        valor = valor*primos[valor%7] + id;
     return valor%101;
 }
 
-void No::insereArco(No* noDestino, u_int id){
+void No::insereArco(No* noDestino, uint id){
     Arco *novaArco = new Arco(id);
     novaArco->setNoDestino(noDestino);
     novaArco->setNoOrigem(this);

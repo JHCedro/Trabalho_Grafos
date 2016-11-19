@@ -2,43 +2,43 @@
 #define NO_H_INCLUDED
 #include "Arco.h"
 
-typedef unsigned int u_int;
+typedef unsigned int uint;
 
 class Arco;
 
 class No
 {
 private:
-    u_int id;
-    u_int grau, grauEntrada, grauSaida;
+    uint id;
+    uint grau, grauEntrada, grauSaida;
     No *proxNo;
     Arco *listaArcos, *it;  ///iterador (it) para lista de arcos
-    u_int idArvore;///id para auxiliar no algoritmo de Kruskal
-    u_int nivel; ///(caso grafo seja arvore)
+    uint idArvore;///id para auxiliar no algoritmo de Kruskal
+    uint nivel; ///(caso grafo seja arvore)
     bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
     double peso;
 public:
-    No(u_int id);
+    No(uint id);
 
-    u_int getIdArvore(){return idArvore;};
+    uint getIdArvore(){return idArvore;};
     void setIdArvore(unsigned id){this->idArvore=id;};
 
-    u_int getNivel(){ return nivel;    };
+    uint getNivel(){ return nivel;    };
     void setNivel(int nivel){    this->nivel = nivel;};
 
-    u_int getGrau(){ return grau;    };
+    uint getGrau(){ return grau;    };
     void setGrau(int grau){    this->grau = grau;};
 
-    u_int getGrauEntrada(){ return grauEntrada;    };
+    uint getGrauEntrada(){ return grauEntrada;    };
     void setGrauEntrada(int grauEntrada){    this->grauEntrada = grauEntrada;};
 
-    u_int getGrauSaida(){ return grauSaida;    };
+    uint getGrauSaida(){ return grauSaida;    };
     void setGrauSaida(int grauSaida){    this->grauSaida = grauSaida;};
 
     double getPeso(){   return peso;};
     void setPeso(double peso){  this->peso = peso;};
 
-    u_int getID(){   return this->id;    };
+    uint getID(){   return this->id;    };
     void setID(double id){  this->id = id;  };
 
     No *getProxNo(){    return this->proxNo;    };
@@ -52,7 +52,7 @@ public:
     Arco* getIt();
     void itProx();
 
-    void insereArco(No* noDestino, u_int id);
+    void insereArco(No* noDestino, uint id);
 
     void removeArcos();
 
@@ -61,7 +61,7 @@ public:
 
     bool ehAdjacente(No *no);
 
-    double hashing(u_int id);
+    double hashing(uint id);
 
     void imprime();
     ~No(){};
@@ -69,13 +69,13 @@ public:
 /*
 class NoArv : public No{
 private:
-    u_int nivel;
+    uint nivel;
 public:
-    NoArv(u_int id) : No(id){
+    NoArv(uint id) : No(id){
         this->nivel = -1;
     };
 
-    u_int getNivel(){return nivel;};
+    uint getNivel(){return nivel;};
     void setNivel(unsigned nivel){this->nivel=nivel;};
     ~NoArv(){};
 };

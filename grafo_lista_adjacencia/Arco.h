@@ -5,16 +5,16 @@
 #include "No.h"
 
 class No;
-typedef unsigned int u_int;
+typedef unsigned int uint;
 
 class Arco{
 private:
-    u_int id;
+    uint id;
     Arco *proxArco;
     No *noOrigem, *noDestino;
     double peso;
 public:
-    Arco(u_int id){
+    Arco(uint id){
         this->id=id;
         this->proxArco=0;
         this->noDestino=0;
@@ -24,7 +24,7 @@ public:
     double getPeso(){   return peso;    };
     void setPeso(double peso){  this->peso = peso;};
 
-    u_int getID(){   return this->id;    };
+    uint getID(){   return this->id;    };
 
     Arco *getProxArco(){    return this->proxArco;  };
     void setProxArco(Arco *arc){    this->proxArco=arc; };

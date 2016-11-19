@@ -45,7 +45,7 @@ void testeFechamentoTransitivoNaMao(){
 
 /** testes sucessivos de remove Arco e no em grafo escadinha */
 void testeGeral(){
-    u_int i, j;
+    uint i, j;
     Grafo *di= criarGrafoEscadinha();
 
     while(true){
@@ -62,7 +62,7 @@ void testeGeral(){
 
 /** testar a inserção de 100.000 nos e Arcos */
 void testarGrandeInsersao(){
-    u_int tam = 100000;
+    uint tam = 100000;
     cout<<"numero de nos e Arcos:"<<endl;
     //    cin>>tam;
     geraArquivoDeEntrada(tam);
@@ -73,7 +73,7 @@ void testarGrandeInsersao(){
 }
 
 void testarGrafoCompleto(){
-    u_int i, j;
+    uint i, j;
     Grafo *di= criarGrafoCompleto();
 
     while(true){
@@ -86,10 +86,10 @@ void testarGrafoCompleto(){
 }
 
 void testarGrafoInduzido(){
-    u_int i, j;
+    uint i, j;
     Grafo *induzido, *di= criarGrafoCompleto();
 
-    u_int v[3]={1,2,3};
+    uint v[3]={1,2,3};
 
     while(true){
         induzido = di->subGrafoInduzido(v, 3);
@@ -109,8 +109,8 @@ void testarSequenciaNos(){
     Grafo *di= criarGrafoEscadinha();
 
     cout << "Sequencia de nos:\n\t";
-    u_int* seq = di->sequenciaGrau();
-    for (u_int i=0; i < di->getNumeroNos(); i++){
+    uint* seq = di->sequenciaGrau();
+    for (uint i=0; i < di->getNumeroNos(); i++){
         cout << seq[i] << ", ";
     }
     delete di;
@@ -217,7 +217,7 @@ void testeNoArticulacao(){
 
 void testeRubustezVertice(){
     Grafo *di=new Grafo();
-    u_int *ids;
+    uint *ids;
     char nome[50];
     sprintf(nome, "instancias/grafo_1000_%d.txt", 1);
     di->leArquivo(nome);
@@ -237,7 +237,7 @@ void verificarGrafoConexo(){
 }
 
 void imprimeVizinhanca(vector<No*> nos){
-    for(u_int i = 0; i< nos.size(); i++)
+    for(uint i = 0; i< nos.size(); i++)
         cout << nos[i]->getID() << "\t";
     cout << endl;
 }
@@ -290,15 +290,15 @@ void menorCaminho(){
     }while(true);
 }
 
-u_int testarDijkstra(u_int n){
+uint testarDijkstra(uint n){
     /// Cria grafo com n > 0 vertices
     Grafo* G = grafoCompleto(n+1);
 
 //    G->imprime();
 
     /// Dijkstra a partir de um (id) aleatorio
-    u_int id = rand()%(n+1)+1;
-    u_int t = clock();
+    uint id = rand()%(n+1)+1;
+    uint t = clock();
     Dijkstra* resultado = G->dijkstra(id);
     t = clock() - t;
 //    resultado->imprimeDistancias();
@@ -317,12 +317,12 @@ u_int testarDijkstra(u_int n){
 }
 
 void imprimeArvoreMinima(vector<Arco*> arco){
-    for(u_int i = 0; i < arco.size(); i++)
+    for(uint i = 0; i < arco.size(); i++)
         cout << "|A" << arco[i]->getID() << "|" << "\t";
     cout << endl;
 }
 
-u_int arvoreGeradoraMinima(u_int n){
+uint arvoreGeradoraMinima(uint n){
     bool completo = true;
     Grafo *di;
     if(completo)
@@ -342,7 +342,7 @@ u_int arvoreGeradoraMinima(u_int n){
     }
 
 //    di->imprime();
-    u_int t;
+    uint t;
     t = clock();
     vector<Arco*> arco = di->algorimoPrim();
     t = clock() - t;
@@ -350,7 +350,7 @@ u_int arvoreGeradoraMinima(u_int n){
 //    imprimeArvoreMinima(arco);
 }
 
-u_int testarKruskal(u_int n){
+uint testarKruskal(uint n){
     Grafo *di=new Grafo();
 //    Grafo *g=new Grafo(), *arvMin=new Grafo();
 //    int tam;
@@ -373,7 +373,7 @@ u_int testarKruskal(u_int n){
 //    system("pause");
 //    clock_t begin = clock();
 //    Grafo* di = grafoCompleto(n+1);
-    u_int t;
+    uint t;
     t = clock();
     vector<Arco*> arcosMin = di->Kruskal();
     t = clock() - t;
@@ -386,7 +386,7 @@ u_int testarKruskal(u_int n){
 
 //    system("pause");
 
-//    u_int orig, dest, id;
+//    uint orig, dest, id;
 //
 //    for(int i=0;i<arcosMin.size();i++){
 //        id=arcosMin.at(i)->getID();
@@ -446,7 +446,7 @@ void testarKruskalNaMao(){
 
     vector<Arco*> arcosMin = g->Kruskal();
     cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
-    u_int orig, dest, id;
+    uint orig, dest, id;
 
     for(int i=0;i<arcosMin.size();i++){
         id=arcosMin.at(i)->getID();
@@ -460,7 +460,7 @@ void testarKruskalNaMao(){
     arvMin->imprime();
 }
 
-u_int testarProdutoCartesiano(u_int n){
+uint testarProdutoCartesiano(uint n){
     Grafo *A = grafoCompleto(n+1);
     Grafo *B = grafoCompleto(n+1);
 
@@ -472,11 +472,25 @@ u_int testarProdutoCartesiano(u_int n){
 //    Grafo *C = A->produtoCartesiano(B);
 //    C->imprime();
 
-    u_int t = clock();
+    uint t = clock();
     Grafo *C = A->produtoCartesiano(B);
     t = clock() - t;
 
     delete A, B, C;
+    return t;
+}
+
+uint testarGrafoEuleriano(uint n){
+//    Grafo *A = grafoCompleto(6);
+//
+//    A->imprime();
+//    cout << "\nGrafo " << (A->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
+    uint t = clock();
+    Grafo *A = grafoCompleto(n);
+    t = clock() - t;
+
+    delete A;
+
     return t;
 }
 
@@ -511,11 +525,14 @@ int main(){
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
 //    grafoCompleto(5)->imprime();
-
+//
 //    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
 //    graficoPython("teste_prod_cartesiano.csv");
 
-    testeFechamentoTransitivoNaMao();
+//    testeFechamentoTransitivoNaMao();
+
+    analiseDesempenho(testarGrafoEuleriano, 300, 10, 10, "Teste Grafo Euleriano", "teste_grafo_euleriano.csv");
+    graficoPython("teste_grafo_euleriano.csv");
 
     return 0;
 }
