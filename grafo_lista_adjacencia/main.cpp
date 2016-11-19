@@ -3,6 +3,46 @@
 
 using namespace std;
 
+void testeFechamentoTransitivoNaMao(){
+    Grafo *di= new Grafo();
+
+    for(int i=1;i<=7;i++)
+        di->insereNo(i);
+
+    di->insereArcoID(1,2,1);
+    di->insereArcoID(1,3,2);
+    di->insereArcoID(1,4,3);
+    di->insereArcoID(6,2,4);
+    di->insereArcoID(6,4,5);
+    di->insereArcoID(7,6,6);
+    di->insereArcoID(4,7,7);
+    di->insereArcoID(5,4,8);
+    di->insereArcoID(5,7,9);
+    di->insereArcoID(3,5,10);
+
+    vector<No*> direto, indireto;
+
+    di->imprime();
+
+    cout<<"\n\nDIRETOS(QUAIS NOS EU CHEGO DIRETO, SAO ADJACENTES A MIM):"<<endl;
+    for( int j=1;j<=7;j++){
+        ///fechamento transitivo direto do no 1
+        direto=di->fechamentoTransitivoDireto(j);
+
+        cout<<"\n\n\n fechamento transitivo direto do no "<<j<<endl;
+        for(int i=0; i<direto.size(); i++)
+            cout<<"no:"<<direto.at(i)->getID()<<endl;
+    }
+
+    cout<<"\n\nINDIRETOS(QUAIS NOS EU CONSIGO CHEGAR INDIRETAMENTE, PASSANDO POR OUTROS NOS):"<<endl;
+    for( int j=1;j<=7;j++){
+        cout<<"\n\n\n fechamento transitivo indireto do no "<<j<<endl;
+        indireto=di->fechamentoTransitivoIndireto(j);
+        for(int i=0; i<indireto.size(); i++)
+            cout<<"no:"<<indireto.at(i)->getID()<<endl;
+    }
+}
+
 /** testes sucessivos de remove Arco e no em grafo escadinha */
 void testeGeral(){
     u_int i, j;
@@ -472,9 +512,10 @@ int main(){
 //    arvoreGeradoraMinima();
 //    grafoCompleto(5)->imprime();
 
-    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
-    graficoPython("teste_prod_cartesiano.csv");
+//    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
+//    graficoPython("teste_prod_cartesiano.csv");
 
+    testeFechamentoTransitivoNaMao();
 
     return 0;
 }

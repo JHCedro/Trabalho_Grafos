@@ -902,6 +902,42 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
     return C;
 }
 
+vector<No*> Grafo::fechamentoTransitivoDireto(u_int id){
+    No *no=buscaNo(id);
+    vector<No*> fechamentoDireto;
+    for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
+        fechamentoDireto.push_back(a->getNoDestino());
+
+    return fechamentoDireto;
+}
+
+vector<No*> Grafo::fechamentoTransitivoIndireto(u_int id){
+    No *no=buscaNo(id);
+    vector<No*> fechamentoDireto=this->fechamentoTransitivoDireto(id), fechamentoIndireto;
+
+    this->desmarcaNos();
+    this->percursoProfundidade(no);
+
+    bool contido;
+    for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+        if(i->getMarcado()==true){
+
+            contido=false;
+            for(int j=0; j<fechamentoDireto.size();j++){
+                if(i==fechamentoDireto.at(j))
+                    contido=true;
+            }
+            ///se o no esta marcado e nao esta no fechamento direto entao ele esta no fechamento indireto
+            ///nao adicionar o proprio no no seu fechamento transitivo
+            if(contido==false && i!=no)
+                fechamentoIndireto.push_back(i);
+
+        }
+    }
+    this->desmarcaNos();
+    return fechamentoIndireto;
+}
+
 /***
 prim(G) # G eh grafo
     # Escolhe qualquer vértice do grafo como vertice inicial/de partida

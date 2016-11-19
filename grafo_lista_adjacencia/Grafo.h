@@ -122,6 +122,10 @@ public:
 
     Grafo* produtoCartesiano(Grafo* B);
 
+    vector<No*> fechamentoTransitivoDireto(u_int id);
+    void precursoFechamentoIndireto(No *no, vector<No*> fechamentoDireto, vector<No*> fechamentoIndireto);
+    vector<No*> fechamentoTransitivoIndireto(u_int id);
+
     ~Grafo();
 };
 
