@@ -25,6 +25,27 @@ public:
         this->percurso = proximo;
     };
 
+    ///ARRUMAR PERCURSO
+//    void ordenaPercurso(){
+//        percurso[ pos[noOrigem->getID()] ] = percurso[0];
+//        No* aux = noOrigem;
+//        uint p=0;
+//        for (int j=0; j <= p; j++){
+//            Arco* aux = percurso[j];
+//            int i=p+1;
+//            while(i < pos.size()){
+//                if(percurso[i] = aux){
+//                    percurso[p] = percurso[i];
+//                    p++;
+//                    percurso[i] = percurso[p];
+//                    i=p+1;
+//                }
+//                i++;
+//            }
+//        }
+//    }
+
+
     Arco** getPercurso(){  return this->percurso;   };
 
     void imprimePercurso(){

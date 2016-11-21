@@ -15,12 +15,12 @@ struct Dijkstra;
 class Grafo
 {
 private:
-    No *listaNos, *it;  ///iterador (it) para lista de nos
-    uint grau;///maior grau de vértice do grafo
-    uint numeroNos;///n
-    uint numeroArcos;///m
-    uint contAux;/// contador auxiliar
-    bool flagDir;///flag indicando se o grafo é direcionado ou não
+    No *listaNos, *it;  /// iterador (it) para lista de nos
+    uint grau;          /// maior grau de vértice do grafo
+    uint numeroNos;     /// n
+    uint numeroArcos;   /// m
+    uint contAux;       /// contador auxiliar
+    bool flagDir;       /// flag indicando se o grafo é direcionado ou não
     int auxEhNoArticulacao(No* no);
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
 //    void incrementaContador(No* n);
@@ -40,8 +40,9 @@ public:
     void itInicio(){ this->it = listaNos;   };
     No* getIt(){   return this->it;         };
     void itProx(){  it = it->getProxNo();   };
+    bool itEhFim(){   return (it == NULL);  };
 
-    void leDataArquivo(char nome[]);
+//    void leDataArquivo(char nome[]);
 
     No* buscaNo(uint id);
     No* insereNo(uint id);
@@ -87,6 +88,8 @@ public:
 
 //    void percursoProfundidade(No *inicio, void(Grafo::*funcao)(No*) = NULL);
     void percursoProfundidade(No *inicio);
+    void percursoIgnorandoArco(No *inicio, Arco *arcoIgnorado);
+
     Grafo* buscaProfundidade(No *no);
     Grafo* BuscaEmLargura(No *no);
 
@@ -100,8 +103,9 @@ public:
 
     int numeroComponentesConexas();
 
-    Arco* buscaArco(uint id1, uint id2);
-    Arco* buscaArco(No* no1, No* no2);
+    Arco* buscaArco(uint idOrigem, uint idDestino);
+    Arco* buscaArco(No* noOrigem, No* noDestino);
+    Arco* buscaArco(uint id);
 
     Dijkstra* dijkstra(No* origem);
     Dijkstra* dijkstra(uint origem);
@@ -131,27 +135,6 @@ public:
 
     ~Grafo();
 };
-
-    ///ARRUMAR PERCURSO
-    /** caguei! */
-//    void ordenaPercurso(){
-//        percurso[ pos[noOrigem->getID()] ] = percurso[0];
-//        No* aux = noOrigem;
-//        uint p=0;
-//        for (int j=0; j <= p; j++){
-//            Arco* aux = percurso[j];
-//            int i=p+1;
-//            while(i < pos.size()){
-//                if(percurso[i] = aux){
-//                    percurso[p] = percurso[i];
-//                    p++;
-//                    percurso[i] = percurso[p];
-//                    i=p+1;
-//                }
-//                i++;
-//            }
-//        }
-//    }
 
 /*
 class Arvore : public Grafo{

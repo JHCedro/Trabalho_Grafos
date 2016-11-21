@@ -51,6 +51,7 @@ public:
     void itInicio();
     Arco* getIt();
     void itProx();
+    bool itEhFim();
 
     void insereArco(No* noDestino, uint id);
 

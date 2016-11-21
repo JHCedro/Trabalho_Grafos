@@ -1,16 +1,11 @@
 import matplotlib.pyplot as plt
 import sys	#argumentos do sistema
 import os
-import platform
 
-sistema = platform.system()
-if sistema == 'Linux':
-	pasta = 'Graficos desempenho/'
-elif sistema == 'Windows':
-	pasta = 'Graficos desempenho\\'
+pasta = 'Desempenho\\'
 
 def plotarDesempenho(titulo, arg_plot='kx'):
-	with open(titulo) as arq:
+	with open(pasta+titulo) as arq:
 		linhas = arq.readlines()
 	nome = linhas[0]
 	tempos = map(lambda l: l[:-1].split(';'), linhas[2:])

@@ -622,10 +622,22 @@ int Grafo::numeroComponentesConexas(){
     return num;
 }
 
-Arco* Grafo::buscaArco(uint id1, uint id2){
-    No *no1=buscaNo(id1);
-    No *no2=buscaNo(id2);
+Arco* Grafo::buscaArco(uint noOrigem, uint noDestino){
+    No *no1=buscaNo(noOrigem);
+    No *no2=buscaNo(noDestino);
     return buscaArco(no1, no2);
+}
+
+Arco* Grafo::buscaArco(uint id){
+    for(itInicio(); !itEhFim(); itProx()){
+        No *no = getIt();
+        for(no->itInicio(); !no->itEhFim(); no->itProx()){
+            Arco *arco = no->getIt();
+            if(arco->getID() == id)
+                return arco;
+        }
+    }
+    return NULL;
 }
 
 Arco* Grafo::buscaArco(No* no1, No* no2){
@@ -947,7 +959,15 @@ vector<No*> Grafo::fechamentoTransitivoIndireto(uint id){
 }
 
 bool Grafo::ehGrafoConexo(){
-    return 1 == this->numeroComponentesConexas();
+    this->desmarcaNos();
+    this->contAux = 0;
+
+    percursoProfundidade(listaNos);
+
+    if(this->contAux == this->numeroNos)
+        return true;
+
+    return false;
 }
 
 /**
@@ -956,7 +976,7 @@ bool Grafo::ehGrafoConexo(){
 bool Grafo::ehGrafoEuleriano(){
     /**
         Grafo euleriano precida (ser conexo) E (não ter no de grau impar),
-        portanto não vale a pena udar ´percurso em profundidade
+        portanto não vale a pena usar ehGrafoConexo
     */
     ///desmarca nos verificando se grau eh impar
     for(itInicio(); getIt()!=NULL; itProx()){
@@ -965,6 +985,7 @@ bool Grafo::ehGrafoEuleriano(){
         getIt()->setMarcado(false);
     }
 
+    ///Verifica conexidade
     this->contAux = 0;
     percursoProfundidade(listaNos);
     if(this->contAux != this->numeroNos)
@@ -973,6 +994,44 @@ bool Grafo::ehGrafoEuleriano(){
     return true;
 }
 
+void Grafo::percursoIgnorandoArco(No *no, Arco *arcoIgnorado){
+    if(no->getMarcado() == false){
+        no->setMarcado(true);
+        this->contAux++;
+        ///percorre arcos do (no)
+        for(no->itInicio(); !no->itEhFim(); no->itProx()){
+            Arco *arco = no->getIt();
+            if(arco != arcoIgnorado)
+                percursoIgnorandoArco(arco->getNoDestino(), arcoIgnorado);
+        }
+    }
+}
+
+bool Grafo::ehArcoPonte(uint id){
+    Arco *a = buscaArco(id);
+    return ehArcoPonte(a);
+}
+
+bool Grafo::ehArcoPonte(Arco* arco){
+    if(arco == NULL)
+        return false;
+
+    this->desmarcaNos();
+    this->contAux = 0;
+    percursoProfundidade(arco->getNoOrigem());
+    /// n: numero de nos na componente conexa do noOrigem do arco:
+    uint n1 = this->contAux;
+//    printf("\nn antes: %d", n1);
+
+    this->desmarcaNos();
+    this->contAux = 0;
+    percursoIgnorandoArco(arco->getNoOrigem(), arco);
+    /// m: numero de nos na componente conexa do noOrigem do arco desconsiderando o arco
+    uint n2 = this->contAux;
+//    printf("\tn depois: %d\n", n2);
+
+    return n2 < n1;
+}
 
 /***
 prim(G) # G eh grafo
@@ -998,4 +1057,24 @@ prim(G) # G eh grafo
 ***/
 
 /** IMPLEMENTAR DESTRUTOR */
-Grafo::~Grafo(){}
+Grafo::~Grafo(){
+    No *no, *noAux;
+    Arco *arco, *arcoAux;
+    ///percorre nos
+    no = this->listaNos;
+    while( this->listaNos!=NULL ){
+        ///percorre arcos do no
+        arco = this->listaNos->getListaArcos();
+        while( arco!=NULL ){
+            arcoAux = arco;
+            arco = arco->getProxArco();
+            this->listaNos->setListaArcos(arco);
+            delete arcoAux;
+        }
+
+        noAux = this->listaNos;
+        this->listaNos = this->listaNos->getProxNo();
+        delete noAux;
+    }
+    this->listaNos=NULL;
+}

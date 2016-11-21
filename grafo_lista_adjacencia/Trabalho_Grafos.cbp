@@ -34,6 +34,8 @@
 		</Compiler>
 		<Unit filename="Arco.cpp" />
 		<Unit filename="Arco.h" />
+		<Unit filename="Auxiliares.h" />
+		<Unit filename="Dijkstra.h" />
 		<Unit filename="Grafo.cpp" />
 		<Unit filename="Grafo.h" />
 		<Unit filename="No.cpp" />

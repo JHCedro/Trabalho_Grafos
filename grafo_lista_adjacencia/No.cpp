@@ -18,6 +18,7 @@ No::No(uint id){
 void No::itInicio(){ this->it = listaArcos;   }
 Arco* No::getIt(){   return this->it;         }
 void No::itProx(){  it = it->getProxArco();   }
+bool No::itEhFim(){   return (it == NULL);    }
 
 void No::removeArcos(){
     Arco *aux1, *aux2=this->getListaArcos();

@@ -460,7 +460,7 @@ void testarKruskalNaMao(){
     arvMin->imprime();
 }
 
-uint testarProdutoCartesiano(uint n){
+uint testarProdutoCartesiano(uint n, uint amostra){
     Grafo *A = grafoCompleto(n+1);
     Grafo *B = grafoCompleto(n+1);
 
@@ -472,24 +472,71 @@ uint testarProdutoCartesiano(uint n){
 //    Grafo *C = A->produtoCartesiano(B);
 //    C->imprime();
 
-    uint t = clock();
-    Grafo *C = A->produtoCartesiano(B);
+    uint t = 0, tAux;
+    for (int i=0; i < amostra; i++){
+        tAux = clock();
+        Grafo *C = A->produtoCartesiano(B);
+        t += clock() - tAux;
+        delete C;
+    }
     t = clock() - t;
 
-    delete A, B, C;
+    delete A, B;
     return t;
 }
 
-uint testarGrafoEuleriano(uint n){
+uint testarGrafoEuleriano(uint n, uint amostra){
 //    Grafo *A = grafoCompleto(6);
 //
 //    A->imprime();
 //    cout << "\nGrafo " << (A->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
+
+    Grafo *G = grafoCompleto(n);
     uint t = clock();
-    Grafo *A = grafoCompleto(n);
+    for (int i=0; i < amostra; i++){
+        cout << "\nGrafo " << (G->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
+    }
+    t = clock() - t;
+    delete G;
+
+    return t;
+}
+
+uint testarEhArcoPonte(uint n, uint amostra){
+//    Grafo *G = new Grafo();
+//    G->insereNo(0);
+//    G->insereNo(1);
+//    G->insereNo(2);
+//    G->insereNo(3);
+//    G->insereArcoID(0, 1, 0);
+//    G->insereArcoID(1, 0, 1);
+//    G->insereArcoID(1, 2, 2);
+//    G->insereArcoID(2, 1, 3);
+//    G->insereArcoID(1, 3, 4);
+//    G->insereArcoID(3, 1, 5);
+//    G->insereArcoID(3, 2, 6);
+//    G->insereArcoID(2, 3, 7);
+////    Grafo *G = grafoDuardo();
+//    G->imprime();
+
+//    uint idArco;
+//    while(cin >> idArco)
+//        cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
+    n = n+2;
+    Grafo *G = grafoCompleto(n);
+    uint t, id[amostra];
+    for (int i=0; i < amostra; i++)
+       id[i] = rand()%(n*(n-1));
+
+//    cout << "\ntestando arco: " << id << endl;
+
+    t = clock();
+    for (int i=0; i < amostra; i++){
+        G->ehArcoPonte(id[i]);
+    }
     t = clock() - t;
 
-    delete A;
+    delete G;
 
     return t;
 }
@@ -531,8 +578,11 @@ int main(){
 
 //    testeFechamentoTransitivoNaMao();
 
-    analiseDesempenho(testarGrafoEuleriano, 300, 10, 10, "Teste Grafo Euleriano", "teste_grafo_euleriano.csv");
-    graficoPython("teste_grafo_euleriano.csv");
+//    analiseDesempenho(testarGrafoEuleriano, 300000, 1001, 1, "Teste Grafo Euleriano", "teste_grafo_euleriano.csv");
+//    graficoPython("teste_grafo_euleriano.csv");
+
+//    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, "Teste Arco Ponte", "teste_arco_ponte.csv");
+//    graficoPython("teste_arco_ponte.csv");
 
     return 0;
 }
