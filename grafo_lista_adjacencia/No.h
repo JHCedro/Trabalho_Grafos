@@ -41,18 +41,18 @@ public:
     void setID(double id){  this->id = id;  };
 
     ///funcoes de iteracao na lista de arcos
-    virtual void itInicio(){};
-    virtual Arco* getIt(){};
-    virtual void itProx(){};
-    virtual bool itEhFim(){};
+    virtual void itInicio() = 0;
+    virtual Arco* getIt() = 0;
+    virtual void itProx() = 0;
+    virtual bool itEhFim() = 0;
 
-    virtual Arco* buscaArco(No* noDestino){};
-    virtual Arco* buscaArco(uint noDestino){};
+    virtual Arco* buscaArco(No* noDestino) = 0;
+    virtual Arco* buscaArco(uint noDestino) = 0;
     virtual Arco* insereArco(No* noDestino, uint id) = 0;
-    virtual void removeArco(uint id){};
-    virtual void removeArco(No* noDestino){};
+    virtual void removeArco(uint id) = 0;
+    virtual void removeArco(No* noDestino) = 0;
 
-    virtual void removeArcos(){};
+    virtual void removeArcos() = 0;
 
     void setMarcado(bool marcado){  this->marcado=marcado;  };
     bool getMarcado(){  return this->marcado;   };
@@ -61,7 +61,7 @@ public:
     double hashing(uint id);
     void imprimir();
 
-    ~No(){};
+    virtual ~No(){};
 };
 
 #endif // NO_H_INCLUDED

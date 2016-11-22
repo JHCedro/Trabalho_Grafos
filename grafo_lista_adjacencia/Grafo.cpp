@@ -119,7 +119,7 @@ Grafo* Grafo::buscaProfundidade(No *no){
         return NULL;
 
     this->desmarcaNos();
-    Grafo* Arv = new Grafo();
+    Grafo* Arv = this->novoGrafo(this->getNumeroNos());
 
     ///raiz da arvore
     No* raiz = Arv->insereNo(no->getID());
@@ -136,7 +136,7 @@ Grafo* Grafo::BuscaEmLargura(No *noGrafo){
     this->desmarcaNos();
     queue<No*> fila;
 
-    Grafo* Arv = new Grafo();
+    Grafo* Arv = novoGrafo(this->getNumeroNos());
     ///raiz da arvore (Arv)
     No* noArv = Arv->insereNo(noGrafo->getID());
     noArv->setNivel(0);
@@ -172,7 +172,7 @@ Grafo* Grafo::BuscaEmLargura(No *noGrafo){
 }
 
 Grafo *Grafo::subGrafoInduzido(uint E[], uint tam){
-    Grafo *induzido=new Grafo();
+    Grafo *induzido = novoGrafo(tam);
     for(uint i=0; i<tam; i++)
         induzido->insereNo(E[i]);
     No *no;
@@ -263,16 +263,18 @@ void Grafo::removeArcosLigadasAoNo(No *no, bool atualizaGrau = true){
 void Grafo::removeArcos(No *no, bool atualizarGrau = true){
     this->numeroArcos -= no->getGrau();
     no->removeArcos();
-    if(atualizarGrau)
-        this->atualizaGrau();
+//    if(atualizarGrau)
+//        this->atualizaGrau();
 }
 
 void Grafo::atualizaGrau(){
     this->grau=0;
     for(itInicio(); !itEhFim(); itProx()){
         No *no = getIt();
-        if(no->getGrau() > grau)
+        printf("\ngrau do: grafo: %d\t no: %d\n", this->grau, no->getGrau());
+        if(no->getGrau() > grau){
             grau = no->getGrau();
+        }
     }
 }
 
@@ -502,7 +504,7 @@ vector<No*> Grafo::vizinhancaFechada(uint id, bool fechada){
 ///Cria um novo Grafo, com os mesmos nós e arestas (por id) do grafo atual
 Grafo* Grafo::clone(){
     int idArvore=1;
-    Grafo* G=new Grafo();
+    Grafo* G = novoGrafo(this->getNumeroNos());
     for(itInicio(); !itEhFim(); itProx()){
         G->insereNo(this->getIt()->getID())->setIdArvore(idArvore);///id auxiliar para algoritmo de kruskal
         idArvore++;
@@ -826,7 +828,7 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
     for(uint i = 0; i < nNosA; i++)
         nosC[i] = new No*[nNosB];
 
-    Grafo* C = new Grafo();
+    Grafo* C = novoGrafo(nNosA * nNosB);
     /// Cria todos os nos de de C
     uint a = 0, b = 0;
     for(A->itInicio(); A->getIt()!=NULL; A->itProx(), a++){

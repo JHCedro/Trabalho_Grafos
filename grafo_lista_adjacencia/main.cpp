@@ -4,8 +4,11 @@
 
 using namespace std;
 
-void testeFechamentoTransitivoNaMao(){
-    Grafo *di= new Grafo();
+void testeFechamentoTransitivoNaMao(bool GHash = false){
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(10);
+    else        di = new GrafoLista();
+
 
     for(int i=1;i<=7;i++)
         di->insereNo(i);
@@ -45,7 +48,7 @@ void testeFechamentoTransitivoNaMao(){
 }
 
 /** testes sucessivos de remove Arco e no em grafo escadinha */
-void testeGeral(){
+void testeGeral(bool GHash = false){
     uint i, j;
     Grafo *di= criarGrafoEscadinha();
 
@@ -62,18 +65,21 @@ void testeGeral(){
 }
 
 /** testar a inser��o de 100.000 nos e Arcos */
-void testarGrandeInsersao(){
+void testarGrandeInsersao(bool GHash = false){
     uint tam = 100000;
     cout<<"numero de nos e Arcos:"<<endl;
     //    cin>>tam;
     geraArquivoDeEntrada(tam);
-    Grafo *di= new Grafo();
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(tam);
+    else        di = new GrafoLista();
+
     char nome[]={"data.g"};
     di->leArquivo(nome);
     delete di;
 }
 
-void testarGrafoCompleto(){
+void testarGrafoCompleto(bool GHash = false){
     uint i, j;
     Grafo *di= criarGrafoCompleto();
 
@@ -86,7 +92,7 @@ void testarGrafoCompleto(){
     }
 }
 
-void testarGrafoInduzido(){
+void testarGrafoInduzido(bool GHash = false){
     uint i, j;
     Grafo *induzido, *di= criarGrafoCompleto();
 
@@ -106,7 +112,7 @@ void testarGrafoInduzido(){
     }
 }
 
-void testarSequenciaNos(){
+void testarSequenciaNos(bool GHash = false){
     Grafo *di= criarGrafoEscadinha();
 
     cout << "Sequencia de nos:\n\t";
@@ -117,7 +123,7 @@ void testarSequenciaNos(){
     delete di;
 }
 
-void testarNoArticulacao(){
+void testarNoArticulacao(bool GHash = false){
     Grafo *di= criarGrafoEscadinha();
     di->insereNo(3);
     di->insereNo(4);
@@ -133,30 +139,34 @@ void testarNoArticulacao(){
     }
 }
 
-/** nao faco ideia do que isso ta fazendo */
-void testarInstanciasStenio(){
-    ///teste de leitura de instancias do stenio
-    Grafo *di=new Grafo();
-    char nome[50];
-    for(int i=1;i<=16;i++){
-        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
-        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
-        di->leArquivo(nome);
-        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
-        cout<<" o grafo e completo?"  << di->ehGrafoCompleto()<<"   (0= nao completo, 1=completo)"<<endl;
-        system("pause");
-//        cin>>i;
-//        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;
+/*
+///** nao faco ideia do que isso ta fazendo /
+//void testarInstanciasStenio(bool GHash = false){
+//    ///teste de leitura de instancias do stenio
+//    Grafo *di=new Grafo();
+//    char nome[50];
+//    for(int i=1;i<=16;i++){
+//        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
+//        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
+//        di->leArquivo(nome);
+//        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
+//        cout<<" o grafo e completo?"  << di->ehGrafoCompleto()<<"   (0= nao completo, 1=completo)"<<endl;
 //        system("pause");
-//        for(int i=1;i<=10000;i++)
-//            di->removeNoPorID(i);
-//        system("pause");
-    }
-}
+////        cin>>i;
+////        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;
+////        system("pause");
+////        for(int i=1;i<=10000;i++)
+////            di->removeNoPorID(i);
+////        system("pause");
+//    }
+//}*/
 
-void testeComponenteConexa(){
+void testeComponenteConexa(bool GHash = false){
 //    Grafo *di= grafoDuardo();
-    Grafo* di = grafoEscadinha(8);
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(10);
+    else        di = new GrafoLista();
+
 
     di->imprimir();
 
@@ -168,7 +178,7 @@ void testeComponenteConexa(){
     }
 }
 
-void testePercursoProfundidade(){
+void testePercursoProfundidade(bool GHash = false){
     Grafo *di=grafoDuardo();
 
     di->imprimir();
@@ -183,7 +193,7 @@ void testePercursoProfundidade(){
     di->desmarcaNos();
 }
 
-void testeBuscaProdundidadeLargura(){
+void testeBuscaProdundidadeLargura(bool GHash = false){
     Grafo *di = grafoDuardo();
 //    Grafo* di = grafoCompleto(5);
 //    Grafo* di = grafoEscadinha(5);
@@ -206,7 +216,7 @@ void testeBuscaProdundidadeLargura(){
     Arv->imprimir();
 }
 
-void testeNoArticulacao(){
+void testeNoArticulacao(bool GHash = false){
     Grafo *di=grafoDuardo();
 
     for(int i=1;i<=8;i++)
@@ -216,8 +226,11 @@ void testeNoArticulacao(){
         cout<<"O no:"<<i<<" e no de articulacao?"<<di->ehNoArticulacao(i)<<endl;
 }
 
-void testeRubustezVertice(){
-    Grafo *di=new Grafo();
+void testeRubustezVertice(bool GHash = false){
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(10);
+    else        di = new GrafoLista();
+
     uint *ids;
     char nome[50];
     sprintf(nome, "instancias/grafo_1000_%d.txt", 1);
@@ -227,23 +240,23 @@ void testeRubustezVertice(){
     cout<<"rubustes de vertice:"<<di->rubustezVertice(ids);
 }
 
-void verificaGrafoKRegular(){
+void verificaGrafoKRegular(bool GHash = false){
     Grafo *G = criarGrafoEscadinha();
     cout << endl << "Grafo completo? " << G->ehGrafoKRegular() << endl;
 }
 
-void verificarGrafoConexo(){
+void verificarGrafoConexo(bool GHash = false){
     Grafo *G = criarGrafoCompleto();
     cout << endl << "Grafo conexo? " << G->ehFortementeConexo() << endl;
 }
 
-void imprimirVizinhanca(vector<No*> nos){
+void imprimirVizinhanca(vector<No*> nos, bool GHash = false){
     for(uint i = 0; i< nos.size(); i++)
         cout << nos[i]->getID() << "\t";
     cout << endl;
 }
 
-void vizinhancaAberta(){
+void vizinhancaAberta(bool GHash = false){
     Grafo* G = criarGrafoEscadinha();
     int id;
     cout<<"Digite o id do no para verificar vizinhanca aberta: ";
@@ -253,7 +266,7 @@ void vizinhancaAberta(){
     imprimirVizinhanca(nos);
 }
 
-void vizinhancaFechada(){
+void vizinhancaFechada(bool GHash = false){
     Grafo* G = criarGrafoCompleto();
     int id;
     cout<<"Digite o id do no para verificar vizinhanca fechada: ";
@@ -263,8 +276,11 @@ void vizinhancaFechada(){
     imprimirVizinhanca(nos);
 }
 
-void testeOrdenacaoTopologicaDAG(){
-    Grafo *di=new Grafo();
+void testeOrdenacaoTopologicaDAG(bool GHash = false){
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(10);
+    else        di = new GrafoLista();
+
     for(int i=1;i<=5;i++)
         di->insereNo(i);
     di->insereArcoID(1,2,1);
@@ -279,7 +295,7 @@ void testeOrdenacaoTopologicaDAG(){
     delete di;
 }
 
-void menorCaminho(){
+void menorCaminho(bool GHash = false){
     Grafo* G = criarGrafoCompleto();
     int id1, id2;
     do{
@@ -291,9 +307,11 @@ void menorCaminho(){
     }while(true);
 }
 
-uint testarDijkstra(uint n){
+uint testarDijkstra(uint n, bool GHash = false){
     /// Cria grafo com n > 0 vertices
-    Grafo* G = grafoCompleto(n+1);
+    Grafo *G;
+    if(GHash)   G = new GrafoHash(10);
+    else        G = new GrafoLista();
 
 //    G->imprimir();
 
@@ -317,18 +335,22 @@ uint testarDijkstra(uint n){
     return t;
 }
 
-void imprimirArvoreMinima(vector<Arco*> arco){
+void imprimirArvoreMinima(vector<Arco*> arco, bool GHash = false){
     for(uint i = 0; i < arco.size(); i++)
         cout << "|A" << arco[i]->getID() << "|" << "\t";
     cout << endl;
 }
 
-uint arvoreGeradoraMinima(uint n){
+uint arvoreGeradoraMinima(uint n, bool GHash = false){
     bool completo = true;
     Grafo *di;
-    if(completo)
-        di = grafoCompleto(n+1);
+    if(completo){
+        if(GHash)   di = GrafoHash::grafoCompleto(10);
+        else        di = GrafoLista::grafoCompleto(10);
+    }
     else{
+        if(GHash)   di = new GrafoHash(10);
+        else        di = new GrafoLista();
         for(int i=1;i<=5;i++)
             di->insereNo(i);
         di->insereArcoID(1,2,1);
@@ -351,15 +373,16 @@ uint arvoreGeradoraMinima(uint n){
 //    imprimirArvoreMinima(arco);
 }
 
-uint testarKruskal(uint n){
-    Grafo *di=new Grafo();
+uint testarKruskal(uint n, bool GHash = false){
+    Grafo *di;
 //    Grafo *g=new Grafo(), *arvMin=new Grafo();
 //    int tam;
 //    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
 //    cin>>tam;
 //    cout<<"Criando grafo..."<<endl;
 
-    di=grafoCompleto(n);
+    if(GHash)   di = GrafoHash::grafoCompleto(10);
+    else        di = GrafoLista::grafoCompleto(10);
 //    for(int i=1;i<=n;i++)
 //        di->insereNo(i);
 //
@@ -398,8 +421,18 @@ uint testarKruskal(uint n){
 //    }
 }
 
-void testarKruskalNaMao(){
-    Grafo *g=new Grafo(), *arvMin=new Grafo();
+void testarKruskalNaMao(bool GHash = false){
+    Grafo *g, *arvMin;
+
+    if(GHash){
+        g = GrafoHash::grafoCompleto(10);
+        arvMin = GrafoHash::grafoCompleto(10);
+    }
+    else{
+        g = GrafoLista::grafoCompleto(10);
+        arvMin = GrafoLista::grafoCompleto(10);
+    }
+
 
     for(int i=1;i<=7;i++){
         g->insereNo(i);
@@ -461,10 +494,17 @@ void testarKruskalNaMao(){
     arvMin->imprimir();
 }
 
-uint testarProdutoCartesiano(uint n, uint amostra){
-    Grafo *A = grafoCompleto(n+1);
-    Grafo *B = grafoCompleto(n+1);
+uint testarProdutoCartesiano(uint n, uint amostra, bool GHash = false){
+    Grafo *A, *B;
 
+    if(GHash){
+        A = GrafoHash::grafoCompleto(n+1);
+        B = GrafoHash::grafoCompleto(n+1);
+    }
+    else{
+        A = GrafoLista::grafoCompleto(n+1);
+        B = GrafoLista::grafoCompleto(n+1);
+    }
 //    cout << "Grafo A:" << endl;
 //    A->imprimir();
 //    cout << "Grafo A:" << endl;
@@ -486,13 +526,16 @@ uint testarProdutoCartesiano(uint n, uint amostra){
     return t;
 }
 
-uint testarGrafoEuleriano(uint n, uint amostra){
+uint testarGrafoEuleriano(uint n, uint amostra, bool GHash = false){
 //    Grafo *A = grafoCompleto(6);
 //
 //    A->imprimir();
 //    cout << "\nGrafo " << (A->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
 
-    Grafo *G = grafoCompleto(n);
+    Grafo *G;
+    if(GHash)   G = new GrafoHash(10);
+    else        G = new GrafoLista();
+
     uint t = clock();
     for (int i=0; i < amostra; i++){
         cout << "\nGrafo " << (G->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
@@ -503,7 +546,7 @@ uint testarGrafoEuleriano(uint n, uint amostra){
     return t;
 }
 
-uint testarEhArcoPonte(uint n, uint amostra){
+uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
 //    Grafo *G = new Grafo();
 //    G->insereNo(0);
 //    G->insereNo(1);
@@ -524,7 +567,11 @@ uint testarEhArcoPonte(uint n, uint amostra){
 //    while(cin >> idArco)
 //        cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
     n = n+2;
-    Grafo *G = grafoCompleto(n);
+
+    Grafo *G;
+    if(GHash)   G = new GrafoHash(10);
+    else        G = new GrafoLista();
+
     uint t, id[amostra];
     for (int i=0; i < amostra; i++)
        id[i] = rand()%(n*(n-1));

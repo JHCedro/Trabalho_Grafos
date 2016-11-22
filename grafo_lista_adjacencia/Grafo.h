@@ -1,5 +1,5 @@
-#ifndef DIGRAFO_H_INCLUDED
-#define DIGRAFO_H_INCLUDED
+#ifndef GRAFO_H_INCLUDED
+#define GRAFO_H_INCLUDED
 #include "No.h"
 #include "Arco.h"
 #include "Dijkstra.h"
@@ -36,16 +36,16 @@ public:
     void setContAux(uint i){ contAux=i;   };
 
     ///funcoes de iteracao na lista de nos
-    virtual void itInicio(){};
-    virtual No* getIt(){};
-    virtual void itProx(){};
-    virtual bool itEhFim(){};
+    virtual void itInicio() = 0;
+    virtual No* getIt() = 0;
+    virtual void itProx() = 0;
+    virtual bool itEhFim() = 0;
 
 //    void leDataArquivo(char nome[]);
 
-    virtual No* buscaNo(uint id){};
-    virtual No* insereNo(uint id){};
-    virtual void removeNo(uint id){};
+    virtual No* buscaNo(uint id) = 0;
+    virtual No* insereNo(uint id) = 0;
+    virtual void removeNo(uint id) = 0;
 
     void imprimir();
 
@@ -132,14 +132,13 @@ public:
     bool ehGrafoConexo();
     bool ehGrafoEuleriano();
 
+    /// Criacoes de grafos mais comuns
+    virtual Grafo* novoGrafo(uint ordem);
+//    virtual Grafo* grafoCompleto(uint n);
+//    virtual Grafo* grafoCircular(uint n);
+//    virtual Grafo* grafoEscadinha(uint n);
+
     virtual ~Grafo(){};
 };
-
-/*
-class Arvore : public Grafo{
-public:
-    Arvore() : Grafo(){}
-    NoArv* insereNo(NoArv* pai, uint id);
-};*/
 
 #endif // DIGRAFO_H_INCLUDED

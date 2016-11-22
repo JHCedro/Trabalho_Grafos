@@ -1,5 +1,5 @@
-#ifndef DIGrafoHash_H_INCLUDED
-#define DIGrafoHash_H_INCLUDED
+#ifndef GrafoHash_H_INCLUDED
+#define GrafoHash_H_INCLUDED
 #include "Grafo.h"
 #include "NoHash.h"
 #include "Hashing.h"
@@ -18,7 +18,7 @@ private:
     uint tamTabNos;
     NoHash *it;  ///iterador (it) para lista de nos
 public:
-    GrafoHash(uint n);
+    GrafoHash(uint ordem);
 
     ///funcoes de iteracao na lista de nos
     void itInicio();
@@ -29,6 +29,11 @@ public:
     NoHash* buscaNo(uint id);
     NoHash* insereNo(uint id);
     void removeNo(uint id);
+
+    GrafoHash* novoGrafo(uint ordem);
+    static GrafoHash* grafoCompleto(uint n);
+    static GrafoHash* grafoCircular(uint n);
+    static GrafoHash* grafoEscadinha(uint n);
 
 //    uint fHashNo(uint id, uint tam);
 //    uint fReHashNo(uint id, uint tam);

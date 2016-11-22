@@ -30,7 +30,7 @@ void GrafoLista::itInicio(){
 }
 
 NoLista* GrafoLista::getIt(){
-    return this->it;
+    return this->getIt();
 }
 
 void GrafoLista::itProx(){
@@ -41,6 +41,9 @@ bool GrafoLista::itEhFim(){
     return it == NULL;
 }
 
+GrafoLista* GrafoLista::novoGrafo(uint ordem){
+    return new GrafoLista();
+}
 
 NoLista *GrafoLista::buscaNo(uint id){
     for(itInicio(); !itEhFim(); itProx()){
@@ -75,11 +78,13 @@ void GrafoLista::removeNo(uint id){
 //        cout <<"\nremovendo no com id:" << noRemover->getID()<<endl;
         this->removeArcos(noRemover, false);
         this->removeArcosLigadasAoNo(noRemover, false);
-        this->atualizaGrau();
         delete noRemover;
         this->numeroNos--;
+        this->atualizaGrau();
     }
 }
+
+
 
 /** IMPLEMENTAR DESTRUTOR */
 GrafoLista::~GrafoLista(){
@@ -89,7 +94,7 @@ GrafoLista::~GrafoLista(){
 //    no = this->listaNos;
 //    while( this->listaNos!=NULL ){
 //        ///percorre arcos do no
-//        arco = this->listaNos->getListaArcos();
+//        arco = this->listaNoslistaNoslistaNos->getListaArcos();
 //        while( arco!=NULL ){
 //            arcoAux = arco;
 //            arco = arco->getProxArco();
@@ -102,4 +107,52 @@ GrafoLista::~GrafoLista(){
 //        delete noAux;
 //    }
 //    this->listaNos=NULL;
+}
+
+GrafoLista* GrafoLista::grafoCompleto(uint n){
+    GrafoLista* G = new GrafoLista();
+    vector<No*> nos;
+    for(uint i=0; i < n; i++)
+        nos.push_back(G->insereNo(i));
+
+    for (uint i=0; i < n; i++){
+        for (uint j=0; j < n; j++){
+            if( i != j )
+                G->insereArcoID(i, j, i*n+j, false);
+//                G->insereArco(nos[i], nos[j], i*n+j, false);
+        }
+    }
+    G->atualizaGrau();
+}
+
+GrafoLista* GrafoLista::grafoCircular(uint n){
+    GrafoLista* G = new GrafoLista();
+    No *aux, *primeiro, *ultimo;
+    primeiro = ultimo = G->insereNo(0);
+    for(uint i=1; i < n; i++){
+        aux = G->insereNo(i);
+        G->insereArco(ultimo, aux, 2*i);
+        G->insereArco(aux, ultimo, 2*i+1);
+        ultimo = aux;
+    }
+    if(ultimo != primeiro){
+        G->insereArco(ultimo, primeiro, 2*n);
+        G->insereArco(primeiro, ultimo, 2*n+1);
+    }
+
+    G->atualizaGrau();
+    return G;
+}
+
+/** retorna grafo escadinha com n vertices */
+GrafoLista* GrafoLista::grafoEscadinha(uint n){
+    GrafoLista* G = new GrafoLista();
+    vector<No*> nos;
+    for(uint i=0; i < n; i++){
+        nos.push_back(G->insereNo(i));
+        for (uint j=0; j < i; j++)
+            G->insereArco(nos.back(), nos[j], i+j, false);
+    }
+    G->atualizaGrau();
+    return G;
 }

@@ -1,6 +1,7 @@
 #ifndef AUXILIARES_H_INCLUDED
 #define AUXILIARES_H_INCLUDED
-#include "Grafo.h"
+#include "GrafoLista.h"
+#include "GrafoHash.h"
 #include <iostream>
 #include "Arco.h"
 #include <vector>
@@ -98,95 +99,40 @@ void graficoPython(string nomeArq, string versao = "python", string arg_plot="")
     system(args.c_str());
 }
 
-
-/** retorna grafo escadinha com n vertices */
-Grafo* grafoEscadinha(uint n){
-    Grafo* G= new Grafo();
-    vector<No*> nos;
-    for(uint i=0; i < n; i++){
-        nos.push_back(G->insereNo(i));
-        for (uint j=0; j < i; j++)
-            G->insereArco(nos.back(), nos[j], i+j, false);
-    }
-    G->atualizaGrau();
-    return G;
-}
-
-Grafo* criarGrafoEscadinha(){
+Grafo* criarGrafoEscadinha(bool GHash = false){
     uint n_nos;
     cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
     cin >> n_nos;
-    Grafo *G = grafoEscadinha(n_nos);
+
+    Grafo *G;
+    if(GHash)   G = GrafoHash::grafoEscadinha(n_nos);
+    else        G = GrafoLista::grafoEscadinha(n_nos);
+
     G->imprimir();
 
     return G;
 }
 
-Grafo* grafoCompleto(uint n){
-    Grafo *di=new Grafo();
-
-    ///cria grafo completo na mao, o antigo nao esta funcionando
-    for(int i=1;i<=n;i++)
-        di->insereNo(i);
-
-    for(int i=1;i<=n;i++){
-        for(int j=1;j<=n;j++){
-            if(i!=j)
-                di->insereArcoID(i,j,i, false);
-        }
-    }
-
-    di->atualizaGrau();
-
-    return di;
-
-//    Grafo* G= new Grafo();
-//    vector<No*> nos;
-//    for(uint i=0; i < n; i++)
-//        nos.push_back(G->insereNo(i));
-//
-//    for (uint i=0; i < n; i++){
-//        for (uint j=0; j < n; j++){
-//            if( i != j )
-//                G->insereArcoID(i, j, i*n+j, false);
-////                G->insereArco(nos[i], nos[j], i*n+j, false);
-//        }
-//    }
-//    G->atualizaGrau();
-}
-
-Grafo* criarGrafoCompleto(){
+Grafo* criarGrafoCompleto(bool GHash = false){
     uint n_nos;
     cout << "numero de nos(gerar grafo completo):" << endl;
     cin >> n_nos;
-    Grafo *G = grafoCompleto(n_nos);
+
+    Grafo *G;
+    if(GHash)   G = GrafoHash::grafoCompleto(n_nos);
+    else        G = GrafoLista::grafoCompleto(n_nos);
+
     G->imprimir();
 
     return G;
 }
 
-Grafo* grafoCircular(uint n){
-    Grafo* G= new Grafo();
-    No *aux, *primeiro, *ultimo;
-    primeiro = ultimo = G->insereNo(0);
-    for(uint i=1; i < n; i++){
-        aux = G->insereNo(i);
-        G->insereArco(ultimo, aux, 2*i);
-        G->insereArco(aux, ultimo, 2*i+1);
-        ultimo = aux;
-    }
-    if(ultimo != primeiro){
-        G->insereArco(ultimo, primeiro, 2*n);
-        G->insereArco(primeiro, ultimo, 2*n+1);
-    }
-
-    G->atualizaGrau();
-    return G;
-}
-
-Grafo* grafoDuardo(){
+Grafo* grafoDuardo(bool GHash = false){
     /// GrafoDuardo.png
-    Grafo *di=new Grafo();
+    Grafo *di;
+    if(GHash)   di = new GrafoHash(10);
+    else        di = new GrafoLista();
+
     for(int i=1;i<=8;i++)
         di->insereNo(i);
 

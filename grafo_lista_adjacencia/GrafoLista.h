@@ -29,6 +29,11 @@ public:
     NoLista* insereNo(uint id);
     void removeNo(uint id);
 
+    GrafoLista* novoGrafo(uint ordem);
+    static GrafoLista* grafoCompleto(uint n);
+    static GrafoLista* grafoCircular(uint n);
+    static GrafoLista* grafoEscadinha(uint n);
+
     void imprimirTabela();
 
     ~GrafoLista();

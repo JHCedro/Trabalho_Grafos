@@ -20,11 +20,11 @@ public:
     void itProx();
     bool itEhFim();
 
-    Arco* buscaArco(NoHash* noDestino);
+    Arco* buscaArco(No* noDestino);
     Arco* buscaArco(uint id);
     Arco* insereArco(No* noDestino, uint id);
     void removeArco(uint id);
-    void removeArco(NoHash* noDestino);
+    void removeArco(No* noDestino);
     void removeArcos();
 
     ~NoHash(){};

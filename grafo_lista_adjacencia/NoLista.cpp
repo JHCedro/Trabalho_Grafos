@@ -10,12 +10,15 @@ NoLista::NoLista(uint id) : No(id){
 }
 
 void NoLista::removeArcos(){
-    Arco *aux1, *aux2 = this->listaArcos;
-    while(aux2!=NULL){
-        aux1 = aux2;
-        aux2 = aux2->getProxArco();
-        delete aux1;
+    Arco *remover;
+    this->itInicio();
+
+    while(!itEhFim()){
+        remover = getIt();
+        itProx();
+        delete remover;
     }
+    delete getIt();
     this->grau = 0;
     this->listaArcos = NULL;
 }
@@ -54,7 +57,7 @@ bool NoLista::itEhFim(){
     return it == NULL;
 }
 
-Arco* NoLista::buscaArco(NoLista* noDestino){
+Arco* NoLista::buscaArco(No* noDestino){
     for(itInicio(); !itEhFim(); itProx()){
         Arco *arco = this->getIt();
         if(arco->getNoDestino() == noDestino)
@@ -100,7 +103,7 @@ void NoLista::removeArco(uint noDestino){
     }
 }
 
-void NoLista::removeArco(NoLista* noDestino){
+void NoLista::removeArco(No* noDestino){
     if(this->listaArcos != NULL){
         Arco* arcoRemover = NULL;
         ///se primeiro arco sera removido

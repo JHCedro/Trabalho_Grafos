@@ -63,7 +63,7 @@ bool NoHash::itEhFim(){
     return tabelaArcos->itEhFim();
 }
 
-Arco* NoHash::buscaArco(NoHash* noDestino){
+Arco* NoHash::buscaArco(No* noDestino){
     for(itInicio(); !itEhFim(); itProx()){
         Arco *arco = this->getIt();
         if(arco->getNoDestino() == noDestino)
@@ -85,7 +85,7 @@ void NoHash::removeArco(uint id){
     return tabelaArcos->remover(id);
 }
 
-void NoHash::removeArco(NoHash* noDestino){
+void NoHash::removeArco(No* noDestino){
     for(itInicio(); !itEhFim(); itProx()){
         Arco *arco = this->getIt();
         if(arco->getNoDestino() == noDestino)
