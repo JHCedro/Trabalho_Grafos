@@ -9,13 +9,13 @@
 #include <algorithm>
 
 using namespace std;
-typedef uint uint;
-struct Dijkstra;
+typedef unsigned int uint;
+//struct Dijkstra;
 
 class Grafo
 {
-private:
-    No *listaNos, *it;  /// iterador (it) para lista de nos
+protected:
+    No *it;  /// iterador (it) para lista de nos
     uint grau;          /// maior grau de vértice do grafo
     uint numeroNos;     /// n
     uint numeroArcos;   /// m
@@ -27,7 +27,6 @@ private:
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
 public:
     Grafo();
-    No *getListaNos(){return this->listaNos;};
     uint getGrau(){     return grau;    };
     uint getNumeroNos(){    return numeroNos;   };
     uint getNumeroArcos(){    return numeroArcos;   };
@@ -37,18 +36,18 @@ public:
     void setContAux(uint i){ contAux=i;   };
 
     ///funcoes de iteracao na lista de nos
-    void itInicio(){ this->it = listaNos;   };
-    No* getIt(){   return this->it;         };
-    void itProx(){  it = it->getProxNo();   };
-    bool itEhFim(){   return (it == NULL);  };
+    virtual void itInicio(){};
+    virtual No* getIt(){};
+    virtual void itProx(){};
+    virtual bool itEhFim(){};
 
 //    void leDataArquivo(char nome[]);
 
-    No* buscaNo(uint id);
-    No* insereNo(uint id);
-    void removeNo(uint id);
+    virtual No* buscaNo(uint id){};
+    virtual No* insereNo(uint id){};
+    virtual void removeNo(uint id){};
 
-    void imprime();
+    void imprimir();
 
     void atualizaGrau();
     void atualizaGrausEntradaSaidaDosNos();
@@ -130,10 +129,10 @@ public:
     void precursoFechamentoIndireto(No *no, vector<No*> fechamentoDireto, vector<No*> fechamentoIndireto);
     vector<No*> fechamentoTransitivoIndireto(uint id);
 
-    bool ehGrafoConexo();   /// <------------------------ MELHORAR
+    bool ehGrafoConexo();
     bool ehGrafoEuleriano();
 
-    ~Grafo();
+    virtual ~Grafo(){};
 };
 
 /*

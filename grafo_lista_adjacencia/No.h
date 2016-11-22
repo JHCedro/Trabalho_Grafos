@@ -8,11 +8,10 @@ class Arco;
 
 class No
 {
-private:
+protected:
     uint id;
     uint grau, grauEntrada, grauSaida;
-    No *proxNo;
-    Arco *listaArcos, *it;  ///iterador (it) para lista de arcos
+    Arco *it;  ///iterador (it) para lista de arcos
     uint idArvore;///id para auxiliar no algoritmo de Kruskal
     uint nivel; ///(caso grafo seja arvore)
     bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
@@ -41,45 +40,28 @@ public:
     uint getID(){   return this->id;    };
     void setID(double id){  this->id = id;  };
 
-    No *getProxNo(){    return this->proxNo;    };
-    void setProxNo(No *proxNo){this->proxNo=proxNo; };
-
-    void setListaArcos(Arco *listaArcos){ this->listaArcos=listaArcos;    };
-    Arco *getListaArcos(){  return this->listaArcos;    };
-
     ///funcoes de iteracao na lista de arcos
-    void itInicio();
-    Arco* getIt();
-    void itProx();
-    bool itEhFim();
+    virtual void itInicio(){};
+    virtual Arco* getIt(){};
+    virtual void itProx(){};
+    virtual bool itEhFim(){};
 
-    void insereArco(No* noDestino, uint id);
+    virtual Arco* buscaArco(No* noDestino){};
+    virtual Arco* buscaArco(uint noDestino){};
+    virtual Arco* insereArco(No* noDestino, uint id) = 0;
+    virtual void removeArco(uint id){};
+    virtual void removeArco(No* noDestino){};
 
-    void removeArcos();
+    virtual void removeArcos(){};
 
     void setMarcado(bool marcado){  this->marcado=marcado;  };
     bool getMarcado(){  return this->marcado;   };
 
     bool ehAdjacente(No *no);
-
     double hashing(uint id);
+    void imprimir();
 
-    void imprime();
     ~No(){};
 };
-/*
-class NoArv : public No{
-private:
-    uint nivel;
-public:
-    NoArv(uint id) : No(id){
-        this->nivel = -1;
-    };
-
-    uint getNivel(){return nivel;};
-    void setNivel(unsigned nivel){this->nivel=nivel;};
-    ~NoArv(){};
-};
-*/
 
 #endif // NO_H_INCLUDED

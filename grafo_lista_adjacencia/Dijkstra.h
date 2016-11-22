@@ -25,35 +25,14 @@ public:
         this->percurso = proximo;
     };
 
-    ///ARRUMAR PERCURSO
-//    void ordenaPercurso(){
-//        percurso[ pos[noOrigem->getID()] ] = percurso[0];
-//        No* aux = noOrigem;
-//        uint p=0;
-//        for (int j=0; j <= p; j++){
-//            Arco* aux = percurso[j];
-//            int i=p+1;
-//            while(i < pos.size()){
-//                if(percurso[i] = aux){
-//                    percurso[p] = percurso[i];
-//                    p++;
-//                    percurso[i] = percurso[p];
-//                    i=p+1;
-//                }
-//                i++;
-//            }
-//        }
-//    }
-
-
     Arco** getPercurso(){  return this->percurso;   };
 
-    void imprimePercurso(){
+    void imprimirPercurso(){
         for (uint i=0; i < pos.size() ; i++){
             cout << "\n\t" << i << ": ";
             if(percurso[i] != NULL ){
                 printf("(%d)", percurso[i]->getNoOrigem()->getID());
-                percurso[i]->imprime();
+                percurso[i]->imprimir();
             }
             else
                 cout << "--";
@@ -68,7 +47,7 @@ public:
         return distancias[ pos[destino] ];
     };
 
-    void imprimeDistancias(){
+    void imprimirDistancias(){
         printf("\nDistancias de (%d) para:\n", noOrigem->getID());
         map<uint, uint>::iterator it = pos.begin();
         for (; it != pos.end(); ++it){

@@ -35,7 +35,7 @@ public:
     No *getNoOrigem(){ return this->noOrigem; };
     void setNoOrigem(No *no){  this->noOrigem=no; };
 
-    void imprime();
+    void imprimir();
 
     ~Arco(){};
 };

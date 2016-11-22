@@ -1,5 +1,6 @@
 #include "Auxiliares.h"
-#include "Grafo.h"
+#include "GrafoHash.h"
+#include "GrafoLista.h"
 
 using namespace std;
 
@@ -22,7 +23,7 @@ void testeFechamentoTransitivoNaMao(){
 
     vector<No*> direto, indireto;
 
-    di->imprime();
+    di->imprimir();
 
     cout<<"\n\nDIRETOS(QUAIS NOS EU CHEGO DIRETO, SAO ADJACENTES A MIM):"<<endl;
     for( int j=1;j<=7;j++){
@@ -52,7 +53,7 @@ void testeGeral(){
         cout<<"remover Arco de:"; cin>>i;
         cout<<"para:";  cin>>j;
         di->removeArco(i,j);
-        di->imprime();
+        di->imprimir();
 
         cout<<"remover no: ";   cin >> i;
         di->removeNo(i);
@@ -60,7 +61,7 @@ void testeGeral(){
     }
 }
 
-/** testar a inserção de 100.000 nos e Arcos */
+/** testar a inserï¿½ï¿½o de 100.000 nos e Arcos */
 void testarGrandeInsersao(){
     uint tam = 100000;
     cout<<"numero de nos e Arcos:"<<endl;
@@ -80,7 +81,7 @@ void testarGrafoCompleto(){
         cout<<" o grafo " << (di->ehGrafoCompleto() ? "eh " : "nao eh ") << "completo"<<endl;
         cout<<"remover Arco de:"; cin>>i;
         cout<<"para:";  cin>>j;
-        di->imprime();
+        di->imprimir();
         di->removeArco(i,j);
     }
 }
@@ -94,12 +95,12 @@ void testarGrafoInduzido(){
     while(true){
         induzido = di->subGrafoInduzido(v, 3);
         cout<<" grafo induzido:"<<endl;
-        induzido->imprime();
+        induzido->imprimir();
 
         cout<<"remover Arco de:"; cin>>i;
         cout<<"para:";  cin>>j;
         di->removeArco(i,j);
-        di->imprime();
+        di->imprimir();
 
         system("pause");
     }
@@ -122,7 +123,7 @@ void testarNoArticulacao(){
     di->insereNo(4);
     di->insereArcoID(2,3,4);
     di->insereArcoID(3,4,5);
-    di->imprime();
+    di->imprimir();
     int id;
     cout<<"Digite o id do no para testar se eh de articulacao:";
     while(true){
@@ -157,7 +158,7 @@ void testeComponenteConexa(){
 //    Grafo *di= grafoDuardo();
     Grafo* di = grafoEscadinha(8);
 
-    di->imprime();
+    di->imprimir();
 
     for(int i=1;i<=8;i++){
         for(int j=1;j<=i;j++){
@@ -170,7 +171,7 @@ void testeComponenteConexa(){
 void testePercursoProfundidade(){
     Grafo *di=grafoDuardo();
 
-    di->imprime();
+    di->imprimir();
     cout<<"busca a partir de 1"<<endl;
     di->percursoProfundidade(di->buscaNo(1));
     di->desmarcaNos();
@@ -187,22 +188,22 @@ void testeBuscaProdundidadeLargura(){
 //    Grafo* di = grafoCompleto(5);
 //    Grafo* di = grafoEscadinha(5);
 
-    di->imprime();
+    di->imprimir();
     cout<<"busca a partir de 1"<<endl;
 //    Grafo* Arv = di->buscaProfundidade(di->buscaNo(1));
     Grafo* Arv = di->BuscaEmLargura(di->buscaNo(1));
-    Arv->imprime();
+    Arv->imprimir();
     delete Arv;
 
     cout<<"busca a partir de 3"<<endl;
 //    Arv = di->buscaProfundidade(di->buscaNo(3));
     Arv = di->BuscaEmLargura(di->buscaNo(3));
-    Arv->imprime();
+    Arv->imprimir();
 
     cout<<"busca a partir de 8"<<endl;
 //    Arv = di->buscaProfundidade(di->buscaNo(3));
     Arv = di->BuscaEmLargura(di->buscaNo(8));
-    Arv->imprime();
+    Arv->imprimir();
 }
 
 void testeNoArticulacao(){
@@ -236,7 +237,7 @@ void verificarGrafoConexo(){
     cout << endl << "Grafo conexo? " << G->ehFortementeConexo() << endl;
 }
 
-void imprimeVizinhanca(vector<No*> nos){
+void imprimirVizinhanca(vector<No*> nos){
     for(uint i = 0; i< nos.size(); i++)
         cout << nos[i]->getID() << "\t";
     cout << endl;
@@ -249,7 +250,7 @@ void vizinhancaAberta(){
     cin>>id;
     vector<No*> nos = G->vizinhancaAberta(id);///ver pq nao da pra usar o default nessa caralha
 
-    imprimeVizinhanca(nos);
+    imprimirVizinhanca(nos);
 }
 
 void vizinhancaFechada(){
@@ -259,7 +260,7 @@ void vizinhancaFechada(){
     cin>>id;
     vector<No*> nos = G->vizinhancaFechada(id);///ver pq nao da pra usar o default nessa caralha
 
-    imprimeVizinhanca(nos);
+    imprimirVizinhanca(nos);
 }
 
 void testeOrdenacaoTopologicaDAG(){
@@ -294,29 +295,29 @@ uint testarDijkstra(uint n){
     /// Cria grafo com n > 0 vertices
     Grafo* G = grafoCompleto(n+1);
 
-//    G->imprime();
+//    G->imprimir();
 
     /// Dijkstra a partir de um (id) aleatorio
     uint id = rand()%(n+1)+1;
     uint t = clock();
     Dijkstra* resultado = G->dijkstra(id);
     t = clock() - t;
-//    resultado->imprimeDistancias();
+//    resultado->imprimirDistancias();
 
 //    G->insereArcoID(8,1,22);
 //    G->insereArcoID(1,8,21);
 //    cout << "menor percurso de "<< 4 << ":\n";// << " para "<< 2 << ":\n\t";
 //    Dijkstra* resultado = G->dijkstra(4);
 //    cout << resultado->distancia(6);
-//    resultado->imprimeDistancias();
-//    resultado->imprimePercurso();
+//    resultado->imprimirDistancias();
+//    resultado->imprimirPercurso();
 
     delete G;
 
     return t;
 }
 
-void imprimeArvoreMinima(vector<Arco*> arco){
+void imprimirArvoreMinima(vector<Arco*> arco){
     for(uint i = 0; i < arco.size(); i++)
         cout << "|A" << arco[i]->getID() << "|" << "\t";
     cout << endl;
@@ -341,13 +342,13 @@ uint arvoreGeradoraMinima(uint n){
         di->insereArcoID(5,1,9);
     }
 
-//    di->imprime();
+//    di->imprimir();
     uint t;
     t = clock();
     vector<Arco*> arco = di->algorimoPrim();
     t = clock() - t;
     return t;
-//    imprimeArvoreMinima(arco);
+//    imprimirArvoreMinima(arco);
 }
 
 uint testarKruskal(uint n){
@@ -442,7 +443,7 @@ void testarKruskalNaMao(){
     g->insereArcoID(7,6,12);
 
     cout<<"\n\n\ngrafo:\n\n"<<endl;
-    g->imprime();
+    g->imprimir();
 
     vector<Arco*> arcosMin = g->Kruskal();
     cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
@@ -457,7 +458,7 @@ void testarKruskalNaMao(){
     }
 
     cout<<"\n\n\narvMin:\n\n"<<endl;
-    arvMin->imprime();
+    arvMin->imprimir();
 }
 
 uint testarProdutoCartesiano(uint n, uint amostra){
@@ -465,12 +466,12 @@ uint testarProdutoCartesiano(uint n, uint amostra){
     Grafo *B = grafoCompleto(n+1);
 
 //    cout << "Grafo A:" << endl;
-//    A->imprime();
+//    A->imprimir();
 //    cout << "Grafo A:" << endl;
-//    B->imprime();
+//    B->imprimir();
 //    cout << "Grafo C:" << endl;
 //    Grafo *C = A->produtoCartesiano(B);
-//    C->imprime();
+//    C->imprimir();
 
     uint t = 0, tAux;
     for (int i=0; i < amostra; i++){
@@ -488,7 +489,7 @@ uint testarProdutoCartesiano(uint n, uint amostra){
 uint testarGrafoEuleriano(uint n, uint amostra){
 //    Grafo *A = grafoCompleto(6);
 //
-//    A->imprime();
+//    A->imprimir();
 //    cout << "\nGrafo " << (A->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
 
     Grafo *G = grafoCompleto(n);
@@ -517,7 +518,7 @@ uint testarEhArcoPonte(uint n, uint amostra){
 //    G->insereArcoID(3, 2, 6);
 //    G->insereArcoID(2, 3, 7);
 ////    Grafo *G = grafoDuardo();
-//    G->imprime();
+//    G->imprimir();
 
 //    uint idArco;
 //    while(cin >> idArco)
@@ -541,13 +542,35 @@ uint testarEhArcoPonte(uint n, uint amostra){
     return t;
 }
 
+void testeListaHashRidiculo(){
+    GrafoHash *G = new GrafoHash(10);
+//    GrafoLista *G = new GrafoLista();
+    G->insereNo(5);
+    G->insereNo(5);
+    G->insereNo(6);
+    G->insereNo(0);
+    G->insereNo(0);
+    G->insereNo(8);
+    G->insereNo(16);
+    G->insereArcoID(5, 8, 14);
+    G->insereArcoID(5, 0, 14);
+    G->insereArcoID(0, 16, 14);
+    G->insereArcoID(8, 16, 14);
+    G->insereArcoID(16, 6, 14);
+    G->imprimir();
+    G->removeNo(16);    /// <<---- TA ERRADO
+//    G->removeArco(8, 16); /// <<--- NAO FUNCIONA
+    G->imprimir();
+//    cout << G->buscaNo(16)->getID();
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
 //    testarGrafoCompleto();
 //    testarGrafoInduzido(); ///entender
 //    testarSequenciaNos();  ///entender o sort
-//    testarNoArticulacao(); ///ta dando certo nao né?
+//    testarNoArticulacao(); ///ta dando certo nao nï¿½?
 //    testarInstanciasStenio();
 //    testeComponenteConexa();
 //    testePercursoProfundidade();
@@ -571,7 +594,7 @@ int main(){
 
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
-//    grafoCompleto(5)->imprime();
+//    grafoCompleto(5)->imprimir();
 //
 //    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
 //    graficoPython("teste_prod_cartesiano.csv");
@@ -583,6 +606,8 @@ int main(){
 
 //    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, "Teste Arco Ponte", "teste_arco_ponte.csv");
 //    graficoPython("teste_arco_ponte.csv");
+
+    testeListaHashRidiculo();
 
     return 0;
 }

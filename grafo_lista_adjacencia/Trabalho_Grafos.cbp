@@ -38,8 +38,18 @@
 		<Unit filename="Dijkstra.h" />
 		<Unit filename="Grafo.cpp" />
 		<Unit filename="Grafo.h" />
+		<Unit filename="GrafoHash.cpp" />
+		<Unit filename="GrafoHash.h" />
+		<Unit filename="GrafoLista.cpp" />
+		<Unit filename="GrafoLista.h" />
+		<Unit filename="Hashing.cpp" />
+		<Unit filename="Hashing.h" />
 		<Unit filename="No.cpp" />
 		<Unit filename="No.h" />
+		<Unit filename="NoHash.cpp" />
+		<Unit filename="NoHash.h" />
+		<Unit filename="NoLista.cpp" />
+		<Unit filename="NoLista.h" />
 		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />

@@ -11,7 +11,6 @@
 #include <random>
 #include <chrono>
 #include <stdio.h>
-#define pastaDesempenho "Desempenho\\"
 
 using namespace std;
 
@@ -48,7 +47,6 @@ void geraArquivoDeEntrada(uint tam){
 void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string titulo, string nomeArq){
     cout<<"\nSalvando desempenho"<<endl;
     ofstream arq;
-    nomeArq = pastaDesempenho + nomeArq;
     arq.open(nomeArq.c_str());
     arq << titulo << "amostra: " << amostra << endl;
     arq << "n; tempo\n";
@@ -67,7 +65,7 @@ double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra)
     double *tempos = new double[n/passo];
     uint t;
     uint porcento;
-    for (uint i=0; i<n; i+=passo){
+    for (uint i=0; i<=n; i+=passo){
         t = 0;
         printf("\nn=%d \tamostras=", i);
         for (uint j=0; j < amostra; j++){
@@ -81,31 +79,10 @@ double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra)
     return tempos;
 }
 
-double* analiseDesempenho(uint(*funcao)(uint, uint), uint n, uint passo, uint amostra){
-    cout<<"\nTeste de desempenho" <<endl;
-    double *tempos = new double[n/passo];
-    uint t;
-    uint porcento;
-    for (uint i=0; i<n; i+=passo){
-        printf("\nn=%d \tamostras = %d", i, amostra);
-        t = funcao(i, amostra);
-        tempos[i/passo] = (double) t/(CLOCKS_PER_SEC*amostra);
-        printf("\tclocks= %d \t tempo= %fs", t, tempos[i/passo]);
-    }
-
-    return tempos;
-}
-
 /**
 * Analisa desempenho e persiste em (nomeArq)
 */
 double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra,  string titulo, string nomeArq){
-    double* tempos = analiseDesempenho(funcao, n, passo, amostra);
-    persisteDesempenho(tempos, n, passo, amostra, titulo, nomeArq);
-    return tempos;
-}
-
-double* analiseDesempenho(uint(*funcao)(uint, uint), uint n, uint passo, uint amostra,  string titulo, string nomeArq){
     double* tempos = analiseDesempenho(funcao, n, passo, amostra);
     persisteDesempenho(tempos, n, passo, amostra, titulo, nomeArq);
     return tempos;
@@ -140,29 +117,26 @@ Grafo* criarGrafoEscadinha(){
     cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
     cin >> n_nos;
     Grafo *G = grafoEscadinha(n_nos);
-    G->imprime();
+    G->imprimir();
 
     return G;
 }
 
 Grafo* grafoCompleto(uint n){
     Grafo *di=new Grafo();
-    No** nos = new No*[n];
-//    No* nos[n];
-    ///cria grafo completo na mao, o antigo nao esta funcionando
-    for(int i=0;i<=n;i++)
-        nos[i] = di->insereNo(i);
 
-    uint cont = 0;
-    for(int i=0;i<n;i++){
-        for(int j=0;j<n;j++){
+    ///cria grafo completo na mao, o antigo nao esta funcionando
+    for(int i=1;i<=n;i++)
+        di->insereNo(i);
+
+    for(int i=1;i<=n;i++){
+        for(int j=1;j<=n;j++){
             if(i!=j)
-                di->insereArco(nos[i], nos[j], cont++, false);
+                di->insereArcoID(i,j,i, false);
         }
     }
 
     di->atualizaGrau();
-    delete [] nos;
 
     return di;
 
@@ -186,7 +160,7 @@ Grafo* criarGrafoCompleto(){
     cout << "numero de nos(gerar grafo completo):" << endl;
     cin >> n_nos;
     Grafo *G = grafoCompleto(n_nos);
-    G->imprime();
+    G->imprimir();
 
     return G;
 }
