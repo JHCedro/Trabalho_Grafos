@@ -579,29 +579,22 @@ Grafo* Grafo::clone(){
 
 /**
  * Detecta todos os nós fonte e adiciona aos candidatos.
- * A cada iteracao, pega um candidato, coloca na solucao,
- * remove ele do grafo e verifica novos candidatos.
+ * A cada iteracao, coloca na solucao os nós fontes, marca eles e
+ * subtrai 1 dos adjacentes, como se o nó marcado tivesse sido removido do grafo.
  */
 vector<No*> Grafo::ordenacaoTopologicaDAG(){
     vector<No*> solucao;
-    vector<uint> candidatos;
-    Grafo* G=this->clone();
-    for(uint k=0;k<this->getNumeroNos();k++){
-        G->atualizaGrausEntradaSaidaDosNos();
-        for(No *i=G->listaNos; i!=NULL; i=i->getProxNo()){
-            if(i->getGrauEntrada()==0){
-                candidatos.push_back(i->getID());
-                G->removeNo(i->getID());
+    this->atualizaGrausEntradaSaidaDosNos();
+    for(uint k=0;solucao.size()<this->getNumeroNos();k++){
+        for(No *i=this->listaNos; i!=NULL; i=i->getProxNo()){
+            if(i->getGrauEntrada()==0&&i->getMarcado()==false){
+                solucao.push_back(i);
+                i->setMarcado(true);
+                for(Arco *a=i->getListaArcos(); a!=NULL; a=a->getProxArco())
+                    a->getNoDestino()->setGrauEntrada(a->getNoDestino()->getGrauEntrada()-1);
             }
         }
-        solucao.push_back(this->buscaNo(candidatos[0]));//Vou colocar na solucao ponteiros do grafo original(this)
-        candidatos.erase(candidatos.begin());
     }
-    cout<<"Ordenacao topologica do DAG por ID:"<<endl;
-    for(uint m=0;m<this->getNumeroNos();m++){
-        cout<<solucao[m]->getID()<<endl;
-    }
-    delete G;
     return solucao;
 }
 
@@ -620,6 +613,42 @@ int Grafo::numeroComponentesConexas(){
         }
     }
     return num;
+}
+
+/**
+ * Percorre todos os nós do grafo e, para cada nó, incrementa o contador e
+ * realiza a busca em profundidade caso ele não esteja marcado. A busca em profundidade marca
+ * os nós pertencentes a uma mesma componente conexa e os coloca em um vetor. É semelhante a
+ *
+*/
+vector<vector<No*>> Grafo::retornarComponentesConexas(){
+    this->desmarcaNos();
+    int num=0;
+    vector<vector<No*>> componentes;
+    for(No *i=this->getListaNos(); i!=NULL; i=i->getProxNo()){
+        if(i->getMarcado()==false){
+            vector<No*> no;     //objeto para inicializar uma posição no vector de componentes
+            i->setMarcado(true);
+            componentes.push_back(no);
+            componentes[num].push_back(i);
+            for(Arco *a=i->getListaArcos(); a!=NULL; a=a->getProxArco())
+                componentes=auxRetornarComponentesConexas(a->getNoDestino(), componentes, num);
+            num++;
+        }
+    }
+    return componentes;
+}
+
+vector<vector<No*>> Grafo::auxRetornarComponentesConexas(No* no, vector<vector<No*>> componentes, int num){
+    if(no != NULL){
+        if(no->getMarcado()==false){
+            no->setMarcado(true);
+            componentes[num].push_back(no);
+            for(Arco *a=no->getListaArcos(); a!=NULL; a=a->getProxArco())
+                componentes=auxRetornarComponentesConexas(a->getNoDestino(), componentes, num);
+        }
+    }
+    return componentes;
 }
 
 Arco* Grafo::buscaArco(uint noOrigem, uint noDestino){
