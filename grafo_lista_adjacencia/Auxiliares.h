@@ -12,6 +12,7 @@
 #include <random>
 #include <chrono>
 #include <stdio.h>
+#define pastaDesempenho "Desempenho/"
 
 using namespace std;
 
@@ -48,6 +49,7 @@ void geraArquivoDeEntrada(uint tam){
 void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string titulo, string nomeArq){
     cout<<"\nSalvando desempenho"<<endl;
     ofstream arq;
+    nomeArq = pastaDesempenho + nomeArq;
     arq.open(nomeArq.c_str());
     arq << titulo << "amostra: " << amostra << endl;
     arq << "n; tempo\n";
@@ -61,18 +63,13 @@ void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string
 * Analisa desempenho de funcao(i) para i = 0, passo, 2*passo... i < n
 * Retorna vetor de tempos médio para cada (i) obtido da média de (amostras)
 */
-double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra){
-    cout<<"\nTeste de desempenho" <<endl;
+double* analiseDesempenho(uint(*funcao)(uint, uint, bool), uint n, uint passo, uint amostra, bool Ghash){
     double *tempos = new double[n/passo];
     uint t;
-    uint porcento;
-    for (uint i=0; i<=n; i+=passo){
-        t = 0;
-        printf("\nn=%d \tamostras=", i);
-        for (uint j=0; j < amostra; j++){
-            cout << j << ' ';
-            t += funcao(i);
-        }
+    for (uint i=0; i<n; i+=passo){
+        printf("\nn=%d \tamostra= %d", i, amostra);
+        t = funcao(i, amostra, Ghash);
+
         tempos[i/passo] = (double) t/(CLOCKS_PER_SEC*amostra);
         printf("\tclocks= %d \t tempo= %fs", t, tempos[i/passo]);
     }
@@ -83,8 +80,9 @@ double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra)
 /**
 * Analisa desempenho e persiste em (nomeArq)
 */
-double* analiseDesempenho(uint(*funcao)(uint), uint n, uint passo, uint amostra,  string titulo, string nomeArq){
-    double* tempos = analiseDesempenho(funcao, n, passo, amostra);
+double* analiseDesempenho(uint(*funcao)(uint, uint, bool), uint n, uint passo, uint amostra, bool Ghash, string titulo, string nomeArq){
+    cout<< titulo << endl;
+    double* tempos = analiseDesempenho(funcao, n, passo, amostra, Ghash);
     persisteDesempenho(tempos, n, passo, amostra, titulo, nomeArq);
     return tempos;
 }

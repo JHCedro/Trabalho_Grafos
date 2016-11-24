@@ -27,7 +27,7 @@ public:
 
     NoLista* buscaNo(uint id);
     NoLista* insereNo(uint id);
-    void removeNo(uint id);
+    bool removeNo(uint id);
 
     GrafoLista* novoGrafo(uint ordem);
     static GrafoLista* grafoCompleto(uint n);

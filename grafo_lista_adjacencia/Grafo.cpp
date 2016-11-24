@@ -210,14 +210,17 @@ bool Grafo::ehGrafoCompleto(){
     return ehGrafoKRegular(this->numeroNos-1);
 }
 
-void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau){
+bool Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau){
     if(noOrigem!=NULL && noDestino != NULL){
-        noOrigem->removeArco(noDestino);
-        noOrigem->setGrau(noOrigem->getGrau() - 1);
-        this->numeroArcos--;
-        if(atualizarGrau)
-            atualizaGrau();
+        if(noOrigem->removeArco(noDestino)){
+            this->numeroArcos--;
+            if(atualizarGrau)
+                atualizaGrau();
+        }
+
+        return true;
     }
+    return false;
 //    if(noOrigem!=NULL && noDestino != NULL && noOrigem->getListaArcos()!=NULL){
 //        Arco* arcoRemover = NULL;
 //        ///se primeiro arco sera removido
@@ -248,8 +251,8 @@ void Grafo::removeArco(No* noOrigem, No* noDestino, bool atualizarGrau){
 //    }
 }
 
-void Grafo::removeArco(uint idOrigem, uint idDestino){
-    this->removeArco(buscaNo(idOrigem), buscaNo(idDestino));
+bool Grafo::removeArco(uint idOrigem, uint idDestino){
+    return this->removeArco(buscaNo(idOrigem), buscaNo(idDestino));
 }
 
 void Grafo::removeArcosLigadasAoNo(No *no, bool atualizaGrau = true){
@@ -263,15 +266,15 @@ void Grafo::removeArcosLigadasAoNo(No *no, bool atualizaGrau = true){
 void Grafo::removeArcos(No *no, bool atualizarGrau = true){
     this->numeroArcos -= no->getGrau();
     no->removeArcos();
-//    if(atualizarGrau)
-//        this->atualizaGrau();
+    if(atualizarGrau)
+        this->atualizaGrau();
 }
 
 void Grafo::atualizaGrau(){
     this->grau=0;
     for(itInicio(); !itEhFim(); itProx()){
         No *no = getIt();
-        printf("\ngrau do: grafo: %d\t no: %d\n", this->grau, no->getGrau());
+//        printf("\ngrau do: grafo: %d\t no: %d\n", this->grau, no->getGrau());
         if(no->getGrau() > grau){
             grau = no->getGrau();
         }
@@ -317,9 +320,11 @@ uint* Grafo::sequenciaGrau(){
 void Grafo::imprimir(){
     cout<<"Grau do Grafo: "<<this->grau<<"\tnumero de nos: "<<this->numeroNos
     <<"\tnumero de arcos: "<<this->numeroArcos<<endl;
-
-    for(itInicio(); !itEhFim(); itProx())
+    for(itInicio(); !itEhFim(); itProx()){
+        if(itEhFim())
+            cout << "FIM!" << endl;
         this->getIt()->imprimir();
+    }
 }
 
 void Grafo::leArquivo(char nome[]){
@@ -811,7 +816,7 @@ vector<Arco*> Grafo::Kruskal(){
 
 /**
  * Retorna o Grafo C resultado do produto cartesiano com (this x B)
- * ##############   FAZ ALGUM SENTIDO PARA DIGrafoS???  #################
+ * Retorno serah um Grafo do tipo de (this)
 */
 Grafo* Grafo::produtoCartesiano(Grafo* B){
     Grafo* A = this;    /// <------ pura didatica
@@ -831,8 +836,8 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
     Grafo* C = novoGrafo(nNosA * nNosB);
     /// Cria todos os nos de de C
     uint a = 0, b = 0;
-    for(A->itInicio(); A->getIt()!=NULL; A->itProx(), a++){
-        for(B->itInicio(); B->getIt()!=NULL; B->itProx(), b++){
+    for(A->itInicio(); !A->itEhFim(); A->itProx(), a++){
+        for(B->itInicio(); !B->itEhFim(); B->itProx(), b++){
             posA[A->getIt()->getID()] = a;  ///mapeia noA
             posB[B->getIt()->getID()] = b;  ///mapeia noB
             nosC[a][b] = C->insereNo(nNosB*a + b);
@@ -842,9 +847,9 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
 //    C->imprimir();
 
     /// faz "conexoes B"
-    for(B->itInicio(); B->getIt()!=NULL; B->itProx(), b++){
+    for(B->itInicio(); !B->itEhFim(); B->itProx(), b++){
         No* noB = B->getIt();
-        for(noB->itInicio(); noB->getIt()!= NULL; noB->itProx()){
+        for(noB->itInicio(); !noB->itEhFim(); noB->itProx()){
             Arco* arcoB = noB->getIt();
             for(uint a = 0; a < nNosA; a++){
                 uint auxPos1 = posB[ noB->getID() ];
@@ -856,9 +861,9 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
     }
 
     /// faz "conexoes A"
-    for(A->itInicio(); A->getIt()!=NULL; A->itProx(), a++){
+    for(A->itInicio(); !A->itEhFim(); A->itProx(), a++){
         No* noA = A->getIt();
-        for(noA->itInicio(); noA->getIt()!= NULL; noA->itProx()){
+        for(noA->itInicio(); !noA->itEhFim(); noA->itProx()){
             Arco* arcoA = noA->getIt();
             for(uint b = 0; b < nNosB; b++){
                 uint auxPos1 = posA[ noA->getID() ];
@@ -901,7 +906,7 @@ vector<No*> Grafo::fechamentoTransitivoIndireto(uint id){
         if(i->getMarcado()==true){
 
             contido=false;
-            for(int j=0; j<fechamentoDireto.size();j++){
+            for(uint j=0; j<fechamentoDireto.size();j++){
                 if(i==fechamentoDireto.at(j))
                     contido=true;
             }
@@ -938,7 +943,7 @@ bool Grafo::ehGrafoEuleriano(){
         portanto não vale a pena usar ehGrafoConexo
     */
     ///desmarca nos verificando se grau eh impar
-    for(itInicio(); getIt()!=NULL; itProx()){
+    for(itInicio(); !itEhFim(); itProx()){
         if(getIt()->getGrau()%2 == 1)
             return false;
         getIt()->setMarcado(false);

@@ -23,11 +23,11 @@ public:
     Arco* buscaArco(No* noDestino);
     Arco* buscaArco(uint id);
     Arco* insereArco(No* noDestino, uint id);
-    void removeArco(uint id);
-    void removeArco(No* noDestino);
+    bool removeArco(uint id);
+    bool removeArco(No* noDestino);
     void removeArcos();
 
-    ~NoHash(){};
+    ~NoHash();
 };
 
 #endif // NOHASH_H_INCLUDED

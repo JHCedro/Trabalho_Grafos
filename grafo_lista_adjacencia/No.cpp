@@ -1,6 +1,6 @@
 #include "No.h"
 #include "Arco.h"
-#include <stdio.h>
+#include <stdlib.h>
 #include <iostream>
 
 using namespace std;

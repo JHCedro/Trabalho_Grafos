@@ -45,7 +45,7 @@ public:
 
     virtual No* buscaNo(uint id) = 0;
     virtual No* insereNo(uint id) = 0;
-    virtual void removeNo(uint id) = 0;
+    virtual bool removeNo(uint id) = 0;
 
     void imprimir();
 
@@ -57,8 +57,8 @@ public:
     void insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau = true);
     void insereArcoID(uint idOrigem, uint idDestino, uint id, bool atualizarGrau = true);
 
-    void removeArco(uint idOrigem, uint idDestino);
-    void removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true);
+    bool removeArco(uint idOrigem, uint idDestino);
+    bool removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true);
     void removeArcos(No *no, bool atualizarGrau);
     void removeArcosLigadasAoNo(No *no, bool atualizarGrau);
 
@@ -133,7 +133,7 @@ public:
     bool ehGrafoEuleriano();
 
     /// Criacoes de grafos mais comuns
-    virtual Grafo* novoGrafo(uint ordem);
+    virtual Grafo* novoGrafo(uint ordem) = 0;
 //    virtual Grafo* grafoCompleto(uint n);
 //    virtual Grafo* grafoCircular(uint n);
 //    virtual Grafo* grafoEscadinha(uint n);

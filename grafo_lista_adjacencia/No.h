@@ -49,8 +49,8 @@ public:
     virtual Arco* buscaArco(No* noDestino) = 0;
     virtual Arco* buscaArco(uint noDestino) = 0;
     virtual Arco* insereArco(No* noDestino, uint id) = 0;
-    virtual void removeArco(uint id) = 0;
-    virtual void removeArco(No* noDestino) = 0;
+    virtual bool removeArco(uint id) = 0;
+    virtual bool removeArco(No* noDestino) = 0;
 
     virtual void removeArcos() = 0;
 

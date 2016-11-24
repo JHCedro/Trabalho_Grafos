@@ -34,7 +34,7 @@ void testeFechamentoTransitivoNaMao(bool GHash = false){
         direto=di->fechamentoTransitivoDireto(j);
 
         cout<<"\n\n\n fechamento transitivo direto do no "<<j<<endl;
-        for(int i=0; i<direto.size(); i++)
+        for(uint i=0; i<direto.size(); i++)
             cout<<"no:"<<direto.at(i)->getID()<<endl;
     }
 
@@ -42,7 +42,7 @@ void testeFechamentoTransitivoNaMao(bool GHash = false){
     for( int j=1;j<=7;j++){
         cout<<"\n\n\n fechamento transitivo indireto do no "<<j<<endl;
         indireto=di->fechamentoTransitivoIndireto(j);
-        for(int i=0; i<indireto.size(); i++)
+        for(uint i=0; i<indireto.size(); i++)
             cout<<"no:"<<indireto.at(i)->getID()<<endl;
     }
 }
@@ -482,7 +482,7 @@ void testarKruskalNaMao(bool GHash = false){
     cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
     uint orig, dest, id;
 
-    for(int i=0;i<arcosMin.size();i++){
+    for(uint i=0;i<arcosMin.size();i++){
         id=arcosMin.at(i)->getID();
         orig=arcosMin.at(i)->getNoOrigem()->getID();
         dest=arcosMin.at(i)->getNoDestino()->getID();
@@ -514,15 +514,15 @@ uint testarProdutoCartesiano(uint n, uint amostra, bool GHash = false){
 //    C->imprimir();
 
     uint t = 0, tAux;
-    for (int i=0; i < amostra; i++){
+    for (uint i=0; i < amostra; i++){
         tAux = clock();
         Grafo *C = A->produtoCartesiano(B);
         t += clock() - tAux;
         delete C;
     }
-    t = clock() - t;
 
-    delete A, B;
+    delete A;
+    delete B;
     return t;
 }
 
@@ -537,7 +537,7 @@ uint testarGrafoEuleriano(uint n, uint amostra, bool GHash = false){
     else        G = new GrafoLista();
 
     uint t = clock();
-    for (int i=0; i < amostra; i++){
+    for (uint i=0; i < amostra; i++){
         cout << "\nGrafo " << (G->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
     }
     t = clock() - t;
@@ -569,17 +569,17 @@ uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
     n = n+2;
 
     Grafo *G;
-    if(GHash)   G = new GrafoHash(10);
+    if(GHash)   G = new GrafoHash(n);
     else        G = new GrafoLista();
 
     uint t, id[amostra];
-    for (int i=0; i < amostra; i++)
+    for (uint i=0; i < amostra; i++)
        id[i] = rand()%(n*(n-1));
 
 //    cout << "\ntestando arco: " << id << endl;
 
     t = clock();
-    for (int i=0; i < amostra; i++){
+    for (uint i=0; i < amostra; i++){
         G->ehArcoPonte(id[i]);
     }
     t = clock() - t;
@@ -603,12 +603,27 @@ void testeListaHashRidiculo(){
     G->insereArcoID(5, 0, 14);
     G->insereArcoID(0, 16, 14);
     G->insereArcoID(8, 16, 14);
+    G->insereArcoID(8, 0, 14);
     G->insereArcoID(16, 6, 14);
     G->imprimir();
     G->removeNo(16);    /// <<---- TA ERRADO
 //    G->removeArco(8, 16); /// <<--- NAO FUNCIONA
     G->imprimir();
 //    cout << G->buscaNo(16)->getID();
+}
+
+/** Para Linux */
+void pauseGambiarra(){
+    char _;
+    cout << "\npause gambiarra\t";
+    cin >> _;
+}
+
+uint h(uint x) {
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = ((x >> 16) ^ x) * 0x45d9f3b;
+    x = (x >> 16) ^ x;
+    return x;
 }
 
 int main(){
@@ -643,8 +658,10 @@ int main(){
 //    arvoreGeradoraMinima();
 //    grafoCompleto(5)->imprimir();
 //
-//    analiseDesempenho(testarProdutoCartesiano, 150, 10, 5, "Teste Produto Cartesiano", "teste_prod_cartesiano.csv");
-//    graficoPython("teste_prod_cartesiano.csv");
+    analiseDesempenho(testarProdutoCartesiano, 100, 10, 5, false, "Teste Produto Cartesiano Lista", "lista_teste_prod_cartesiano.csv");
+    analiseDesempenho(testarProdutoCartesiano, 100, 10, 5, true, "Teste Produto Cartesiano Hash", "hash_teste_prod_cartesiano.csv");
+    graficoPython("hash_teste_prod_cartesiano.csv");
+    graficoPython("lista_teste_prod_cartesiano.csv");
 
 //    testeFechamentoTransitivoNaMao();
 
@@ -654,7 +671,22 @@ int main(){
 //    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, "Teste Arco Ponte", "teste_arco_ponte.csv");
 //    graficoPython("teste_arco_ponte.csv");
 
-    testeListaHashRidiculo();
+//    testeListaHashRidiculo();
+
+/*
+    pauseGambiarra();
+
+    Grafo *G = GrafoLista::grafoCompleto(5000);
+//    Grafo *G = GrafoHash::grafoCompleto(5000);
+//    G->imprimir();
+
+    pauseGambiarra();
+    delete G;
+//    G->imprimir();
+
+    pauseGambiarra();
+*/
+//    cout << THash<uint>::NextPrime(11);
 
     return 0;
 }

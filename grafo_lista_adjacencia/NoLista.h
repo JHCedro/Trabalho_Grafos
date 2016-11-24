@@ -22,8 +22,8 @@ public:
     Arco* buscaArco(No* noDestino);
     Arco* buscaArco(uint noDestino);
     Arco* insereArco(No* noDestino, uint id);
-    void removeArco(uint id);
-    void removeArco(No* noDestino);
+    bool removeArco(uint id);
+    bool removeArco(No* noDestino);
     void removeArcos();
 
     NoLista *getProxNo();
@@ -31,7 +31,7 @@ public:
 
     void imprimir();
 
-    ~NoLista(){};
+    ~NoLista();
 };
 
 #endif // NOHASH_H_INCLUDED

@@ -31,6 +31,8 @@ Arco* NoLista::insereArco(No* noDestino, uint id){
     novoArco->setPeso(hashing(id));
     this->listaArcos = novoArco;
     this->grau++;
+
+    return novoArco;
 }
 
 NoLista* NoLista::getProxNo(){
@@ -76,7 +78,7 @@ Arco* NoLista::buscaArco(uint noDestino){
     return NULL;
 }
 
-void NoLista::removeArco(uint noDestino){
+bool NoLista::removeArco(uint noDestino){
     if(this->listaArcos != NULL){
         Arco* arcoRemover = NULL;
         ///se primeiro arco sera removido
@@ -99,11 +101,13 @@ void NoLista::removeArco(uint noDestino){
         if(arcoRemover != NULL){
             delete arcoRemover;
             this->grau--;
+            return true;
         }
     }
+    return false;
 }
 
-void NoLista::removeArco(No* noDestino){
+bool NoLista::removeArco(No* noDestino){
     if(this->listaArcos != NULL){
         Arco* arcoRemover = NULL;
         ///se primeiro arco sera removido
@@ -126,6 +130,19 @@ void NoLista::removeArco(No* noDestino){
         if(arcoRemover != NULL){
             delete arcoRemover;
             this->grau--;
+            return true;
         }
     }
+    return false;
+}
+
+NoLista::~NoLista(){
+    ///percorre arcos
+    this->itInicio();
+    while(!itEhFim()){
+        itProx();
+        delete this->listaArcos;
+        this->listaArcos = getIt();
+    }
+    this->listaArcos=NULL;
 }

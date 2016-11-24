@@ -30,7 +30,7 @@ void GrafoLista::itInicio(){
 }
 
 NoLista* GrafoLista::getIt(){
-    return this->getIt();
+    return this->it;
 }
 
 void GrafoLista::itProx(){
@@ -53,7 +53,7 @@ NoLista *GrafoLista::buscaNo(uint id){
     return NULL;
 }
 
-void GrafoLista::removeNo(uint id){
+bool GrafoLista::removeNo(uint id){
     NoLista *noRemover=NULL;
 
     ///se a listaNos eh o no a ser removido
@@ -81,13 +81,23 @@ void GrafoLista::removeNo(uint id){
         delete noRemover;
         this->numeroNos--;
         this->atualizaGrau();
+        return true;
     }
+    return false;
 }
 
 
 
 /** IMPLEMENTAR DESTRUTOR */
 GrafoLista::~GrafoLista(){
+    ///percorre nos
+    this->itInicio();
+    while(!itEhFim()){
+        itProx();
+        delete listaNos;
+        listaNos = getIt();
+    }
+    listaNos = NULL;
 //    NoLista *no, *noAux;
 //    Arco *arco, *arcoAux;
 //    ///percorre nos
@@ -118,11 +128,12 @@ GrafoLista* GrafoLista::grafoCompleto(uint n){
     for (uint i=0; i < n; i++){
         for (uint j=0; j < n; j++){
             if( i != j )
-                G->insereArcoID(i, j, i*n+j, false);
-//                G->insereArco(nos[i], nos[j], i*n+j, false);
+                G->insereArco(nos[i], nos[j], i*n+j, false);
         }
     }
     G->atualizaGrau();
+
+    return G;
 }
 
 GrafoLista* GrafoLista::grafoCircular(uint n){

@@ -2,7 +2,7 @@ import matplotlib.pyplot as plt
 import sys	#argumentos do sistema
 import os
 
-pasta = 'Desempenho\\'
+pasta = 'Desempenho/'
 
 def plotarDesempenho(titulo, arg_plot='kx'):
 	with open(pasta+titulo) as arq:
