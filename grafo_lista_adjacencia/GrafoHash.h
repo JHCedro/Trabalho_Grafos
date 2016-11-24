@@ -16,7 +16,7 @@ class GrafoHash : public Grafo
 private:
     THash<NoHash*> *tabelaNos;
     uint ordem;
-    float ajusteTam = 1.4;  /// ajuste para o tamanho da tabela
+    float ajusteTam = 1.2;  /// ajuste para o tamanho da tabela
     NoHash *it;  ///iterador (it) para lista de nos
 public:
     GrafoHash(uint ordem);
@@ -40,6 +40,7 @@ public:
 //    uint fReHashNo(uint id, uint tam);
 //    uint noGetID(NoHash* no);
 
+    void imprimir();
     void imprimirTabela();
 
     ~GrafoHash();

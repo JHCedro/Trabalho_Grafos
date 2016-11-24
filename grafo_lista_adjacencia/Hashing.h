@@ -54,11 +54,10 @@ public:
 /// NAO SEI PORQUE NAO FUNCIONA SE ESTIVER LA
 
 template<class T>
-THash<T>::THash(uint tam, T NULO, T RM){
+THash<T>::THash(uint ordem, T NULO, T RM){
     this->NULO = NULO;
     this->RM = RM;
-//    this->tam = this->NextPrime(tam);
-    this->tam = (tam);
+    this->tam = this->NextPrime(ordem);
     this->insercoes = 0;
     this->colisoes = 0;
     tabela = new T[tam];
@@ -71,7 +70,6 @@ THash<T>::THash(uint tam, T NULO, T RM){
     this->funcaoHash = NULL;
     this->funcaoReHash = NULL;
     this->getID = NULL;
-//    this->iguais = NULL;
 }
 
 template<class T>
@@ -86,10 +84,6 @@ void THash<T>::setFuncaoReHash(uint (*funcao)(uint, uint)){
 
 template<class T>
 void THash<T>::setGetID(uint (*funcao)(T)){
-//    if(T == NULO)
-//        return -1;
-//    if(T == RM)
-//        return -2;
     this->getID = funcao;
 }
 
@@ -121,10 +115,6 @@ uint THash<T>::NextPrime(uint a){
     return a;
 
 }
-//template<class T>
-//void THash<T>::iguais(uint (*funcao)(T, T)){
-//    this->getID = funcao;
-//}
 
 template<class T>
 bool THash<T>::inserir(T obj){

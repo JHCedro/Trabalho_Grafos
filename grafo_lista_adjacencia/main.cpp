@@ -547,7 +547,10 @@ uint testarGrafoEuleriano(uint n, uint amostra, bool GHash = false){
 }
 
 uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
-//    Grafo *G = new Grafo();
+    Grafo *G;
+    if(GHash)   G = GrafoHash::grafoCompleto(n);
+    else        G = GrafoLista::grafoCompleto(n);
+
 //    G->insereNo(0);
 //    G->insereNo(1);
 //    G->insereNo(2);
@@ -560,33 +563,32 @@ uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
 //    G->insereArcoID(3, 1, 5);
 //    G->insereArcoID(3, 2, 6);
 //    G->insereArcoID(2, 3, 7);
-////    Grafo *G = grafoDuardo();
-//    G->imprimir();
+    G = grafoDuardo(GHash);
+    G->imprimir();
 
-//    uint idArco;
-//    while(cin >> idArco)
-//        cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
+    uint idArco;
+    while(cin >> idArco)
+        cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
     n = n+2;
+    return 0;
 
-    Grafo *G;
-    if(GHash)   G = new GrafoHash(n);
-    else        G = new GrafoLista();
-
-    uint t, id[amostra];
-    for (uint i=0; i < amostra; i++)
-       id[i] = rand()%(n*(n-1));
-
-//    cout << "\ntestando arco: " << id << endl;
-
-    t = clock();
-    for (uint i=0; i < amostra; i++){
-        G->ehArcoPonte(id[i]);
-    }
-    t = clock() - t;
-
-    delete G;
-
-    return t;
+//
+//
+//    uint t, id[amostra];
+//    for (uint i=0; i < amostra; i++)
+//       id[i] = rand()%(n*(n-1));
+//
+////    cout << "\ntestando arco: " << id << endl;
+//
+//    t = clock();
+//    for (uint i=0; i < amostra; i++){
+//        G->ehArcoPonte(id[i]);
+//    }
+//    t = clock() - t;
+//
+//    delete G;
+//
+//    return t;
 }
 
 void testeListaHashRidiculo(){
@@ -606,10 +608,10 @@ void testeListaHashRidiculo(){
     G->insereArcoID(8, 0, 14);
     G->insereArcoID(16, 6, 14);
     G->imprimir();
-    G->removeNo(16);    /// <<---- TA ERRADO
-//    G->removeArco(8, 16); /// <<--- NAO FUNCIONA
+    G->removeNo(16);
+    G->removeArco(8, 16);
     G->imprimir();
-//    cout << G->buscaNo(16)->getID();
+    cout << G->buscaNo(5)->getID();
 }
 
 /** Para Linux */
@@ -658,25 +660,27 @@ int main(){
 //    arvoreGeradoraMinima();
 //    grafoCompleto(5)->imprimir();
 //
-    analiseDesempenho(testarProdutoCartesiano, 100, 10, 5, false, "Teste Produto Cartesiano Lista", "lista_teste_prod_cartesiano.csv");
-    analiseDesempenho(testarProdutoCartesiano, 100, 10, 5, true, "Teste Produto Cartesiano Hash", "hash_teste_prod_cartesiano.csv");
-    graficoPython("hash_teste_prod_cartesiano.csv");
-    graficoPython("lista_teste_prod_cartesiano.csv");
+//    analiseDesempenho(testarProdutoCartesiano, 141, 10, 5, false, "Teste Produto Cartesiano Lista", "lista_teste_prod_cartesiano.csv");
+//    analiseDesempenho(testarProdutoCartesiano, 141, 10, 5, true, "Teste Produto Cartesiano Hash", "hash_teste_prod_cartesiano.csv");
+//    graficoPython("lista_teste_prod_cartesiano.csv");
+//    graficoPython("hash_teste_prod_cartesiano.csv");
 
 //    testeFechamentoTransitivoNaMao();
 
 //    analiseDesempenho(testarGrafoEuleriano, 300000, 1001, 1, "Teste Grafo Euleriano", "teste_grafo_euleriano.csv");
 //    graficoPython("teste_grafo_euleriano.csv");
 
-//    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, "Teste Arco Ponte", "teste_arco_ponte.csv");
-//    graficoPython("teste_arco_ponte.csv");
+//    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, false, "Teste Arco Ponte LISTA", "teste_arco_ponte_LISTA.csv");
+//    graficoPython("teste_arco_ponte_LISTA.csv");
+//    analiseDesempenho(testarEhArcoPonte, 5001, 500, 5, true, "Teste Arco Ponte HASH", "teste_arco_ponte_HASH.csv");
+//    graficoPython("teste_arco_ponte_HASH.csv");
 
 //    testeListaHashRidiculo();
-
+    testarEhArcoPonte(0, 0, false);
 /*
     pauseGambiarra();
 
-    Grafo *G = GrafoLista::grafoCompleto(5000);
+    Grafo *G = GrafoLista::grafoCompleto(3000);
 //    Grafo *G = GrafoHash::grafoCompleto(5000);
 //    G->imprimir();
 
@@ -686,6 +690,7 @@ int main(){
 
     pauseGambiarra();
 */
+
 //    cout << THash<uint>::NextPrime(11);
 
     return 0;

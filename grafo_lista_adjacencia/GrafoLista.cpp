@@ -86,7 +86,10 @@ bool GrafoLista::removeNo(uint id){
     return false;
 }
 
-
+void GrafoLista::imprimir(){
+    cout << "\n[Grafo LISTA] ";
+    Grafo::imprimir();
+}
 
 /** IMPLEMENTAR DESTRUTOR */
 GrafoLista::~GrafoLista(){

@@ -34,7 +34,7 @@ public:
     static GrafoLista* grafoCircular(uint n);
     static GrafoLista* grafoEscadinha(uint n);
 
-    void imprimirTabela();
+    void imprimir();
 
     ~GrafoLista();
 };

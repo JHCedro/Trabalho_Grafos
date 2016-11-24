@@ -47,7 +47,7 @@ public:
     virtual No* insereNo(uint id) = 0;
     virtual bool removeNo(uint id) = 0;
 
-    void imprimir();
+    virtual void imprimir();
 
     void atualizaGrau();
     void atualizaGrausEntradaSaidaDosNos();

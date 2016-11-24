@@ -24,6 +24,14 @@ uint fReHashNo(uint id, uint tam){
     return id*2654435761 % 2^32 + 1;
 }
 
+//uint fHashNo(uint id, uint tam){
+//    return (id)%tam;
+//}
+//
+//uint fReHashNo(uint id, uint tam){
+//    return (id)%(tam/3)+1;
+//}
+
 uint noGetID(NoHash* no){
     return no->getID();
 }
@@ -80,8 +88,12 @@ bool GrafoHash::removeNo(uint id){
     return false;
 }
 
-void GrafoHash::imprimirTabela(){
+void GrafoHash::imprimir(){
+    cout << "\n[Grafo HASH] ";
+    Grafo::imprimir();
+}
 
+void GrafoHash::imprimirTabela(){
     printf("Grau do GrafoHash: %d\t numero de nos: %d\t numero de arcos: %d\t colisoes: %d\n",
            grau, numeroNos, numeroArcos, tabelaNos->getColisoes());
     for(itInicio(); !itEhFim(); itProx()){

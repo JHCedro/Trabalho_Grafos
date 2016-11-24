@@ -16,6 +16,14 @@ uint fReHashArco(uint id, uint tam){
     return id*2654435761 % 2^32 + 1;
 }
 
+//uint fHashArco(uint id, uint tam){
+//    return (id)%tam;
+//}
+//
+//uint fReHashArco(uint id, uint tam){
+//    return (id)%(tam/3)+1;
+//}
+
 uint arcoGetID(Arco* arco){
     return arco->getID();
 }
@@ -48,6 +56,7 @@ Arco* NoHash::insereArco(No* noDestino, uint id){
     novoArco->setNoOrigem(this);
     tabelaArcos->inserir(novoArco);
     this->grau++;
+
     return novoArco;
 }
 
