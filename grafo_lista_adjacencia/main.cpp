@@ -296,7 +296,7 @@ void testeOrdenacaoTopologicaDAG(bool GHash = false){
 }
 
 void menorCaminho(bool GHash = false){
-    Grafo* G = criarGrafoCompleto();
+    Grafo* G = criarGrafoCompleto(GHash);
     int id1, id2;
     do{
         cout << "Digite o no inicial: ";
@@ -341,12 +341,12 @@ void imprimirArvoreMinima(vector<Arco*> arco, bool GHash = false){
     cout << endl;
 }
 
-uint arvoreGeradoraMinima(uint n, bool GHash = false){
+uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
     bool completo = true;
     Grafo *di;
     if(completo){
-        if(GHash)   di = GrafoHash::grafoCompleto(10);
-        else        di = GrafoLista::grafoCompleto(10);
+        if(GHash)   di = GrafoHash::grafoCompleto(n+1);
+        else        di = GrafoLista::grafoCompleto(n+1);
     }
     else{
         if(GHash)   di = new GrafoHash(10);
@@ -367,8 +367,10 @@ uint arvoreGeradoraMinima(uint n, bool GHash = false){
 //    di->imprimir();
     uint t;
     t = clock();
-    vector<Arco*> arco = di->algorimoPrim();
+    for (uint i=0; i < amostra; i++)
+        vector<Arco*> arco = di->algorimoPrim();
     t = clock() - t;
+
     return t;
 //    imprimirArvoreMinima(arco);
 }
@@ -652,9 +654,10 @@ int main(){
 //    testeOrdenacaoTopologicaDAG();
 //    menorCaminho();
 
-//    arvoreGeradoraMinima();
-//    analiseDesempenho(arvoreGeradoraMinima, 100, 10, 1, "Teste Prim", "teste_prim.csv");
-//    graficoPython("teste_prim.csv");
+    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, false, "Teste Prim Lista", "teste_prim_lista.csv");
+    graficoPython("teste_prim_lista.csv");
+    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, true, "Teste Prim Hash", "teste_prim_hash.csv");
+    graficoPython("teste_prim_hash.csv");
 
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
@@ -676,7 +679,7 @@ int main(){
 //    graficoPython("teste_arco_ponte_HASH.csv");
 
 //    testeListaHashRidiculo();
-    testarEhArcoPonte(0, 0, false);
+//    testarEhArcoPonte(0, 0, false);
 /*
     pauseGambiarra();
 
