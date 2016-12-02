@@ -630,6 +630,67 @@ uint h(uint x) {
     return x;
 }
 
+void testeGulosoSteiner(){
+    Grafo *g = new GrafoLista();
+    for(int i=1; i<=7; i++)
+        g->insereNo(i);
+
+    g->insereArcoID(1 ,4 ,1 ,false, 4.0);
+    g->insereArcoID(1 ,4 ,1 ,false, 4.0);
+
+    g->insereArcoID(1 ,3 ,2 ,false, 3.0);
+    g->insereArcoID(3 ,1 ,1 ,false, 3.0);
+
+    g->insereArcoID(1 ,2 ,1 ,false, 2.0);
+    g->insereArcoID(2 ,1 ,1 ,false, 2.0);
+
+    g->insereArcoID(2 ,3 ,1 ,false, 8.0);
+    g->insereArcoID(3 ,2 ,1 ,false, 8.0);
+
+    g->insereArcoID(2 ,6 ,1 ,false, 2.0);
+    g->insereArcoID(6 ,2 ,1 ,false, 2.0);
+
+    g->insereArcoID(2 ,7 ,1 ,false, 4.0);
+    g->insereArcoID(7 ,2 ,1 ,false, 4.0);
+
+    g->insereArcoID(3 ,4 ,1 ,false, 1.0);
+    g->insereArcoID(4 ,3 ,1 ,false, 1.0);
+
+    g->insereArcoID(3 ,5 ,1 ,false, 2.0);
+    g->insereArcoID(5 ,3 ,1 ,false, 2.0);
+
+    g->insereArcoID(4 ,5 ,1 ,false, 5.0);
+    g->insereArcoID(5 ,4 ,1 ,false, 5.0);
+
+    g->insereArcoID(5 ,6 ,1 ,false, 3.0);
+    g->insereArcoID(6 ,5 ,1 ,false, 3.0);
+
+    g->insereArcoID(5 ,7 ,1 ,false, 6.0);
+    g->insereArcoID(7 ,5 ,1 ,false, 6.0);
+
+    g->insereArcoID(6 ,7 ,1 ,false, 5.0);
+    g->insereArcoID(7 ,6 ,1 ,false, 5.0);
+
+    g->imprimir();
+
+    cout<<"IMPRIMIU"<<endl;
+
+    vector<No*> terminais;
+    vector<Arco*> solucao;
+
+    terminais.push_back(g->buscaNo(3));
+    terminais.push_back(g->buscaNo(5));
+    terminais.push_back(g->buscaNo(7));
+
+    cout<<"CRIOU TERMINAIS"<<endl;
+
+    solucao = g->gulosoSteiner(terminais);
+
+    for(int i=0; i<solucao.size(); i++)
+        cout<<"arco:"<<solucao[i]->getID()<<endl;
+
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -654,10 +715,10 @@ int main(){
 //    testeOrdenacaoTopologicaDAG();
 //    menorCaminho();
 
-    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, false, "Teste Prim Lista", "teste_prim_lista.csv");
-    graficoPython("teste_prim_lista.csv");
-    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, true, "Teste Prim Hash", "teste_prim_hash.csv");
-    graficoPython("teste_prim_hash.csv");
+//    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, false, "Teste Prim Lista", "teste_prim_lista.csv");
+//    graficoPython("teste_prim_lista.csv");
+//    analiseDesempenho(arvoreGeradoraMinima, 500, 50, 1, true, "Teste Prim Hash", "teste_prim_hash.csv");
+//    graficoPython("teste_prim_hash.csv");
 
 //    testarKruskalNaMao();
 //    arvoreGeradoraMinima();
@@ -695,6 +756,8 @@ int main(){
 */
 
 //    cout << THash<uint>::NextPrime(11);
+
+    testeGulosoSteiner();
 
     return 0;
 }

@@ -14,10 +14,13 @@ protected:
     Arco *it;  ///iterador (it) para lista de arcos
     uint idArvore;///id para auxiliar no algoritmo de Kruskal
     uint nivel; ///(caso grafo seja arvore)
-    bool marcado;///se o no esta marcado ou nao(util na busca em profundidade)
+    bool marcado, terminal;///se o no esta marcado ou nao(util na busca em profundidade)
     double peso;
 public:
     No(uint id);
+
+    bool ehTerminal(){return terminal;};
+    void setTerminal(bool terminal){this->terminal=terminal;};
 
     uint getIdArvore(){return idArvore;};
     void setIdArvore(unsigned id){this->idArvore=id;};
@@ -48,7 +51,7 @@ public:
 
     virtual Arco* buscaArco(No* noDestino) = 0;
     virtual Arco* buscaArco(uint noDestino) = 0;
-    virtual Arco* insereArco(No* noDestino, uint id) = 0;
+    virtual Arco* insereArco(No* noDestino, uint id, double peso) = 0;
     virtual bool removeArco(uint id) = 0;
     virtual bool removeArco(No* noDestino) = 0;
 

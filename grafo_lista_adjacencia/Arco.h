@@ -13,6 +13,7 @@ private:
     Arco *proxArco;
     No *noOrigem, *noDestino;
     double peso;
+    bool marcado;
 public:
     Arco(uint id){
         this->id=id;
@@ -20,6 +21,9 @@ public:
         this->noDestino=0;
         this->peso=0;
     };
+
+    bool getMarcado(){  return marcado; };
+    void setMarcado(bool marcado){  this->marcado=marcado;  };
 
     double getPeso(){   return peso;    };
     void setPeso(double peso){  this->peso = peso;};

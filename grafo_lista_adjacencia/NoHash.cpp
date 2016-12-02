@@ -50,10 +50,11 @@ void NoHash::removeArcos(){
     this->grau = 0;
 }
 
-Arco* NoHash::insereArco(No* noDestino, uint id){
+Arco* NoHash::insereArco(No* noDestino, uint id, double peso){
     Arco *novoArco = new Arco(id);
     novoArco->setNoDestino(noDestino);
     novoArco->setNoOrigem(this);
+    novoArco->setPeso(peso);
     tabelaArcos->inserir(novoArco);
     this->grau++;
 

@@ -52,10 +52,11 @@ public:
     void atualizaGrau();
     void atualizaGrausEntradaSaidaDosNos();
     void desmarcaNos();
+    void desmarcaArcos();
     void leArquivo(char nome[]);
 
-    void insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau = true);
-    void insereArcoID(uint idOrigem, uint idDestino, uint id, bool atualizarGrau = true);
+    void insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau = true, double peso = 1.0);
+    void insereArcoID(uint idOrigem, uint idDestino, uint id, bool atualizarGrau = true, double peso = 1.0);
 
     bool removeArco(uint idOrigem, uint idDestino);
     bool removeArco(No* noOrigem, No* noDestino, bool atualizarGrau = true);
@@ -137,6 +138,21 @@ public:
 //    virtual Grafo* grafoCompleto(uint n);
 //    virtual Grafo* grafoCircular(uint n);
 //    virtual Grafo* grafoEscadinha(uint n);
+
+
+    double funcaoCriterio(Arco *a, double mediaPesosArcos);
+    void iniciaIdArvore();
+    vector<Arco*> arcosAdjacentesDesmarcados(vector<No*> nos);
+    vector<Arco*> arcosAdjacentesDesmarcados(No* no);
+    bool comparaCriterioSteiner(Arco *a1, Arco *a2);
+    void quickSort(vector<Arco*> arr, int left, int right);
+    bool nosMesmaComponenteConexa(vector<No*> nos);
+
+    double mediaPesosArcos();
+
+    vector<Arco*> gulosoSteiner(vector<No*> terminais);
+
+
 
     virtual ~Grafo(){};
 };

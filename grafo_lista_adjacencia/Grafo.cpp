@@ -19,8 +19,8 @@ Grafo::Grafo(){
     flagDir = true;
 }
 
-void Grafo::insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau){
-    noOrigem->insereArco(noDestino, id);
+void Grafo::insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau, double peso){
+    noOrigem->insereArco(noDestino, id, peso);
     this->numeroArcos++;
     if (atualizarGrau)
         this->atualizaGrau();
@@ -34,10 +34,10 @@ cria o arco que sera inserido como arco desse no encontrado na busca
 define para onde(saida) no arco com o no idDestino
 arco inserido com sucesso
 **/
-void Grafo::insereArcoID(uint idOrigem, uint idDestino, uint id, bool atualizarGrau){
+void Grafo::insereArcoID(uint idOrigem, uint idDestino, uint id, bool atualizarGrau, double peso){
     No *noOrigem = buscaNo(idOrigem);
     No *noDestino = buscaNo(idDestino);
-    this->insereArco(noOrigem, noDestino, id, atualizarGrau);
+    this->insereArco(noOrigem, noDestino, id, atualizarGrau, peso);
 }
 
 /** desmarcar os nos do grafo */
@@ -996,4 +996,202 @@ bool Grafo::ehArcoPonte(Arco* arco){
 //    printf("\tn depois: %d\n", n2);
 
     return n2 < n1;
+}
+
+void Grafo::desmarcaArcos(){
+    for(itInicio(); !itEhFim(); itProx()){
+        No *no = getIt();
+        for(no->itInicio(); !no->itEhFim(); no->itProx())
+            no->getIt()->setMarcado(false);
+    }
+}
+
+double Grafo::mediaPesosArcos(){
+    double peso=0;
+    for(itInicio(); !itEhFim(); itProx()){
+        No *no = getIt();
+        for(no->itInicio(); !no->itEhFim(); no->itProx())
+            peso+=no->getIt()->getPeso();
+    }
+    return peso/this->numeroArcos;
+}
+
+double Grafo::funcaoCriterio(Arco *a, double mediaPesosArcos){
+    double alpha = mediaPesosArcos;
+
+    double gamma = (1.0/3.0);
+
+    double result = alpha/a->getPeso();
+
+    if(a->getNoDestino()->ehTerminal())
+        result+=gamma*mediaPesosArcos;
+
+    return result;
+}
+
+void Grafo::iniciaIdArvore(){
+    for(itInicio(); !itEhFim(); itProx()){
+        getIt()->setIdArvore(getIt()->getID());
+    }
+}
+
+vector<Arco*> Grafo::arcosAdjacentesDesmarcados(vector<No*> nos){
+    vector<Arco*> arcos;
+    for(int i = 0; i < nos.size(); i++){
+        for(nos[i]->itInicio(); !nos[i]->itEhFim(); nos[i]->itProx()){
+            Arco *a = nos[i]->getIt();
+            if(!a->getMarcado()){
+                a->setMarcado(true);
+                arcos.push_back(a);
+            }
+        }
+    }
+    return arcos;
+}
+
+vector<Arco*> Grafo::arcosAdjacentesDesmarcados(No *no){
+    vector<Arco*> arcos;
+    for(no->itInicio(); !no->itEhFim(); no->itProx()){
+        Arco *a = no->getIt();
+        if(!a->getMarcado()){
+            a->setMarcado(true);
+            arcos.push_back(a);
+        }
+    }
+    return arcos;
+}
+
+bool Grafo::comparaCriterioSteiner(Arco *a1, Arco *a2){
+    double m = mediaPesosArcos();
+    return funcaoCriterio(a1, m) > funcaoCriterio(a2, m);
+}
+
+void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
+      int i = left, j = right;
+      Arco *tmp;
+      Arco *pivot = arr[(left + right) / 2];
+
+      /* partition */
+      while (i <= j) {
+            while (comparaCriterioSteiner(arr[i], pivot))
+                  i++;
+            while (!comparaCriterioSteiner(arr[i], pivot))
+                  j--;
+            if (i <= j) {
+                  tmp = arr[i];
+                  arr[i] = arr[j];
+                  arr[j] = tmp;
+                  i++;
+                  j--;
+            }
+      };
+
+      /* recursion */
+      if (left < j)
+            quickSort(arr, left, j);
+      if (i < right)
+            quickSort(arr, i, right);
+}
+
+bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
+    int idAux = nos[0]->getIdArvore();
+    for(int i=1; i<nos.size(); i++){
+        if(nos[i]->getIdArvore() != idAux)
+            return false;
+    }
+    return true;
+}
+
+vector<Arco*> Grafo::gulosoSteiner(vector<No*> terminais){
+    this->iniciaIdArvore();
+    this->desmarcaArcos();
+    vector<No*> solucaoNos;
+    vector<Arco*> arcosSolucao;
+    vector<Arco*> candidatosArco;
+
+    for(int i=0;i<terminais.size();i++)
+        solucaoNos.push_back(terminais[i]);
+
+    candidatosArco = arcosAdjacentesDesmarcados(solucaoNos);
+
+    ///idArvore do no origem e do no destino do melhor candidato
+    uint idOrig, idDestino;
+
+    cout<<"FOI ATE O WHILE"<<endl;
+    ///enquanto terminais nao estao na mesma componente conexa
+    while(!nosMesmaComponenteConexa(terminais)){
+        quickSort(candidatosArco, 0, candidatosArco.size() - 1);
+
+        cout<<"FOI ATE O QUICK SORT"<<endl;
+
+        Arco *A = candidatosArco[0];
+        A->setMarcado(true);
+        solucaoNos.push_back(A->getNoDestino());
+
+
+        ///ids para atualizar componente conexa dos nos
+        idOrig = A->getNoOrigem()->getIdArvore();
+        idDestino = A->getNoDestino()->getID();
+
+        ///coloca ids iguais para nos em mesma componente conexa
+        for(itInicio(); !itEhFim(); itProx()){
+            No *no = getIt();
+            if(no->getIdArvore()==idOrig)
+                no->setIdArvore(idDestino);
+        }
+
+
+        vector<Arco*> adjacentes = arcosAdjacentesDesmarcados( A->getNoDestino() );
+
+        for(int i=0; i<adjacentes.size(); i++)
+            candidatosArco.push_back(adjacentes[i]);
+
+        candidatosArco.erase(candidatosArco.begin());
+
+
+
+        ///testar pra ver porque esta em loop infinito
+        for(int i=0; i<candidatosArco.size();i++)
+            cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<endl;
+
+        cout<<endl;
+        system("pause");
+    }
+
+    return arcosSolucao;
+
+//    double valorMenorPeso = INFINITO;
+//
+//    this->itInicio();
+//    No* nos = this->getIt();
+//    No *noDestinoSolucao, *noOrigemSolucao;
+//
+//    this->desmarcaNos();
+//    nos->setMarcado(true);
+//
+//    solucao.push_back(nos);
+//    uint qtdCandidatos = getNumeroNos()-solucao.size();
+//
+//    while(qtdCandidatos > 0){
+//        valorMenorPeso = INFINITO;
+//        for(uint i = 0; i < solucao.size(); i++){
+//            for(solucao[i]->itInicio(); !solucao[i]->itEhFim(); solucao[i]->itProx()){
+//            Arco *a = solucao[i]->getIt();
+//                if(a->getPeso() < valorMenorPeso && !a->getNoDestino()->getMarcado()){
+//                    valorMenorPeso = a->getPeso();
+//                    noOrigemSolucao = solucao[i];
+//                    noDestinoSolucao = a->getNoDestino();
+//                }
+//            }
+//        }
+//        if(valorMenorPeso != INFINITO){
+//            noDestinoSolucao->setMarcado(true);
+//            solucao.push_back(noDestinoSolucao);
+//            arcosSolucao.push_back(buscaArco(noOrigemSolucao, noDestinoSolucao));
+//            qtdCandidatos--;
+//        }
+//        else qtdCandidatos = 0;
+//   }
+////    cout << arcosSolucao.size() << endl;
+//   return arcosSolucao;
 }
