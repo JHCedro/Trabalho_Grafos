@@ -1,0 +1,15 @@
+solucaoNos=terminais, solucaoArcos=vazio;
+
+candidatosArcos = solucaoNos->ArcosAdjacentes;
+
+enquanto(terminais nao estao na mesma componente conexa){
+	
+	candidatosArcos.ranqueiaFuncaoCriterio();
+	
+	solucaoNos += candidatosArcos[0]->getNoDestino();
+	
+	candidatosArcos+=candidatosArcos[0]->getNoDestino()->ArcosAdjacentes(sem repetição);
+	
+	cadidatosArcos.remove(candidatosArcos[0]);
+	
+}
