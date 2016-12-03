@@ -23,6 +23,7 @@ protected:
     bool flagDir;       /// flag indicando se o grafo é direcionado ou não
     int auxEhNoArticulacao(No* no);
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
+    vector<vector<No*>> auxRetornarComponentesConexas(No* no,vector<vector<No*>> componentes, int num);
 //    void incrementaContador(No* n);
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
     double mediaPesosArcos;
@@ -103,6 +104,7 @@ public:
     vector<No*> ordenacaoTopologicaDAG();
 
     int numeroComponentesConexas();
+    vector<vector<No*>> retornarComponentesConexas();
 
     Arco* buscaArco(uint idOrigem, uint idDestino);
     Arco* buscaArco(No* noOrigem, No* noDestino);

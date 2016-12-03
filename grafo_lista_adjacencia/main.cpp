@@ -276,7 +276,7 @@ void vizinhancaFechada(bool GHash = false){
     imprimirVizinhanca(nos);
 }
 
-void testeOrdenacaoTopologicaDAG(bool GHash = false){
+void testeOrdenacaoTopologicaDAG(bool GHash = true){
     Grafo *di;
     if(GHash)   di = new GrafoHash(10);
     else        di = new GrafoLista();
@@ -291,7 +291,11 @@ void testeOrdenacaoTopologicaDAG(bool GHash = false){
     di->insereArcoID(3,5,6);
     di->insereArcoID(4,5,7);
     di->insereArcoID(5,2,8);
-    di->ordenacaoTopologicaDAG();
+    vector<No*> solucao=di->ordenacaoTopologicaDAG();
+    cout<<"Ordenacao topologica do DAG por ID:"<<endl;
+    for(uint m=0;m<solucao.size();m++){
+        cout<<solucao[m]->getID()<<endl;
+    }
     delete di;
 }
 
@@ -630,6 +634,38 @@ uint h(uint x) {
     return x;
 }
 
+void testarComponentesConexasNaMao(bool GHash = true){
+    Grafo *g;
+
+    if(GHash) g=new GrafoHash(10);
+    else g=new GrafoLista();
+
+    for(int i=0;i<=5;i++){
+        g->insereNo(i);
+    }
+    g->insereArcoID(0,2,1);
+    g->insereArcoID(2,0,2);
+
+    g->insereArcoID(2,1,3);
+    g->insereArcoID(1,2,4);
+
+    g->insereArcoID(1,0,5);
+    g->insereArcoID(0,1,6);
+
+    g->insereArcoID(4,5,7);
+    g->insereArcoID(5,4,8);
+
+    vector<vector<No*>> componentes=g->retornarComponentesConexas();
+    for(int i=0;i<componentes.size();i++){
+        cout<<"Componente "<<i<<endl;
+        for(int j=0;j<componentes[i].size();j++){
+            cout<<componentes[i][j]->getID()<<endl;
+        }
+        cout<<endl;
+    }
+    delete g;
+}
+
 void testeGulosoSteiner(){
     Grafo *g = new GrafoLista();
     for(int i=1; i<=7; i++)
@@ -749,6 +785,7 @@ int main(){
 */
 
 //    cout << THash<uint>::NextPrime(11);
+//    testarComponentesConexasNaMao();
 
     testeGulosoSteiner();
 
