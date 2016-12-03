@@ -62,7 +62,8 @@ public:
 
     bool ehAdjacente(No *no);
     double hashing(uint id);
-    void imprimir();
+    void imprimirDetelhado(bool direcionado);
+    void imprimir(bool direcionado);
 
     virtual ~No(){};
 };

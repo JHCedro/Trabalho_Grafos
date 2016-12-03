@@ -17,7 +17,7 @@ private:
     NoLista *listaNos, *it;  ///iterador (it) para lista de nos
     NoLista *proxNo;
 public:
-    GrafoLista();
+    GrafoLista(bool direcionado = true);
 
     ///funcoes de iteracao na lista de nos
     void itInicio();
@@ -29,12 +29,12 @@ public:
     NoLista* insereNo(uint id);
     bool removeNo(uint id);
 
-    GrafoLista* novoGrafo(uint ordem);
-    static GrafoLista* grafoCompleto(uint n);
-    static GrafoLista* grafoCircular(uint n);
-    static GrafoLista* grafoEscadinha(uint n);
+    GrafoLista* novoGrafo(uint ordem, bool direcionado = true);
+    static GrafoLista* grafoCompleto(uint n, bool direcionado = true);
+    static GrafoLista* grafoCircular(uint n, bool direcionado = true);
+    static GrafoLista* grafoEscadinha(uint n, bool direcionado = true);
 
-    void imprimir();
+    void imprimir(bool detalhado = false);
 
     ~GrafoLista();
 };

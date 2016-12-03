@@ -12,15 +12,23 @@
 
 using namespace std;
 
-Grafo::Grafo(){
+Grafo::Grafo(bool direcionado){
     grau = 0;
     numeroArcos = 0;
     numeroNos = 0;
-    flagDir = true;
+    flagDir = direcionado;
 }
 
 void Grafo::insereArco(No* noOrigem, No* noDestino, uint id, bool atualizarGrau, double peso){
-    noOrigem->insereArco(noDestino, id, peso);
+//    printf("\nInserindo arco entre (%d) e (%d):", noOrigem->getID(), noDestino->getID());
+    Arco *novoArco = noOrigem->insereArco(noDestino, id, peso);
+//    this->imprimir();
+    if(!flagDir){
+        Arco* dual = ( noDestino->insereArco(noOrigem, id, peso) );
+        novoArco->setDual(dual);
+        dual->setDual(novoArco);
+    }
+//    this->imprimir();
     this->numeroArcos++;
     if (atualizarGrau)
         this->atualizaGrau();
@@ -47,6 +55,9 @@ void Grafo::desmarcaNos(){
 }
 
 bool Grafo::mesmaComponenteFortementeConexa(uint id1, uint id2){
+    if(!flagDir)
+        cout << "\nUSANDO COMPONENTE CONEXA EM GRAFO NAO ORIENTADO!" << endl;
+
     No *i1 = buscaNo(id1), *i2 = buscaNo(id2);
     if(i1!=NULL && i2!=NULL)
         return mesmaComponenteFortementeConexa(i1, i2);
@@ -84,7 +95,7 @@ void Grafo::percursoProfundidade(No *no){
 //            if (funcao != NULL)
 //                (this->*funcao)(no);
             for(no->itInicio(); !no->itEhFim(); no->itProx())
-                percursoProfundidade(no->getIt()->getNoDestino());
+                percursoProfundidade(no->getIt()->getVizinho(no));
         }
     }
 }
@@ -97,9 +108,8 @@ void Grafo::auxBuscaProfundidade(No* noGrafo, No* noArv, Grafo* Arv){
 
     /// percorre adjacencias do (noGrafo)
     for(noGrafo->itInicio(); !noGrafo->itEhFim(); noGrafo->itProx()){
-//    for(Arco *a = noGrafo->getListaArcos(); a != NULL; a = a->getProxArco()){
         Arco *a = noGrafo->getIt();
-        No* proxNo = a->getNoDestino();
+        No* proxNo = a->getVizinho(noGrafo);
         if (!proxNo->getMarcado()){
             ///Insere proximo (no) na arvore
             No* novoNoArv = Arv->insereNo(proxNo->getID());
@@ -119,7 +129,7 @@ Grafo* Grafo::buscaProfundidade(No *no){
         return NULL;
 
     this->desmarcaNos();
-    Grafo* Arv = this->novoGrafo(this->getNumeroNos());
+    Grafo* Arv = this->novoGrafo(this->getNumeroNos(), flagDir);
 
     ///raiz da arvore
     No* raiz = Arv->insereNo(no->getID());
@@ -132,11 +142,11 @@ Grafo* Grafo::buscaProfundidade(No *no){
 /**
  * Constroi a arvore (Arv) a partir da busca em largura em (noGrafo)
  */
-Grafo* Grafo::BuscaEmLargura(No *noGrafo){
+Grafo* Grafo::buscaLargura(No *noGrafo){
     this->desmarcaNos();
     queue<No*> fila;
 
-    Grafo* Arv = novoGrafo(this->getNumeroNos());
+    Grafo* Arv = novoGrafo(this->getNumeroNos(), this->flagDir);
     ///raiz da arvore (Arv)
     No* noArv = Arv->insereNo(noGrafo->getID());
     noArv->setNivel(0);
@@ -172,7 +182,7 @@ Grafo* Grafo::BuscaEmLargura(No *noGrafo){
 }
 
 Grafo *Grafo::subGrafoInduzido(uint E[], uint tam){
-    Grafo *induzido = novoGrafo(tam);
+    Grafo *induzido = novoGrafo(tam, this->flagDir);
     for(uint i=0; i<tam; i++)
         induzido->insereNo(E[i]);
     No *no;
@@ -317,13 +327,17 @@ uint* Grafo::sequenciaGrau(){
     return seq;
 }
 
-void Grafo::imprimir(){
+void Grafo::imprimir(bool detalhado){
+    printf("[%seh direcionado] ", flagDir ? "" : "NAO ");
     cout<<"Grau do Grafo: "<<this->grau<<"\tnumero de nos: "<<this->numeroNos
     <<"\tnumero de arcos: "<<this->numeroArcos<<endl;
     for(itInicio(); !itEhFim(); itProx()){
         if(itEhFim())
             cout << "FIM!" << endl;
-        this->getIt()->imprimir();
+        if(detalhado)
+            this->getIt()->imprimirDetelhado(flagDir);
+        else
+            this->getIt()->imprimir(flagDir);
     }
 }
 
@@ -509,7 +523,7 @@ vector<No*> Grafo::vizinhancaFechada(uint id, bool fechada){
 ///Cria um novo Grafo, com os mesmos nós e arestas (por id) do grafo atual
 Grafo* Grafo::clone(){
     int idArvore=1;
-    Grafo* G = novoGrafo(this->getNumeroNos());
+    Grafo* G = novoGrafo(this->getNumeroNos(), flagDir);
     for(itInicio(); !itEhFim(); itProx()){
         G->insereNo(this->getIt()->getID())->setIdArvore(idArvore);///id auxiliar para algoritmo de kruskal
         idArvore++;
@@ -524,7 +538,7 @@ Grafo* Grafo::clone(){
     }
 
     ///Precisa retirar algumas atribuicoes redundantes?
-    G->setFlagDir(this->flagDir);
+//    G->setFlagDir(this->flagDir);
     G->grau=this->grau;
     G->numeroNos=this->getNumeroNos();
     G->numeroArcos=this->getNumeroArcos();
@@ -869,7 +883,7 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
     for(uint i = 0; i < nNosA; i++)
         nosC[i] = new No*[nNosB];
 
-    Grafo* C = novoGrafo(nNosA * nNosB);
+    Grafo* C = novoGrafo(nNosA * nNosB, this->flagDir);
     /// Cria todos os nos de de C
     uint a = 0, b = 0;
     for(A->itInicio(); !A->itEhFim(); A->itProx(), a++){
@@ -971,7 +985,7 @@ bool Grafo::ehGrafoConexo(){
 }
 
 /**
-* Verifica se multigrafo eh euleriano
+* Verifica se grafo eh euleriano
 */
 bool Grafo::ehGrafoEuleriano(){
     /**
@@ -1329,7 +1343,8 @@ vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
         cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
     system("pause");
 
-    arcosSolucao = podarArcosSteiner(arcosSolucao);
+    cout << "\nPODA DE STEINER COMENTADA!" << endl;
+    //arcosSolucao = podarArcosSteiner(arcosSolucao);
     return arcosSolucao;
 }
 

@@ -55,9 +55,9 @@ Arco* NoHash::insereArco(No* noDestino, uint id, double peso){
     novoArco->setNoDestino(noDestino);
     novoArco->setNoOrigem(this);
     novoArco->setPeso(peso);
+
     tabelaArcos->inserir(novoArco);
     this->grau++;
-
     return novoArco;
 }
 

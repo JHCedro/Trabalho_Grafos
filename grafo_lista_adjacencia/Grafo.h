@@ -28,12 +28,12 @@ protected:
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
     double mediaPesosArcos;
 public:
-    Grafo();
+    Grafo(bool direcionado);
     uint getGrau(){     return grau;    };
     uint getNumeroNos(){    return numeroNos;   };
     uint getNumeroArcos(){    return numeroArcos;   };
     bool getFlagDir(){  return flagDir; };
-    void setFlagDir(bool flag){ flagDir=flag;   };
+//    void setFlagDir(bool flag){ flagDir=flag;   };
     uint getContAux(){  return contAux; };
     void setContAux(uint i){ contAux=i;   };
 
@@ -49,7 +49,7 @@ public:
     virtual No* insereNo(uint id) = 0;
     virtual bool removeNo(uint id) = 0;
 
-    virtual void imprimir();
+    virtual void imprimir(bool detalhado = false);
 
     void atualizaGrau();
     void atualizaGrausEntradaSaidaDosNos();
@@ -93,7 +93,7 @@ public:
     void percursoIgnorandoArco(No *inicio, Arco *arcoIgnorado);
 
     Grafo* buscaProfundidade(No *no);
-    Grafo* BuscaEmLargura(No *no);
+    Grafo* buscaLargura(No *no);
 
     vector<No*> vizinhancaAberta(uint id, bool fechada = false);
     vector<No*> vizinhancaFechada(uint id, bool fechada = true);
@@ -137,7 +137,7 @@ public:
     bool ehGrafoEuleriano();
 
     /// Criacoes de grafos mais comuns
-    virtual Grafo* novoGrafo(uint ordem) = 0;
+    virtual Grafo* novoGrafo(uint ordem, bool direcionado) = 0;
 //    virtual Grafo* grafoCompleto(uint n);
 //    virtual Grafo* grafoCircular(uint n);
 //    virtual Grafo* grafoEscadinha(uint n);

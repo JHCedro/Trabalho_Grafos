@@ -27,8 +27,9 @@ Arco* NoLista::insereArco(No* noDestino, uint id, double peso){
     Arco *novoArco = new Arco(id);
     novoArco->setNoDestino(noDestino);
     novoArco->setNoOrigem(this);
-    novoArco->setProxArco(this->listaArcos);
     novoArco->setPeso(peso);
+
+    novoArco->setProxArco(this->listaArcos);
     this->listaArcos = novoArco;
     this->grau++;
 

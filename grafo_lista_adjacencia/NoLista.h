@@ -22,6 +22,7 @@ public:
     Arco* buscaArco(No* noDestino);
     Arco* buscaArco(uint noDestino);
     Arco* insereArco(No* noDestino, uint id, double peso = 1.0);
+
     bool removeArco(uint id);
     bool removeArco(No* noDestino);
     void removeArcos();

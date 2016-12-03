@@ -12,7 +12,7 @@
 
 using namespace std;
 
-GrafoLista::GrafoLista() : Grafo(){
+GrafoLista::GrafoLista(bool direcionado) : Grafo(direcionado){
     this->listaNos = NULL;
 }
 
@@ -41,8 +41,8 @@ bool GrafoLista::itEhFim(){
     return it == NULL;
 }
 
-GrafoLista* GrafoLista::novoGrafo(uint ordem){
-    return new GrafoLista();
+GrafoLista* GrafoLista::novoGrafo(uint ordem, bool direcionado){
+    return new GrafoLista(direcionado);
 }
 
 NoLista *GrafoLista::buscaNo(uint id){
@@ -86,9 +86,9 @@ bool GrafoLista::removeNo(uint id){
     return false;
 }
 
-void GrafoLista::imprimir(){
+void GrafoLista::imprimir(bool detalhado){
     cout << "\n[Grafo LISTA] ";
-    Grafo::imprimir();
+    Grafo::imprimir(detalhado);
 }
 
 /** IMPLEMENTAR DESTRUTOR */
@@ -122,8 +122,8 @@ GrafoLista::~GrafoLista(){
 //    this->listaNos=NULL;
 }
 
-GrafoLista* GrafoLista::grafoCompleto(uint n){
-    GrafoLista* G = new GrafoLista();
+GrafoLista* GrafoLista::grafoCompleto(uint n, bool direcionado){
+    GrafoLista* G = new GrafoLista(direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++)
         nos.push_back(G->insereNo(i));
@@ -139,8 +139,8 @@ GrafoLista* GrafoLista::grafoCompleto(uint n){
     return G;
 }
 
-GrafoLista* GrafoLista::grafoCircular(uint n){
-    GrafoLista* G = new GrafoLista();
+GrafoLista* GrafoLista::grafoCircular(uint n, bool direcionado){
+    GrafoLista* G = new GrafoLista(direcionado);
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
     for(uint i=1; i < n; i++){
@@ -159,8 +159,8 @@ GrafoLista* GrafoLista::grafoCircular(uint n){
 }
 
 /** retorna grafo escadinha com n vertices */
-GrafoLista* GrafoLista::grafoEscadinha(uint n){
-    GrafoLista* G = new GrafoLista();
+GrafoLista* GrafoLista::grafoEscadinha(uint n, bool direcionado){
+    GrafoLista* G = new GrafoLista(direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++){
         nos.push_back(G->insereNo(i));

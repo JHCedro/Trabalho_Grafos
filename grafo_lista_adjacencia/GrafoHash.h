@@ -19,7 +19,7 @@ private:
     float ajusteTam = 1.2;  /// ajuste para o tamanho da tabela
     NoHash *it;  ///iterador (it) para lista de nos
 public:
-    GrafoHash(uint ordem);
+    GrafoHash(uint ordem, bool direcionado = true);
 
     ///funcoes de iteracao na lista de nos
     void itInicio();
@@ -31,16 +31,16 @@ public:
     NoHash* insereNo(uint id);
     bool removeNo(uint id);
 
-    GrafoHash* novoGrafo(uint ordem);
-    static GrafoHash* grafoCompleto(uint n);
-    static GrafoHash* grafoCircular(uint n);
-    static GrafoHash* grafoEscadinha(uint n);
+    GrafoHash* novoGrafo(uint ordem, bool direcionado = true);
+    static GrafoHash* grafoCompleto(uint n, bool direcionado = true);
+    static GrafoHash* grafoCircular(uint n, bool direcionado = true);
+    static GrafoHash* grafoEscadinha(uint n, bool direcionado = true);
 
 //    uint fHashNo(uint id, uint tam);
 //    uint fReHashNo(uint id, uint tam);
 //    uint noGetID(NoHash* no);
 
-    void imprimir();
+    void imprimir(bool detalhado = false);
     void imprimirTabela();
 
     ~GrafoHash();

@@ -36,7 +36,7 @@ uint noGetID(NoHash* no){
     return no->getID();
 }
 
-GrafoHash::GrafoHash(uint ordem) : Grafo(){
+GrafoHash::GrafoHash(uint ordem, bool direcionado) : Grafo(direcionado){
     ///criando tabela hash
     this->ordem = ordem;
     tabelaNos = new THash<NoHash*>((uint) ordem * ajusteTam, NULL, new NoHash(-1, 1));
@@ -69,8 +69,8 @@ bool GrafoHash::itEhFim(){
     return this->tabelaNos->itEhFim();
 }
 
-GrafoHash* GrafoHash::novoGrafo(uint ordem){
-    return new GrafoHash(ordem);
+GrafoHash* GrafoHash::novoGrafo(uint ordem, bool direcionado){
+    return new GrafoHash(ordem, flagDir);
 }
 
 NoHash *GrafoHash::buscaNo(uint id){
@@ -88,16 +88,16 @@ bool GrafoHash::removeNo(uint id){
     return false;
 }
 
-void GrafoHash::imprimir(){
+void GrafoHash::imprimir(bool detalhado){
     cout << "\n[Grafo HASH] ";
-    Grafo::imprimir();
+    Grafo::imprimir(detalhado);
 }
 
 void GrafoHash::imprimirTabela(){
     printf("Grau do GrafoHash: %d\t numero de nos: %d\t numero de arcos: %d\t colisoes: %d\n",
            grau, numeroNos, numeroArcos, tabelaNos->getColisoes());
     for(itInicio(); !itEhFim(); itProx()){
-        getIt()->imprimir();
+        getIt()->imprimir(flagDir);
     }
 }
 
@@ -110,8 +110,8 @@ GrafoHash::~GrafoHash(){
 	delete tabelaNos;
 }
 
-GrafoHash* GrafoHash::grafoCompleto(uint n){
-    GrafoHash* G = new GrafoHash(n);
+GrafoHash* GrafoHash::grafoCompleto(uint n, bool direcionado){
+    GrafoHash* G = new GrafoHash(n, direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++)
         nos.push_back(G->insereNo(i));
@@ -128,8 +128,8 @@ GrafoHash* GrafoHash::grafoCompleto(uint n){
     return G;
 }
 
-GrafoHash* GrafoHash::grafoCircular(uint n){
-    GrafoHash* G = new GrafoHash(n);
+GrafoHash* GrafoHash::grafoCircular(uint n, bool direcionado){
+    GrafoHash* G = new GrafoHash(n, direcionado);
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
     for(uint i=1; i < n; i++){
@@ -148,8 +148,8 @@ GrafoHash* GrafoHash::grafoCircular(uint n){
 }
 
 /** retorna grafo escadinha com n vertices */
-GrafoHash* GrafoHash::grafoEscadinha(uint n){
-    GrafoHash* G = new GrafoHash(n);
+GrafoHash* GrafoHash::grafoEscadinha(uint n, bool direcionado){
+    GrafoHash* G = new GrafoHash(n, direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++){
         nos.push_back(G->insereNo(i));

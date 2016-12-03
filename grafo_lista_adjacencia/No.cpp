@@ -21,8 +21,18 @@ double No::hashing(uint id){
     return valor%101;
 }
 
-void No::imprimir(){
-    printf("( id:%2d grau:%2d peso: %2.1f nivel:%2d )", id, grau, peso, nivel);
+void No::imprimirDetelhado(bool direcionado){
+    printf("( id:%2d, grau:%2d, peso: %2.1f, nivel:%2d ):", id, grau, peso, nivel);
+
+    for(itInicio(); !itEhFim(); itProx()){
+        this->getIt()->imprimirDetelhado();
+    }
+
+    cout<<endl;
+}
+
+void No::imprimir(bool direcionado){
+    printf("( id:%2d, grau:%2d ):", id, grau);
 
     for(itInicio(); !itEhFim(); itProx()){
         this->getIt()->imprimir();

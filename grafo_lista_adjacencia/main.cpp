@@ -201,18 +201,18 @@ void testeBuscaProdundidadeLargura(bool GHash = false){
     di->imprimir();
     cout<<"busca a partir de 1"<<endl;
 //    Grafo* Arv = di->buscaProfundidade(di->buscaNo(1));
-    Grafo* Arv = di->BuscaEmLargura(di->buscaNo(1));
+    Grafo* Arv = di->buscaLargura(di->buscaNo(1));
     Arv->imprimir();
     delete Arv;
 
     cout<<"busca a partir de 3"<<endl;
 //    Arv = di->buscaProfundidade(di->buscaNo(3));
-    Arv = di->BuscaEmLargura(di->buscaNo(3));
+    Arv = di->buscaLargura(di->buscaNo(3));
     Arv->imprimir();
 
     cout<<"busca a partir de 8"<<endl;
 //    Arv = di->buscaProfundidade(di->buscaNo(3));
-    Arv = di->BuscaEmLargura(di->buscaNo(8));
+    Arv = di->buscaLargura(di->buscaNo(8));
     Arv->imprimir();
 }
 
@@ -770,24 +770,22 @@ int main(){
 
 //    testeListaHashRidiculo();
 //    testarEhArcoPonte(0, 0, false);
-/*
-    pauseGambiarra();
-
-    Grafo *G = GrafoLista::grafoCompleto(3000);
-//    Grafo *G = GrafoHash::grafoCompleto(5000);
-//    G->imprimir();
-
-    pauseGambiarra();
-    delete G;
-//    G->imprimir();
-
-    pauseGambiarra();
-*/
 
 //    cout << THash<uint>::NextPrime(11);
 //    testarComponentesConexasNaMao();
 
-    testeGulosoSteiner();
+//    testeGulosoSteiner();
+
+    Grafo *G = new GrafoHash(5, false);
+    for (int i=0; i < 5; i++)
+        G->insereNo(i);
+    G->imprimir(false);
+    G->insereArcoID(0, 2, 0);
+    G->insereArcoID(0, 4, 0);
+    G->insereArcoID(1, 0, 0);
+    G->insereArcoID(4, 1, 0);
+    G->imprimir(false);
+    G->buscaLargura(G->buscaNo(1))->imprimir(true);
 
     return 0;
 }
