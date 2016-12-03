@@ -666,6 +666,56 @@ void testarComponentesConexasNaMao(bool GHash = true){
     delete g;
 }
 
+void testeKConexo(bool GHash = true){
+    Grafo *g;
+    g=criarGrafoCompleto(10);
+//    if(GHash) g=new GrafoHash(10);
+//    else g=new GrafoLista();
+
+
+//    for(int i=1;i<=6;i++){
+//        g->insereNo(i);
+//    }
+//
+//    g->insereArcoID(1,2,1);
+//    g->insereArcoID(2,1,2);
+//
+//    g->insereArcoID(3,2,3);
+//    g->insereArcoID(2,3,4);
+//
+//    g->insereArcoID(3,4,5);
+//    g->insereArcoID(4,3,6);
+//
+//    g->insereArcoID(4,6,7);
+//    g->insereArcoID(6,4,8);
+//
+//    g->insereArcoID(5,6,9);
+//    g->insereArcoID(6,5,10);
+//
+//    g->insereArcoID(1,3,11);
+//    g->insereArcoID(3,1,12);
+//
+//    g->insereArcoID(3,6,13);
+//    g->insereArcoID(6,3,14);
+//
+//    g->insereArcoID(1,6,15);
+//    g->insereArcoID(6,1,16);
+//
+//    g->insereArcoID(5,2,17);
+//    g->insereArcoID(2,5,18);
+//
+//    g->insereArcoID(5,4,19);
+//    g->insereArcoID(4,5,20);
+//
+//    g->insereArcoID(4,2,21);
+//    g->insereArcoID(2,4,22);
+//
+//    g->insereArcoID(5,1,23);
+//    g->insereArcoID(1,5,24);
+
+    cout<<g->ehKConexo(3)<<endl;
+}
+
 void testeGulosoSteiner(){
     Grafo *g = new GrafoLista();
     for(int i=1; i<=7; i++)
@@ -773,6 +823,7 @@ int main(){
 
 //    cout << THash<uint>::NextPrime(11);
 //    testarComponentesConexasNaMao();
+//    testeKConexo();
 
 //    testeGulosoSteiner();
 

@@ -27,6 +27,8 @@ protected:
 //    void incrementaContador(No* n);
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
     double mediaPesosArcos;
+    bool auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination);
+    bool verificaSeEhConexoSemOsNos(vector<No*> nos);
 public:
     Grafo(bool direcionado);
     uint getGrau(){     return grau;    };
@@ -105,6 +107,7 @@ public:
 
     int numeroComponentesConexas();
     vector<vector<No*>> retornarComponentesConexas();
+    bool ehKConexo(int k);
 
     Arco* buscaArco(uint idOrigem, uint idDestino);
     Arco* buscaArco(No* noOrigem, No* noDestino);

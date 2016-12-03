@@ -569,6 +569,64 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
     return solucao;
 }
 
+/**Verificação de é k-conexo: k é o numero máximo de nós que pode ser removido
+  * sem que o grafo fique desconexo. O algoritmo faz combinações de todos os
+  * nós k a k e testa se a busca em profundidade na árvore com esses nós já marcados
+  * atinge todos os nós do grafo. Se sim, o grafo não se tornará desconexo ao serem
+  * removidos k vértices.
+  * Testa também se o grafo fica conexo removendo k+1 vértices quaisquer. Se sim, ele
+  * não é k conexo, mas k+1 (ou maior) conexo.
+  */
+bool Grafo::ehKConexo(int k){
+    if(k>=this->numeroNos) return false; ///Tratamento para remoção de todos os nós.
+
+    vector<No*> people;
+
+    ///Adiciona todos os nós ao vetor people
+    for(itInicio(); !itEhFim(); itProx())
+        people.push_back(getIt());
+
+    vector<No*> combination;
+
+     if(auxKConexo(0, k, people, combination))
+        return !auxKConexo(0, k+1, people, combination);
+     return false;
+}
+
+/**Gerador de combinações para teste do K-Conexo*/
+bool Grafo::auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination){
+    if(k==0){
+        return this->verificaSeEhConexoSemOsNos(combination);
+    }
+    for(uint i=offset; i<=people.size() - k; i++){
+        combination.push_back(people[i]);
+        if(!auxKConexo(i+1, k-1, people, combination))
+            return false;
+        combination.pop_back();
+    }
+    return true;
+}
+
+/**Teste para ver se ele continua conexo ao se remover o conjunto de nós*/
+bool Grafo::verificaSeEhConexoSemOsNos(vector<No*> nos){
+    this->desmarcaNos();
+    this->contAux=0;
+    for(uint i=0;i<nos.size();i++){
+        nos[i]->setMarcado(true);
+        this->contAux++;
+    }
+    No* aux=NULL;
+    for(nos[0]->itInicio(); !nos[0]->itEhFim(); nos[0]->itProx()){
+        Arco *a = nos[0]->getIt();
+        if(!a->getNoDestino()->getMarcado())
+            aux=a->getNoDestino();
+    }
+    if(aux!=NULL){
+        this->percursoProfundidade(aux);
+    }
+    return (this->contAux==this->numeroNos);
+}
+
 /**
  * Percorre todos os nós do grafo e, para cada nó, incrementa o contador e
  * realiza a busca em profundidade caso ele não esteja marcado. A busca em profundidade marca
