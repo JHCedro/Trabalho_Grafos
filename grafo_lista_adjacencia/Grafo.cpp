@@ -1006,25 +1006,25 @@ void Grafo::desmarcaArcos(){
     }
 }
 
-double Grafo::mediaPesosArcos(){
+void Grafo::calculaMediaPesosArcos(){
     double peso=0;
     for(itInicio(); !itEhFim(); itProx()){
         No *no = getIt();
         for(no->itInicio(); !no->itEhFim(); no->itProx())
             peso+=no->getIt()->getPeso();
     }
-    return peso/this->numeroArcos;
+    this->mediaPesosArcos = peso/this->numeroArcos;
 }
 
-double Grafo::funcaoCriterio(Arco *a, double mediaPesosArcos){
-    double alpha = mediaPesosArcos;
+double Grafo::funcaoCriterio(Arco *a){
+    double alpha = this->mediaPesosArcos;
 
     double gamma = (1.0/3.0);
 
     double result = alpha/a->getPeso();
 
-    if(a->getNoDestino()->ehTerminal())
-        result+=gamma*mediaPesosArcos;
+//    if(a->getNoDestino()->ehTerminal())
+//        result+=gamma*this->mediaPesosArcos;
 
     return result;
 }
@@ -1038,13 +1038,28 @@ void Grafo::iniciaIdArvore(){
 vector<Arco*> Grafo::arcosAdjacentesDesmarcados(vector<No*> nos){
     vector<Arco*> arcos;
     for(int i = 0; i < nos.size(); i++){
+
         for(nos[i]->itInicio(); !nos[i]->itEhFim(); nos[i]->itProx()){
+
             Arco *a = nos[i]->getIt();
+
             if(!a->getMarcado()){
+//                cout<<"entrou no if, ("<<a->getNoOrigem()->getID()<<","<<a->getNoDestino()->getID()<<") e ";
                 a->setMarcado(true);
                 arcos.push_back(a);
+
+                No *no = a->getNoDestino();
+                for(no->itInicio(); !no->itEhFim(); no->itProx()){
+                    if(no->getIt()->getNoDestino() == a->getNoOrigem()){
+//                        cout<<no->getIt()->getNoOrigem()->getID()<<","<<no->getIt()->getNoDestino()->getID()<<")"<<endl;
+                        no->getIt()->setMarcado(true);
+                        arcos.push_back(no->getIt());
+                    }
+                }
             }
+
         }
+
     }
     return arcos;
 }
@@ -1056,14 +1071,40 @@ vector<Arco*> Grafo::arcosAdjacentesDesmarcados(No *no){
         if(!a->getMarcado()){
             a->setMarcado(true);
             arcos.push_back(a);
+
+            No *no = a->getNoDestino();
+            for(no->itInicio(); !no->itEhFim(); no->itProx()){
+                if(no->getIt()->getNoDestino() == a->getNoOrigem()){
+                    no->getIt()->setMarcado(true);
+                    arcos.push_back(no->getIt());
+                }
+            }
         }
     }
     return arcos;
 }
 
 bool Grafo::comparaCriterioSteiner(Arco *a1, Arco *a2){
-    double m = mediaPesosArcos();
-    return funcaoCriterio(a1, m) > funcaoCriterio(a2, m);
+    return funcaoCriterio(a1) > funcaoCriterio(a2);
+}
+
+vector<Arco*> Grafo::bubbleSort(vector<Arco*> arcos){
+    Arco *aux;
+    // coloca em ordem crescente (1,2,3,4,5...)
+    for( int x = 0; x < arcos.size(); x++ )
+    {
+        for( int y = x + 1; y < arcos.size(); y++ ) // sempre 1 elemento à frente
+        {
+            // se o (x > (x+1)) então o x passa pra frente (ordem crescente)
+            if ( !comparaCriterioSteiner(arcos[x], arcos[y]) )
+            {
+             aux = arcos[x];
+             arcos[x] = arcos[y];
+             arcos[y] = aux;
+            }
+        }
+    } // fim da ordenação
+    return arcos;
 }
 
 void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
@@ -1075,7 +1116,7 @@ void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
       while (i <= j) {
             while (comparaCriterioSteiner(arr[i], pivot))
                   i++;
-            while (!comparaCriterioSteiner(arr[i], pivot))
+            while (!comparaCriterioSteiner(arr[j], pivot))
                   j--;
             if (i <= j) {
                   tmp = arr[i];
@@ -1102,13 +1143,54 @@ bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
     return true;
 }
 
-vector<Arco*> Grafo::gulosoSteiner(vector<No*> terminais){
+void Grafo::imprimirIdsArvore(){
+    for(itInicio(); !itEhFim(); itProx()){
+        cout<<getIt()->getIdArvore()<<endl;
+    }
+}
+
+void Grafo::imprimirGraus(){
+    for(itInicio(); !itEhFim(); itProx()){
+        cout<<getIt()->getGrau()<<endl;
+    }
+}
+
+void imprimeVectorArco(vector<Arco*> vet){
+    for(int i=0; i<vet.size(); i++)
+        cout<<"("<<vet[i]->getNoOrigem()->getID()<<","<<vet[i]->getNoDestino()->getID()<<")"<<endl;
+}
+
+void imprimeVectorNo(vector<No*> vet){
+    for(int i=0; i<vet.size(); i++)
+        cout<<"i:"<<vet[i]->getID()<<endl;
+}
+
+/**
+Guloso Steiner:
+Recebe um vetor de indices e o tamanho do vetor, entao cria um vector de nos para os nos terminais do grafo com ids do vetor.
+Retorna conjunto de arcos que forma a solucao da arvore de Steiner para esses nos terminais
+*/
+vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
     this->iniciaIdArvore();
     this->desmarcaArcos();
-    vector<No*> solucaoNos;
+    this->desmarcaNos();
+    this->calculaMediaPesosArcos();
+    this->zeraGraus();
+
+    vector<No*> solucaoNos, terminais;
     vector<Arco*> arcosSolucao;
     vector<Arco*> candidatosArco;
 
+
+    ///criar nos terminais com indices
+    for(int i=0; i<tam; i++){
+        No *no = this->buscaNo(ids[i]);
+        no->setTerminal(true);///define nos como terminais
+        no->setMarcado(true);
+        terminais.push_back(no);
+    }
+
+    ///solucaoNos comeca com terminais
     for(int i=0;i<terminais.size();i++)
         solucaoNos.push_back(terminais[i]);
 
@@ -1117,81 +1199,146 @@ vector<Arco*> Grafo::gulosoSteiner(vector<No*> terminais){
     ///idArvore do no origem e do no destino do melhor candidato
     uint idOrig, idDestino;
 
-    cout<<"FOI ATE O WHILE"<<endl;
     ///enquanto terminais nao estao na mesma componente conexa
     while(!nosMesmaComponenteConexa(terminais)){
-        quickSort(candidatosArco, 0, candidatosArco.size() - 1);
 
-        cout<<"FOI ATE O QUICK SORT"<<endl;
+        ///-----------------testar pra ver como que as decisoes estao sendo tomadas
+        cout<<"\n\nsolucaoNos:"<<endl;
+        imprimeVectorNo(solucaoNos);
+        cout<<"\n\nsarcosSolucao:"<<endl;
+        imprimeVectorArco(arcosSolucao);
+        cout<<"\n\ncandidatosArcos:"<<endl;
+        imprimeVectorArco(candidatosArco);
+        cout<<"\n\nidsArvore:"<<endl;
+        imprimirIdsArvore();
+        cout<<"\n\ngraus:"<<endl;
+        imprimirGraus();
+        cout<<endl<<endl<<endl<<endl;
 
-        Arco *A = candidatosArco[0];
-        A->setMarcado(true);
-        solucaoNos.push_back(A->getNoDestino());
+        candidatosArco = bubbleSort(candidatosArco);
 
+        cout<<"ordenacao"<<endl;
+        for(int i=0; i<candidatosArco.size(); i++)
+            cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
+        system("pause");
 
-        ///ids para atualizar componente conexa dos nos
-        idOrig = A->getNoOrigem()->getIdArvore();
-        idDestino = A->getNoDestino()->getID();
+        ///dois arcos como o grafo e nao-orientado
+        Arco *a1 = candidatosArco[0];
+        Arco *a2 = candidatosArco[1];
+        No *no;
+
+        if(a1->getNoDestino()->getMarcado()==false)
+            no = a1->getNoDestino();
+        else
+            no = a2->getNoDestino();
+
+        ///se o no nao esta marcado insere na solucao de nos
+        if( (a1->getNoDestino()->getMarcado()==false) || (a2->getNoDestino()->getMarcado()==false) ){
+            solucaoNos.push_back(no);
+            no->setMarcado(true);
+        }
+
+        cout<<"idarvore origem:"<<a1->getNoOrigem()->getIdArvore()<<"\tidarvore destino:"<<a1->getNoDestino()->getIdArvore()<<endl;
+        ///se os nos origem e destino do arco candidado estao em componentes conexas diferentes
+        if(a1->getNoOrigem()->getIdArvore() != a1->getNoDestino()->getIdArvore()){
+            cout<<"tao em componentes conexas diferentes"<<endl;
+            a1->setMarcado(true);
+            a2->setMarcado(true);
+            arcosSolucao.push_back(a1);
+            arcosSolucao.push_back(a2);
+            a1->getNoOrigem()->setGrau(a1->getNoOrigem()->getGrau() + 1);
+            a1->getNoDestino()->setGrau(a1->getNoDestino()->getGrau() + 1);
+        }
+
+        uint idArvOrig = a1->getNoOrigem()->getIdArvore(), idArvDest = a1->getNoDestino()->getIdArvore();
 
         ///coloca ids iguais para nos em mesma componente conexa
         for(itInicio(); !itEhFim(); itProx()){
             No *no = getIt();
-            if(no->getIdArvore()==idOrig)
-                no->setIdArvore(idDestino);
+            if(no->getIdArvore()==idArvOrig)
+                no->setIdArvore(idArvDest);
         }
 
+//        cout<<"no:"<<no->getID()<<endl;
 
-        vector<Arco*> adjacentes = arcosAdjacentesDesmarcados( A->getNoDestino() );
+        vector<Arco*> adjacentes = arcosAdjacentesDesmarcados(no);
+
+//        cout<<"adjacentes tamanho:"<<adjacentes.size()<<endl;
 
         for(int i=0; i<adjacentes.size(); i++)
             candidatosArco.push_back(adjacentes[i]);
 
         candidatosArco.erase(candidatosArco.begin());
+        candidatosArco.erase(candidatosArco.begin());
 
-
-
-        ///testar pra ver porque esta em loop infinito
-        for(int i=0; i<candidatosArco.size();i++)
-            cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<endl;
-
-        cout<<endl;
-        system("pause");
     }
 
-    return arcosSolucao;
+    ///-----------------testar pra ver como que as decisoes estao sendo tomadas
+    cout<<"\n\nsolucaoNos:"<<endl;
+    imprimeVectorNo(solucaoNos);
+    cout<<"\n\nsarcosSolucao:"<<endl;
+    imprimeVectorArco(arcosSolucao);
+    cout<<"\n\ncandidatosArcos:"<<endl;
+    imprimeVectorArco(candidatosArco);
+    cout<<"\n\nidsArvore:"<<endl;
+    imprimirIdsArvore();
+    cout<<"\n\ngraus:"<<endl;
+    imprimirGraus();
+    cout<<endl<<endl<<endl<<endl;
 
-//    double valorMenorPeso = INFINITO;
-//
-//    this->itInicio();
-//    No* nos = this->getIt();
-//    No *noDestinoSolucao, *noOrigemSolucao;
-//
-//    this->desmarcaNos();
-//    nos->setMarcado(true);
-//
-//    solucao.push_back(nos);
-//    uint qtdCandidatos = getNumeroNos()-solucao.size();
-//
-//    while(qtdCandidatos > 0){
-//        valorMenorPeso = INFINITO;
-//        for(uint i = 0; i < solucao.size(); i++){
-//            for(solucao[i]->itInicio(); !solucao[i]->itEhFim(); solucao[i]->itProx()){
-//            Arco *a = solucao[i]->getIt();
-//                if(a->getPeso() < valorMenorPeso && !a->getNoDestino()->getMarcado()){
-//                    valorMenorPeso = a->getPeso();
-//                    noOrigemSolucao = solucao[i];
-//                    noDestinoSolucao = a->getNoDestino();
-//                }
-//            }
-//        }
-//        if(valorMenorPeso != INFINITO){
-//            noDestinoSolucao->setMarcado(true);
-//            solucao.push_back(noDestinoSolucao);
-//            arcosSolucao.push_back(buscaArco(noOrigemSolucao, noDestinoSolucao));
-//            qtdCandidatos--;
-//        }
-//        else qtdCandidatos = 0;
-//   }
-////    cout << arcosSolucao.size() << endl;
-//   return arcosSolucao;
+    candidatosArco = bubbleSort(candidatosArco);
+
+    cout<<"ordenacao"<<endl;
+    for(int i=0; i<candidatosArco.size(); i++)
+        cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
+    system("pause");
+
+    arcosSolucao = podarArcosSteiner(arcosSolucao);
+    return arcosSolucao;
+}
+
+vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){
+
+    for(int i=0; i<solucao.size(); i++){
+
+        ///se o no origem de algum arco tiver grau 1 e nao for terminal
+        if(solucao[i]->getNoOrigem()->getGrau()==1 && !solucao[i]->getNoOrigem()->ehTerminal()){
+
+            ///grau--
+            solucao[i]->getNoDestino()->setGrau(solucao[i]->getNoDestino()->getGrau()-1);
+            solucao[i]->getNoOrigem()->setGrau(solucao[i]->getNoOrigem()->getGrau()-1);
+
+            solucao.erase(solucao.begin() + i);
+
+            for(int j=0; j<solucao.size(); j++){
+                if(solucao[j]->getNoDestino() == solucao[i]->getNoOrigem()){
+                    solucao.erase(solucao.begin() + j + 1);
+                }
+            }
+
+        }
+        ///se o no destino tiver grau 1 e nao for terminal atualiza grau do origem
+        else{
+            if(solucao[i]->getNoDestino()->getGrau()==1 && !solucao[i]->getNoDestino()->ehTerminal()){
+                ///grau--
+                solucao[i]->getNoDestino()->setGrau(solucao[i]->getNoDestino()->getGrau()-1);
+                solucao[i]->getNoOrigem()->setGrau(solucao[i]->getNoOrigem()->getGrau()-1);
+
+                solucao.erase(solucao.begin() + i);
+
+                for(int j=0; j<solucao.size(); j++){
+                    if(solucao[j]->getNoDestino() == solucao[i]->getNoOrigem()){
+                        solucao.erase(solucao.begin() + j + 1);
+                    }
+                }
+            }
+        }
+
+    }
+    return solucao;
+}
+
+void Grafo::zeraGraus(){
+    for(itInicio(); !itEhFim(); itProx())
+        getIt()->setGrau(0);
 }

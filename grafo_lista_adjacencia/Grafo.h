@@ -25,6 +25,7 @@ protected:
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
 //    void incrementaContador(No* n);
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
+    double mediaPesosArcos;
 public:
     Grafo();
     uint getGrau(){     return grau;    };
@@ -140,18 +141,22 @@ public:
 //    virtual Grafo* grafoEscadinha(uint n);
 
 
-    double funcaoCriterio(Arco *a, double mediaPesosArcos);
+    double funcaoCriterio(Arco *a);
     void iniciaIdArvore();
     vector<Arco*> arcosAdjacentesDesmarcados(vector<No*> nos);
     vector<Arco*> arcosAdjacentesDesmarcados(No* no);
     bool comparaCriterioSteiner(Arco *a1, Arco *a2);
     void quickSort(vector<Arco*> arr, int left, int right);
+    vector<Arco*> bubbleSort(vector<Arco*> arcos);
     bool nosMesmaComponenteConexa(vector<No*> nos);
 
-    double mediaPesosArcos();
+    void calculaMediaPesosArcos();
 
-    vector<Arco*> gulosoSteiner(vector<No*> terminais);
-
+    vector<Arco*> gulosoSteiner(uint ids[], uint tam);
+    vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
+    void zeraGraus();
+    void imprimirIdsArvore();
+    void imprimirGraus();
 
 
     virtual ~Grafo(){};

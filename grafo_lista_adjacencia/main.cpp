@@ -636,9 +636,9 @@ void testeGulosoSteiner(){
         g->insereNo(i);
 
     g->insereArcoID(1 ,4 ,1 ,false, 4.0);
-    g->insereArcoID(1 ,4 ,1 ,false, 4.0);
+    g->insereArcoID(4 ,1 ,1 ,false, 4.0);
 
-    g->insereArcoID(1 ,3 ,2 ,false, 3.0);
+    g->insereArcoID(1 ,3 ,1 ,false, 3.0);
     g->insereArcoID(3 ,1 ,1 ,false, 3.0);
 
     g->insereArcoID(1 ,2 ,1 ,false, 2.0);
@@ -673,21 +673,14 @@ void testeGulosoSteiner(){
 
     g->imprimir();
 
-    cout<<"IMPRIMIU"<<endl;
-
-    vector<No*> terminais;
+    uint ids[]={3,5,7};
     vector<Arco*> solucao;
 
-    terminais.push_back(g->buscaNo(3));
-    terminais.push_back(g->buscaNo(5));
-    terminais.push_back(g->buscaNo(7));
+    solucao = g->gulosoSteiner(ids, 3);
 
-    cout<<"CRIOU TERMINAIS"<<endl;
-
-    solucao = g->gulosoSteiner(terminais);
-
+    cout<<"\n\n\n\nRESULTADO FINAL ARCOS:"<<endl;
     for(int i=0; i<solucao.size(); i++)
-        cout<<"arco:"<<solucao[i]->getID()<<endl;
+        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
 
 }
 
