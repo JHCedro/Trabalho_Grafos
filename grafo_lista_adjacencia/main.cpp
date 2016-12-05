@@ -717,56 +717,73 @@ void testeKConexo(bool GHash = true){
 }
 
 void testeGulosoSteiner(){
-    Grafo *g = new GrafoLista();
+    Grafo *g = new GrafoLista(false);
+/** EXEMPLO 1*
     for(int i=1; i<=7; i++)
         g->insereNo(i);
 
-    g->insereArcoID(1 ,4 ,1 ,false, 4.0);
-    g->insereArcoID(4 ,1 ,1 ,false, 4.0);
+    g->insereArcoID(1 ,4 , 1 ,false, 4.0);
+    g->insereArcoID(1 ,3 , 1 ,false, 3.0);
+    g->insereArcoID(1 ,2 , 1 ,false, 2.0);
+    g->insereArcoID(2 ,3 , 1 ,false, 8.0);
+    g->insereArcoID(2 ,6 , 1 ,false, 2.0);
+    g->insereArcoID(2 ,7 , 1 ,false, 4.0);
+    g->insereArcoID(3 ,4 , 1 ,false, 1.0);
+    g->insereArcoID(3 ,5 , 1 ,false, 2.0);
+    g->insereArcoID(4 ,5 , 1 ,false, 5.0);
+    g->insereArcoID(5 ,6 , 1 ,false, 3.0);
+    g->insereArcoID(5 ,7 , 1 ,false, 6.0);
+    g->insereArcoID(6 ,7 , 1 ,false, 5.0);
+    uint ids[] = {3, 5, 7};
+/**/
+/** EXEMPLO 2 (bem bosta)*/
+    for(int i=1; i<=12; i++)
+        g->insereNo(i);
 
-    g->insereArcoID(1 ,3 ,1 ,false, 3.0);
-    g->insereArcoID(3 ,1 ,1 ,false, 3.0);
+    g->insereArcoID(1, 7, 1, false, 1.0);
+    g->insereArcoID(2, 3, 1, false, 10.0);
+    g->insereArcoID(2, 8, 1, false, 9.0);
+    g->insereArcoID(3, 4, 1, false, 11.0);
+    g->insereArcoID(5, 6, 1, false, 2.0);
+    g->insereArcoID(6, 11, 1, false, 4.0);
+    g->insereArcoID(7, 8, 1, false, 7.0);
+    g->insereArcoID(7, 11, 1, false, 6.0);
+    g->insereArcoID(7, 10, 1, false, 5.0);
+    g->insereArcoID(8, 9, 1, false, 12.0);
+    g->insereArcoID(8, 12, 1, false, 8.0);
+    g->insereArcoID(10, 11, 1, true, 3.0);
+    uint ids[] = {5, 7, 9};
+/**/
 
-    g->insereArcoID(1 ,2 ,1 ,false, 2.0);
-    g->insereArcoID(2 ,1 ,1 ,false, 2.0);
+/** EXEMPLO 3
+    for(int i=1; i<=8; i++)
+        g->insereNo(i);
 
-    g->insereArcoID(2 ,3 ,1 ,false, 8.0);
-    g->insereArcoID(3 ,2 ,1 ,false, 8.0);
+    g->insereArcoID(1, 2, 1, false, 2.0);
+    g->insereArcoID(1, 3, 1, false, 1.0);
+    g->insereArcoID(2, 3, 1, false, 3.0);
+    g->insereArcoID(2, 4, 1, false, 1.0);
+    g->insereArcoID(3, 4, 1, false, 2.0);
+    g->insereArcoID(5, 3, 1, false, 4.0);
+    g->insereArcoID(5, 7, 1, false, 5.0);
+    g->insereArcoID(6, 7, 1, false, 3.0);
+    uint ids[] = {1, 4, 7, 8};
+/**/
 
-    g->insereArcoID(2 ,6 ,1 ,false, 2.0);
-    g->insereArcoID(6 ,2 ,1 ,false, 2.0);
+    g->imprimir(true);
 
-    g->insereArcoID(2 ,7 ,1 ,false, 4.0);
-    g->insereArcoID(7 ,2 ,1 ,false, 4.0);
+//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
+    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
 
-    g->insereArcoID(3 ,4 ,1 ,false, 1.0);
-    g->insereArcoID(4 ,3 ,1 ,false, 1.0);
-
-    g->insereArcoID(3 ,5 ,1 ,false, 2.0);
-    g->insereArcoID(5 ,3 ,1 ,false, 2.0);
-
-    g->insereArcoID(4 ,5 ,1 ,false, 5.0);
-    g->insereArcoID(5 ,4 ,1 ,false, 5.0);
-
-    g->insereArcoID(5 ,6 ,1 ,false, 3.0);
-    g->insereArcoID(6 ,5 ,1 ,false, 3.0);
-
-    g->insereArcoID(5 ,7 ,1 ,false, 6.0);
-    g->insereArcoID(7 ,5 ,1 ,false, 6.0);
-
-    g->insereArcoID(6 ,7 ,1 ,false, 5.0);
-    g->insereArcoID(7 ,6 ,1 ,false, 5.0);
-
-    g->imprimir();
-
-    uint ids[]={3,5,7};
-    vector<Arco*> solucao;
-
-    solucao = g->gulosoSteiner(ids, 3);
-
-    cout<<"\n\n\n\nRESULTADO FINAL ARCOS:"<<endl;
-    for(int i=0; i<solucao.size(); i++)
+    cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
+    uint somaPesos = 0;
+    for(int i=0; i<solucao.size(); i++){
         cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
+        somaPesos += solucao[i]->getPeso();
+    }
+    cout << "Soma dos pesos: " << somaPesos << endl;
+
+//    g->imprimir(true);
 
 }
 

@@ -43,6 +43,8 @@ public:
     uint getID(){   return this->id;    };
     void setID(double id){  this->id = id;  };
 
+    void atualizaGrau();
+
     ///funcoes de iteracao na lista de arcos
     virtual void itInicio() = 0;
     virtual Arco* getIt() = 0;

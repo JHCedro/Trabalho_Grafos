@@ -53,7 +53,7 @@ public:
 
     virtual void imprimir(bool detalhado = false);
 
-    void atualizaGrau();
+    void atualizaGrau(bool completamente = false);
     void atualizaGrausEntradaSaidaDosNos();
     void desmarcaNos();
     void desmarcaArcos();
@@ -158,6 +158,7 @@ public:
     void calculaMediaPesosArcos();
 
     vector<Arco*> gulosoSteiner(uint ids[], uint tam);
+    vector<Arco*> gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();
