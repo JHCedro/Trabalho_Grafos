@@ -825,18 +825,18 @@ int main(){
 //    testarComponentesConexasNaMao();
 //    testeKConexo();
 
-//    testeGulosoSteiner();
+    testeGulosoSteiner();
 
-    Grafo *G = new GrafoHash(5, false);
-    for (int i=0; i < 5; i++)
-        G->insereNo(i);
-    G->imprimir(false);
-    G->insereArcoID(0, 2, 0);
-    G->insereArcoID(0, 4, 0);
-    G->insereArcoID(1, 0, 0);
-    G->insereArcoID(4, 1, 0);
-    G->imprimir(false);
-    G->buscaLargura(G->buscaNo(1))->imprimir(true);
+//    Grafo *G = new GrafoHash(5, false);
+//    for (int i=0; i < 5; i++)
+//        G->insereNo(i);
+//    G->imprimir(false);
+//    G->insereArcoID(0, 2, 0);
+//    G->insereArcoID(0, 4, 0);
+//    G->insereArcoID(1, 0, 0);
+//    G->insereArcoID(4, 1, 0);
+//    G->imprimir(false);
+//    G->buscaLargura(G->buscaNo(1))->imprimir(true);
 
     return 0;
 }

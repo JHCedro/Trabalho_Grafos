@@ -162,7 +162,7 @@ public:
     void zeraGraus();
     void imprimirIdsArvore();
     void imprimirGraus();
-
+    void zeraTerminais();
 
     virtual ~Grafo(){};
 };

@@ -1284,6 +1284,7 @@ vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
     this->desmarcaNos();
     this->calculaMediaPesosArcos();
     this->zeraGraus();
+    this->zeraTerminais();
 
     vector<No*> solucaoNos, terminais;
     vector<Arco*> arcosSolucao;
@@ -1310,25 +1311,25 @@ vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
     ///enquanto terminais nao estao na mesma componente conexa
     while(!nosMesmaComponenteConexa(terminais)){
 
-        ///-----------------testar pra ver como que as decisoes estao sendo tomadas
-        cout<<"\n\nsolucaoNos:"<<endl;
-        imprimeVectorNo(solucaoNos);
-        cout<<"\n\nsarcosSolucao:"<<endl;
-        imprimeVectorArco(arcosSolucao);
-        cout<<"\n\ncandidatosArcos:"<<endl;
-        imprimeVectorArco(candidatosArco);
-        cout<<"\n\nidsArvore:"<<endl;
-        imprimirIdsArvore();
-        cout<<"\n\ngraus:"<<endl;
-        imprimirGraus();
-        cout<<endl<<endl<<endl<<endl;
-
+//        ///-----------------testar pra ver como que as decisoes estao sendo tomadas
+//        cout<<"\n\nsolucaoNos:"<<endl;
+//        imprimeVectorNo(solucaoNos);
+//        cout<<"\n\nsarcosSolucao:"<<endl;
+//        imprimeVectorArco(arcosSolucao);
+//        cout<<"\n\ncandidatosArcos:"<<endl;
+//        imprimeVectorArco(candidatosArco);
+//        cout<<"\n\nidsArvore:"<<endl;
+//        imprimirIdsArvore();
+//        cout<<"\n\ngraus:"<<endl;
+//        imprimirGraus();
+//        cout<<endl<<endl<<endl<<endl;
+//
         candidatosArco = bubbleSort(candidatosArco);
-
-        cout<<"ordenacao"<<endl;
-        for(int i=0; i<candidatosArco.size(); i++)
-            cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
-        system("pause");
+//
+//        cout<<"ordenacao"<<endl;
+//        for(int i=0; i<candidatosArco.size(); i++)
+//            cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
+//        system("pause");
 
         ///dois arcos como o grafo e nao-orientado
         Arco *a1 = candidatosArco[0];
@@ -1381,68 +1382,83 @@ vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
 
     }
 
-    ///-----------------testar pra ver como que as decisoes estao sendo tomadas
-    cout<<"\n\nsolucaoNos:"<<endl;
-    imprimeVectorNo(solucaoNos);
+//    ///-----------------testar pra ver como que as decisoes estao sendo tomadas
+//    cout<<"\n\nsolucaoNos:"<<endl;
+//    imprimeVectorNo(solucaoNos);
     cout<<"\n\nsarcosSolucao:"<<endl;
     imprimeVectorArco(arcosSolucao);
-    cout<<"\n\ncandidatosArcos:"<<endl;
-    imprimeVectorArco(candidatosArco);
-    cout<<"\n\nidsArvore:"<<endl;
-    imprimirIdsArvore();
-    cout<<"\n\ngraus:"<<endl;
-    imprimirGraus();
-    cout<<endl<<endl<<endl<<endl;
+//    cout<<"\n\ncandidatosArcos:"<<endl;
+//    imprimeVectorArco(candidatosArco);
+//    cout<<"\n\nidsArvore:"<<endl;
+//    imprimirIdsArvore();
+//    cout<<"\n\ngraus:"<<endl;
+//    imprimirGraus();
+//    cout<<endl<<endl<<endl<<endl;
+//
+//    candidatosArco = bubbleSort(candidatosArco);
+//
+//    cout<<"ordenacao"<<endl;
+//    for(int i=0; i<candidatosArco.size(); i++)
+//        cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
+//    system("pause");
 
-    candidatosArco = bubbleSort(candidatosArco);
-
-    cout<<"ordenacao"<<endl;
-    for(int i=0; i<candidatosArco.size(); i++)
-        cout<<"("<<candidatosArco[i]->getNoOrigem()->getID()<<","<<candidatosArco[i]->getNoDestino()->getID()<<")"<<"\tpeso:"<<candidatosArco[i]->getPeso()<<endl;
-    system("pause");
-
-    cout << "\nPODA DE STEINER COMENTADA!" << endl;
-    //arcosSolucao = podarArcosSteiner(arcosSolucao);
+    arcosSolucao = podarArcosSteiner(arcosSolucao);
     return arcosSolucao;
 }
 
 vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){
 
-    for(int i=0; i<solucao.size(); i++){
+    No *orig, *dest;
+    int tam = solucao.size();
 
-        ///se o no origem de algum arco tiver grau 1 e nao for terminal
-        if(solucao[i]->getNoOrigem()->getGrau()==1 && !solucao[i]->getNoOrigem()->ehTerminal()){
+    for(int i=0; i<tam; i++){
+
+        orig = solucao[i]->getNoOrigem();
+        dest = solucao[i]->getNoDestino();
+
+        ///testar porque a poda nao esta funcionando
+        cout<<"\n\ntestando candidado["<<i<<"], ("<<orig->getID()<<","<<dest->getID()<<")"<<endl;
+
+        cout<<"origem:"<<orig->getID()<<"\tgrau:"<<orig->getGrau()<<"\tterminal?"<<orig->ehTerminal()<<endl;
+        cout<<"destino:"<<dest->getID()<<"\tgrau:"<<dest->getGrau()<<"\tterminal?"<<dest->ehTerminal()<<endl;
+
+        ///se alguma ponta do arco tem grau 1 e essa ponta nao e um ponto terminal
+        if((orig->getGrau()==1 && !orig->ehTerminal()) || (dest->getGrau()==1 && !dest->ehTerminal())){
+
+            cout<<"removeu primeiro arco"<<endl;
 
             ///grau--
-            solucao[i]->getNoDestino()->setGrau(solucao[i]->getNoDestino()->getGrau()-1);
-            solucao[i]->getNoOrigem()->setGrau(solucao[i]->getNoOrigem()->getGrau()-1);
+            orig->setGrau(orig->getGrau()-1);
+            dest->setGrau(dest->getGrau()-1);
 
             solucao.erase(solucao.begin() + i);
 
+            cout<<"\n\napos remocao, arcosSolucao:"<<endl;
+            imprimeVectorArco(solucao);
+//            system("pause");
+
+            ///'i' mudou porque removemos ele, caralho que bosta
+            ///agora ele ta "pulando" o outro arco que era pra ele remover, WTF?
+            ///problema nesse for, nao esta removendo ambos os arcos, mas por que?
+            cout<<"tentando remover o outro arco:"<<endl;
+
             for(int j=0; j<solucao.size(); j++){
-                if(solucao[j]->getNoDestino() == solucao[i]->getNoOrigem()){
-                    solucao.erase(solucao.begin() + j + 1);
+                cout<<"("<<solucao[j]->getNoOrigem()->getID()<<","<<solucao[j]->getNoDestino()->getID()<<")"<<endl;
+                system("pause");
+//                cout<<"id destino:"<<solucao[j]->getNoDestino()->getID()<<endl;
+                if(solucao[j]->getNoOrigem() == dest && solucao[j]->getNoDestino() == orig){
+                    cout<<"removeu ambos os arcos"<<endl;
+                    solucao.erase(solucao.begin() + j);
                 }
+//                cout<<"\n\nsolucao:"<<endl;
+//                imprimeVectorArco(solucao);
+//                system("pause");
             }
-
+            ///toda vez que algum arco for removido, comecar a poda do inicio do vetor
+            i=0;
+            tam = solucao.size();
         }
-        ///se o no destino tiver grau 1 e nao for terminal atualiza grau do origem
-        else{
-            if(solucao[i]->getNoDestino()->getGrau()==1 && !solucao[i]->getNoDestino()->ehTerminal()){
-                ///grau--
-                solucao[i]->getNoDestino()->setGrau(solucao[i]->getNoDestino()->getGrau()-1);
-                solucao[i]->getNoOrigem()->setGrau(solucao[i]->getNoOrigem()->getGrau()-1);
-
-                solucao.erase(solucao.begin() + i);
-
-                for(int j=0; j<solucao.size(); j++){
-                    if(solucao[j]->getNoDestino() == solucao[i]->getNoOrigem()){
-                        solucao.erase(solucao.begin() + j + 1);
-                    }
-                }
-            }
-        }
-
+        system("pause");
     }
     return solucao;
 }
@@ -1450,4 +1466,9 @@ vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){
 void Grafo::zeraGraus(){
     for(itInicio(); !itEhFim(); itProx())
         getIt()->setGrau(0);
+}
+
+void Grafo::zeraTerminais(){
+    for(itInicio(); !itEhFim(); itProx())
+        getIt()->setTerminal(false);
 }
