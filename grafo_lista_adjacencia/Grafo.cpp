@@ -1269,6 +1269,7 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
     if(flagDir)
         cout << "\nUSANDO ARVORE DE STEINER EM GRAFO DIRECIONADO!" << endl;
 
+
     this->iniciaIdArvore();
     this->desmarcaArcos();
     this->desmarcaNos();
@@ -1276,7 +1277,9 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
     this->zeraGraus();
     this->zeraTerminais();
 
-//    cout << "\nMedia dos pesos: " << this->mediaPesosArcos << endl;
+//    cout<<"tempo pre-processamento guloso:"<<( clock() - t ) / CLOCKS_PER_SEC<<endl;
+
+//    cout << "\nnumero de arcos: "<<this->numeroArcos<<"\tMedia dos pesos: " << this->mediaPesosArcos << endl;
 
     vector<No*> terminais;
     vector<Arco*> arcosSolucao;
@@ -1347,10 +1350,13 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
     }
 
 //    imprimeVectorArco(arcosSolucao);
-//    arcosSolucao = podarArcosSteiner(arcosSolucao);
+    arcosSolucao = podarArcosSteiner(arcosSolucao);
 //    cout << "\ndepois da poda" <<endl;
 //    imprimeVectorArco(arcosSolucao);
-    this->atualizaGrau(true);    return arcosSolucao;
+    this->atualizaGrau(true);
+
+
+    return arcosSolucao;
 }
 
 vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam){
@@ -1480,4 +1486,69 @@ void Grafo::zeraGraus(){
 void Grafo::zeraTerminais(){
     for(itInicio(); !itEhFim(); itProx())
         getIt()->setTerminal(false);
+}
+
+/**
+RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO É O NÚMERO DE NÓS TERMINAIS
+AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
+*/
+uint *Grafo::leituraIntanciasSteiner(char nome[]){
+    ifstream entrada;
+    entrada.open(nome);
+
+//    cout<<"abriu arquivo"<<endl;
+//    cout<<nome<<endl;
+//    system("pause");
+
+    uint n_nos, n_arcos;
+    char aux[50];
+    entrada>>aux;
+    while(((string)aux) != "SECTION Graph"){
+        entrada.getline(aux, 50);
+//        cout<<(string)aux<<endl;
+    }
+    entrada>>aux>>n_nos;
+    entrada>>aux>>n_arcos;
+//    cout<<"numero de nos: "<<n_nos<<endl;
+//    cout<<"numero de arcos: "<<n_arcos<<endl;
+
+    ///insere todos os nos
+    for(uint i=1; i<=n_nos; i++)
+        this->insereNo(i);
+
+    ///indices de origem e destino dos arcos
+    uint i, j;
+    double peso;
+
+    ///PERCORRER TODOS OS ARCOS DA ENTRADA
+    while((string)aux != "END"){
+        entrada>>aux;
+        if((string)aux != "END"){
+            entrada >> i >> j >> peso;
+            this->insereArcoID(i, j, 1, false, peso);
+//            system("pause");
+        }
+    }
+
+    entrada>>aux>>aux>>aux;
+
+    uint n_terminais, *terminais, idx=0;
+    entrada>>n_terminais;
+
+//    cout<<"numero de terminais: "<<n_terminais<<endl;
+
+    terminais = new uint[n_terminais + 1];
+    terminais[0] = n_terminais;
+
+    ///leitura de terminais
+    while((string)aux != "END"){
+        entrada>>aux;
+        if((string)aux != "END"){
+            entrada>>i;
+            terminais[idx + 1] = i;
+            idx++;
+        }
+    }
+
+    return terminais;
 }

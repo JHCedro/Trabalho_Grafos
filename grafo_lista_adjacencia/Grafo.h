@@ -165,6 +165,7 @@ public:
     void imprimirIdsArvore();
     void imprimirGraus();
     void zeraTerminais();
+    uint *leituraIntanciasSteiner(char nome[]);
 
     virtual ~Grafo(){};
 };

@@ -788,6 +788,27 @@ void testeGulosoSteiner(){
 
 }
 
+void testeInstanciasSteiner(){
+    while(0==0){
+        int i=1;
+        char nome[50];
+        sprintf(nome, "instanciasSteiner\\E\\e0%d.stp", i);
+        Grafo *g = new GrafoLista(false);
+        uint *terminais = g->leituraIntanciasSteiner(nome);
+
+        srand(time(NULL));
+        vector<Arco*> solucao = g->gulosoRandomizadoSteiner(terminais, terminais[0], 0.4);
+
+        double peso=0;
+
+        for(int i=0; i<solucao.size(); i++)
+            peso += solucao[i]->getPeso();
+
+        cout<<"peso obtido pelo guloso: "<<peso<<endl;
+        delete g;
+    }
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -843,7 +864,8 @@ int main(){
 //    testarComponentesConexasNaMao();
 //    testeKConexo();
 
-    testeGulosoSteiner();
+//    testeGulosoSteiner();
+    testeInstanciasSteiner();
 
 //    Grafo *G = new GrafoHash(5, false);
 //    for (int i=0; i < 5; i++)
