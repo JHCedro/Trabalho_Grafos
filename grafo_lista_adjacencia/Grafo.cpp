@@ -1494,7 +1494,7 @@ AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
 */
 uint *Grafo::leituraIntanciasSteiner(char nome[]){
     ifstream entrada;
-    entrada.open(nome);
+    entrada.open(nome, ios::in);
 
 //    cout<<"abriu arquivo"<<endl;
 //    cout<<nome<<endl;

@@ -789,10 +789,11 @@ void testeGulosoSteiner(){
 }
 
 void testeInstanciasSteiner(){
-    while(0==0){
+    cout<<"LISTA\n"<<endl;
+    for(int k=0;k<10;k++){
         int i=1;
         char nome[50];
-        sprintf(nome, "instanciasSteiner\\E\\e0%d.stp", i);
+        sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
         Grafo *g = new GrafoLista(false);
         uint *terminais = g->leituraIntanciasSteiner(nome);
 
@@ -807,6 +808,27 @@ void testeInstanciasSteiner(){
         cout<<"peso obtido pelo guloso: "<<peso<<endl;
         delete g;
     }
+
+    cout<<"HASH:\n"<<endl;
+    for(int k=0;k<10;k++){
+        int i=1;
+        char nome[50];
+        sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
+        Grafo *g = new GrafoLista(false);
+        uint *terminais = g->leituraIntanciasSteiner(nome);
+
+        srand(time(NULL));
+        vector<Arco*> solucao = g->gulosoRandomizadoSteiner(terminais, terminais[0], 0.4);
+
+        double peso=0;
+
+        for(int i=0; i<solucao.size(); i++)
+            peso += solucao[i]->getPeso();
+
+        cout<<"peso obtido pelo guloso: "<<peso<<endl;
+        delete g;
+    }
+
 }
 
 int main(){
