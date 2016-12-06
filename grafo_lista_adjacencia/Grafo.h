@@ -159,6 +159,7 @@ public:
 
     vector<Arco*> gulosoSteiner(uint ids[], uint tam);
     vector<Arco*> gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha);
+    vector<Arco*> gulosoRandomizadoReativoSteiner(uint ids[], uint tam);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();

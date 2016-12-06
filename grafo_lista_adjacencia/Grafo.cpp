@@ -9,6 +9,7 @@
 #include <map>
 #include <set>
 #define INFINITO HUGE_VAL
+#define inf HUGE_VAL
 
 using namespace std;
 
@@ -1275,7 +1276,7 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
     this->zeraGraus();
     this->zeraTerminais();
 
-    cout << "\nMedia dos pesos: " << this->mediaPesosArcos << endl;
+//    cout << "\nMedia dos pesos: " << this->mediaPesosArcos << endl;
 
     vector<No*> terminais;
     vector<Arco*> arcosSolucao;
@@ -1301,8 +1302,8 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
 
         ///  PARTE RANOMIZADA
         uint idCandidato = rand() % (uint)(alpha * candidatosArco.size() + 1);
-        cout << "candidatosArco.size() =  " << candidatosArco.size() << "\t";
-        cout << "idCandidato: " << idCandidato << endl;
+//        cout << "candidatosArco.size() =  " << candidatosArco.size() << "\t";
+//        cout << "idCandidato: " << idCandidato << endl;
         Arco *arco = candidatosArco[idCandidato];
         No *no;
 
@@ -1345,11 +1346,110 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
         return vazio;
     }
 
-    imprimeVectorArco(arcosSolucao);
-    arcosSolucao = podarArcosSteiner(arcosSolucao);
-    cout << "\ndepois da poda" <<endl;
-    imprimeVectorArco(arcosSolucao);
+//    imprimeVectorArco(arcosSolucao);
+//    arcosSolucao = podarArcosSteiner(arcosSolucao);
+//    cout << "\ndepois da poda" <<endl;
+//    imprimeVectorArco(arcosSolucao);
     this->atualizaGrau(true);    return arcosSolucao;
+}
+
+vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam){
+    /// espaco amostral de alpha
+    uint bloco_iteracoes = 10;      /// intervalo no qual distribuicao sera atualizada
+    uint max_iteracoes = 100;       /// total de iteracoes do algoritmo
+
+    uint m = 10;            /// numero de amostras utiizadas
+    double sigma = 1.0;     /// o quanto o melhor resultado altera a novas distribuicoes
+    double soma_i[m];       /// soma dos resultados obtidos com de alpha = alphas[i]
+    uint n_i[m];            /// numero de resultados obtidos com de alpha = alphas[i]
+    double q_i[m];          /// auxiliar para recalcular distribuicoes
+
+    /// alphas a serem testados
+    double alphas[m];       /// = {0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50};
+
+    /// distribuicao inicialmente uniforme
+    double dUniforme[m];    /// = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+
+    vector<Arco*> melhorSolucao;
+
+    /// inicializa variaveis
+    for (int i=0; i < m; i++){
+        soma_i[i] = 0.0;
+        n_i[i] = 0;
+        q_i[i] = 0.0;
+
+        alphas[i] = 0.05*(i+1);
+        dUniforme[i] = 1.0;
+    }
+
+    /// gerador de inteiros [0, m) a partir de distribuicao
+    default_random_engine generator;
+    discrete_distribution<int> distribuicao(dUniforme, dUniforme+m);
+
+    double melhorResultado = INFINITO;  /// F(S*)
+
+    /// para cada alpha
+    for (int i = 0; i < max_iteracoes; i++){
+        printf("\n\ni = %d", i);
+        cout << "\nDistribuicao:\n\t";
+        for (double p : distribuicao.probabilities()){
+            cout << p << "  ";
+        }
+
+        /// escolha alpha aleatoriaente com distribuicao atual
+        uint alpha = distribuicao(generator);
+
+        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
+
+        /// testa o guloso randomizado para este alpha
+        vector<Arco*> solucao = this->gulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha]);
+
+        /// calcula soma dos pesos da solucao
+        double somaPesos = 0;
+        for(Arco *arco : solucao)
+            somaPesos += arco->getPeso();
+
+        soma_i[alpha] += somaPesos;    /// soma dos pesos das execucoes deste alpha
+        n_i[alpha]++;                  /// numero de execucoes deste alpha
+
+        ///atualiza melhor resultado F(S*)
+        if(somaPesos < melhorResultado){
+            melhorResultado = somaPesos;
+            melhorSolucao = solucao;
+        }
+
+        printf("\nMelhor resultado ate i = %d : %f", i, melhorResultado);
+
+        /// ##########  PARTE REATIVA   ##########
+        if((i+1) % bloco_iteracoes == 0){
+            /// a cada bloco de iteracoes
+            double soma_q = 0;
+            double A_i = 0;     /// media dos resultados para alpha = alphas[i]
+
+            for (int j = 0; j < m ; j++){
+                if(n_i[j] > 0){
+                    double A_i = soma_i[j] / n_i[j];
+                    q_i[j] = pow(melhorResultado / A_i, sigma);
+                    soma_q += q_i[j];
+                }
+            }
+
+            cout << "\n\nNova Distribuicao:\n";
+            double auxNovaDistribuicao[m];
+            for (int j=0; j < m; j++){
+                auxNovaDistribuicao[j] = q_i[j] / soma_q;
+                cout << auxNovaDistribuicao[j] << "  ";
+            }
+            cout << endl;
+//            system("pause");
+
+            /// atualiza distribuicao
+            discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
+            distribuicao = novaDistribuicao;
+        }
+    }
+
+    return melhorSolucao;
 }
 
 vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){

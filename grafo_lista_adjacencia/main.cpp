@@ -770,10 +770,11 @@ void testeGulosoSteiner(){
     uint ids[] = {1, 4, 7, 8};
 /**/
 
-    g->imprimir(true);
+//    g->imprimir(true);
 
 //    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
-    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
+//    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
+    vector<Arco*> solucao = g->gulosoRandomizadoReativoSteiner(ids, 3);
 
     cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
     uint somaPesos = 0;
