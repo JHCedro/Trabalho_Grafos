@@ -1144,23 +1144,23 @@ void Grafo::iniciaIdArvore(){
     }
 }
 
-vector<Arco*> Grafo::arcosAdjacentesDesmarcados(vector<No*> nos){
-    vector<Arco*> arcos;
+vector<pair<double, Arco*>> Grafo::arcosAdjacentesDesmarcados(vector<No*> nos){
+    vector<pair<double, Arco*>> arcos;
     for(int i = 0; i < nos.size(); i++){
         for(nos[i]->itInicio(); !nos[i]->itEhFim(); nos[i]->itProx()){
             Arco *a = nos[i]->getIt();
             if(!a->getMarcado()){
                 a->setMarcado(true);
                 a->getDual()->setMarcado(true);
-                arcos.push_back(a);
+                arcos.push_back(make_pair(this->funcaoCriterio(a), a));
             }
         }
     }
     return arcos;
 }
 
-vector<Arco*> Grafo::arcosAdjacentesDesmarcados(No *no){
-    vector<Arco*> arcos;
+vector<pair<double, Arco*>> Grafo::arcosAdjacentesDesmarcados(No *no){
+    vector<pair<double, Arco*>> arcos;
     for(no->itInicio(); !no->itEhFim(); no->itProx()){
         Arco *arco = no->getIt();
         if(!arco->getMarcado()){
@@ -1169,61 +1169,61 @@ vector<Arco*> Grafo::arcosAdjacentesDesmarcados(No *no){
             arco->getDual()->setMarcado(true);
 
             ///so um dos arcos eh marcado
-            arcos.push_back(arco);
+            arcos.push_back(make_pair(this->funcaoCriterio(arco), arco));
         }
     }
     return arcos;
 }
 
-bool Grafo::comparaCriterioSteiner(Arco *a1, Arco *a2){
-    return funcaoCriterio(a1) > funcaoCriterio(a2);
+bool Grafo::comparaCriterioSteiner(pair<double, Arco*> p1, pair<double, Arco*> p2){
+    return p1.first > p2.first;
 }
 
-vector<Arco*> Grafo::bubbleSort(vector<Arco*> arcos){
-    Arco *aux;
-    // coloca em ordem crescente (1,2,3,4,5...)
-    for( int x = 0; x < arcos.size(); x++ )
-    {
-        for( int y = x + 1; y < arcos.size(); y++ ) // sempre 1 elemento à frente
-        {
-            // se o (x > (x+1)) então o x passa pra frente (ordem crescente)
-            if ( !comparaCriterioSteiner(arcos[x], arcos[y]) )
-            {
-             aux = arcos[x];
-             arcos[x] = arcos[y];
-             arcos[y] = aux;
-            }
-        }
-    } // fim da ordenação
-    return arcos;
-}
+//vector<Arco*> Grafo::bubbleSort(vector<Arco*> arcos){
+//    Arco *aux;
+//    // coloca em ordem crescente (1,2,3,4,5...)
+//    for( int x = 0; x < arcos.size(); x++ )
+//    {
+//        for( int y = x + 1; y < arcos.size(); y++ ) // sempre 1 elemento à frente
+//        {
+//            // se o (x > (x+1)) então o x passa pra frente (ordem crescente)
+//            if ( !comparaCriterioSteiner(arcos[x], arcos[y]) )
+//            {
+//             aux = arcos[x];
+//             arcos[x] = arcos[y];
+//             arcos[y] = aux;
+//            }
+//        }
+//    } // fim da ordenação
+//    return arcos;
+//}
 
-void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
-      int i = left, j = right;
-      Arco *tmp;
-      Arco *pivot = arr[(left + right) / 2];
-
-      /* partition */
-      while (i <= j) {
-            while (comparaCriterioSteiner(arr[i], pivot))
-                  i++;
-            while (!comparaCriterioSteiner(arr[j], pivot))
-                  j--;
-            if (i <= j) {
-                  tmp = arr[i];
-                  arr[i] = arr[j];
-                  arr[j] = tmp;
-                  i++;
-                  j--;
-            }
-      };
-
-      /* recursion */
-      if (left < j)
-            quickSort(arr, left, j);
-      if (i < right)
-            quickSort(arr, i, right);
-}
+//void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
+//      int i = left, j = right;
+//      Arco *tmp;
+//      Arco *pivot = arr[(left + right) / 2];
+//
+//      /* partition */
+//      while (i <= j) {
+//            while (comparaCriterioSteiner(arr[i], pivot))
+//                  i++;
+//            while (!comparaCriterioSteiner(arr[j], pivot))
+//                  j--;
+//            if (i <= j) {
+//                  tmp = arr[i];
+//                  arr[i] = arr[j];
+//                  arr[j] = tmp;
+//                  i++;
+//                  j--;
+//            }
+//      };
+//
+//      /* recursion */
+//      if (left < j)
+//            quickSort(arr, left, j);
+//      if (i < right)
+//            quickSort(arr, i, right);
+//}
 
 bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
     int idAux = nos[0]->getIdArvore();
@@ -1283,7 +1283,7 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
 
     vector<No*> terminais;
     vector<Arco*> arcosSolucao;
-    vector<Arco*> candidatosArco;
+    vector<pair<double , Arco*>> candidatosArco;
 
     ///criar nos terminais com indices
     for(int i=0; i < nTerminais; i++){
@@ -1301,13 +1301,14 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
 
     ///enquanto terminais nao estao na mesma componente conexa
     while(!nosMesmaComponenteConexa(terminais) && !candidatosArco.empty()){
-        candidatosArco = bubbleSort(candidatosArco);    ///  <----------------------- CONSERTAR ORDENACAO CADAGA ###############
+//        candidatosArco = bubbleSort(candidatosArco);    ///  <----------------------- CONSERTAR ORDENACAO CADAGA ###############
+        sort(candidatosArco.begin(), candidatosArco.end(), comparaCriterioSteiner);
 
         ///  PARTE RANOMIZADA
         uint idCandidato = rand() % (uint)(alpha * candidatosArco.size() + 1);
 //        cout << "candidatosArco.size() =  " << candidatosArco.size() << "\t";
 //        cout << "idCandidato: " << idCandidato << endl;
-        Arco *arco = candidatosArco[idCandidato];
+        Arco *arco = candidatosArco[idCandidato].second;
         No *no;
 
         if(arco->getNoDestino()->getMarcado() == false)
@@ -1318,7 +1319,7 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
         ///se o no nao esta marcado insere na solucao de nos
         if( !no->getMarcado() ){
             no->setMarcado(true);
-            vector<Arco*> adjacentes = arcosAdjacentesDesmarcados(no);
+            vector<pair<double, Arco*>> adjacentes = arcosAdjacentesDesmarcados(no);
 
             for(int i=0; i<adjacentes.size(); i++)
                 candidatosArco.push_back(adjacentes[i]);

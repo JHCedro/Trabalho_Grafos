@@ -148,9 +148,9 @@ public:
 
     double funcaoCriterio(Arco *a);
     void iniciaIdArvore();
-    vector<Arco*> arcosAdjacentesDesmarcados(vector<No*> nos);
-    vector<Arco*> arcosAdjacentesDesmarcados(No* no);
-    bool comparaCriterioSteiner(Arco *a1, Arco *a2);
+    vector<pair<double, Arco*>> arcosAdjacentesDesmarcados(vector<No*> nos);
+    vector<pair<double, Arco*>> arcosAdjacentesDesmarcados(No* no);
+    static bool comparaCriterioSteiner(pair<double, Arco*> p1, pair<double, Arco*> p2);
     void quickSort(vector<Arco*> arr, int left, int right);
     vector<Arco*> bubbleSort(vector<Arco*> arcos);
     bool nosMesmaComponenteConexa(vector<No*> nos);
