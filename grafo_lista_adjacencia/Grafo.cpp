@@ -1132,8 +1132,8 @@ double Grafo::funcaoCriterio(Arco *a){
     double result = mediaPesosArcos/a->getPeso();
 
     double gamma = (1.0/3.0);
-    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
-        result += gamma*this->mediaPesosArcos;
+//    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
+//        result += gamma*this->mediaPesosArcos;
 
     return result;
 }
@@ -1362,8 +1362,8 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
 
 vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam){
     /// espaco amostral de alpha
-    uint bloco_iteracoes = 10;      /// intervalo no qual distribuicao sera atualizada
-    uint max_iteracoes = 100;       /// total de iteracoes do algoritmo
+    uint bloco_iteracoes = 30;      /// intervalo no qual distribuicao sera atualizada
+    uint max_iteracoes = 150;       /// total de iteracoes do algoritmo
 
     uint m = 10;            /// numero de amostras utiizadas
     double sigma = 1.0;     /// o quanto o melhor resultado altera a novas distribuicoes
@@ -1397,16 +1397,16 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
 
     /// para cada alpha
     for (int i = 0; i < max_iteracoes; i++){
-        printf("\n\ni = %d", i);
-        cout << "\nDistribuicao:\n\t";
+//        printf("\n\ni = %d", i);
+//        cout << "\nDistribuicao:\n\t";
         for (double p : distribuicao.probabilities()){
-            cout << p << "  ";
+//            cout << p << "  ";
         }
 
         /// escolha alpha aleatoriaente com distribuicao atual
         uint alpha = distribuicao(generator);
 
-        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
+//        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
 
         /// testa o guloso randomizado para este alpha
         vector<Arco*> solucao = this->gulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha]);
@@ -1425,7 +1425,7 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
             melhorSolucao = solucao;
         }
 
-        printf("\nMelhor resultado ate i = %d : %f", i, melhorResultado);
+//        printf("\nMelhor resultado ate i = %d : %f", i, melhorResultado);
 
         /// ##########  PARTE REATIVA   ##########
         if((i+1) % bloco_iteracoes == 0){
@@ -1441,18 +1441,21 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
                 }
             }
 
-            cout << "\n\nNova Distribuicao:\n";
+//            cout << "\n\nNova Distribuicao:\n";
             double auxNovaDistribuicao[m];
             for (int j=0; j < m; j++){
                 auxNovaDistribuicao[j] = q_i[j] / soma_q;
-                cout << auxNovaDistribuicao[j] << "  ";
+//                cout << auxNovaDistribuicao[j] << "  ";
             }
-            cout << endl;
+//            cout << endl;
 //            system("pause");
 
             /// atualiza distribuicao
             discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
             distribuicao = novaDistribuicao;
+
+            ///para ver se ta rodando e nao em loop infinito
+            cout<<".";
         }
     }
 
@@ -1493,7 +1496,7 @@ void Grafo::zeraTerminais(){
 RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO É O NÚMERO DE NÓS TERMINAIS
 AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
 */
-uint *Grafo::leituraIntanciasSteiner(char nome[]){
+uint *Grafo::leituraIntanciasSteiner(string nome){
     ifstream entrada;
     entrada.open(nome, ios::in);
 
@@ -1502,10 +1505,10 @@ uint *Grafo::leituraIntanciasSteiner(char nome[]){
 //    system("pause");
 
     uint n_nos, n_arcos;
-    char aux[50];
+    char aux[100];
     entrada>>aux;
     while(((string)aux) != "SECTION Graph"){
-        entrada.getline(aux, 50);
+        entrada.getline(aux, 100);
 //        cout<<(string)aux<<endl;
     }
     entrada>>aux>>n_nos;
@@ -1522,16 +1525,13 @@ uint *Grafo::leituraIntanciasSteiner(char nome[]){
     double peso;
 
     ///PERCORRER TODOS OS ARCOS DA ENTRADA
-    while((string)aux != "END"){
-        entrada>>aux;
-        if((string)aux != "END"){
-            entrada >> i >> j >> peso;
-            this->insereArcoID(i, j, 1, false, peso);
+    for(int linha=0; linha<n_arcos; linha++){
+        entrada >> aux >> i >> j >> peso;
+        this->insereArcoID(i, j, 1, false, peso);
 //            system("pause");
-        }
     }
 
-    entrada>>aux>>aux>>aux;
+    entrada>>aux>>aux>>aux>>aux;
 
     uint n_terminais, *terminais, idx=0;
     entrada>>n_terminais;
@@ -1542,13 +1542,10 @@ uint *Grafo::leituraIntanciasSteiner(char nome[]){
     terminais[0] = n_terminais;
 
     ///leitura de terminais
-    while((string)aux != "END"){
-        entrada>>aux;
-        if((string)aux != "END"){
-            entrada>>i;
-            terminais[idx + 1] = i;
-            idx++;
-        }
+    for(int linha=0; linha<n_terminais; linha++){
+        entrada >> aux >>i;
+        ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
+        terminais[linha + 1] = i;
     }
 
     return terminais;

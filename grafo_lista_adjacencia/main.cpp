@@ -1,6 +1,7 @@
 #include "Auxiliares.h"
 #include "GrafoHash.h"
 #include "GrafoLista.h"
+#include <dirent.h>
 
 using namespace std;
 
@@ -737,6 +738,7 @@ void testeGulosoSteiner(){
     uint ids[] = {3, 5, 7};
 /**/
 /** EXEMPLO 2 (bem bosta)*/
+/**
     for(int i=1; i<=12; i++)
         g->insereNo(i);
 
@@ -753,6 +755,7 @@ void testeGulosoSteiner(){
     g->insereArcoID(8, 12, 1, false, 8.0);
     g->insereArcoID(10, 11, 1, true, 3.0);
     uint ids[] = {5, 7, 9};
+*/
 /**/
 
 /** EXEMPLO 3
@@ -774,23 +777,45 @@ void testeGulosoSteiner(){
 
 //    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
 //    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
-    vector<Arco*> solucao = g->gulosoRandomizadoReativoSteiner(ids, 3);
 
-    cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
-    uint somaPesos = 0;
-    for(int i=0; i<solucao.size(); i++){
-        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
-        somaPesos += solucao[i]->getPeso();
+    string pasta = "instanciasTestesSteiner";
+    struct dirent *arquivo;
+    DIR *dir = opendir(pasta.c_str());
+    vector<string> arquivos;
+
+    for(int i=0; arquivo = readdir(dir); i++){
+        if(i>1)
+            arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
     }
-    cout << "Soma dos pesos: " << somaPesos << endl;
 
+    for(int idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+
+        cout<<arquivos[idArquivo]<<endl;
+
+        uint * terminais = g->leituraIntanciasSteiner(arquivos[idArquivo]);
+        uint ids[terminais[0]];
+        for(int j=0; j<terminais[0]; j++)
+            ids[j] = terminais[j+1];
+
+        srand(time(NULL));
+        vector<Arco*> solucao = g->gulosoSteiner(ids, terminais[0]);
+
+//        cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
+        uint somaPesos = 0;
+        for(int i=0; i<solucao.size(); i++){
+//            cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
+            somaPesos += solucao[i]->getPeso();
+        }
+        cout << "Soma dos pesos: " << somaPesos << endl << endl;
+//        system("pause");
+    }
 //    g->imprimir(true);
 
 }
 
 void testeInstanciasSteiner(){
     cout<<"LISTA\n"<<endl;
-    for(int k=0;k<10;k++){
+    for(int k=0;k<50;k++){
         int i=1;
         char nome[50];
         sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
@@ -810,7 +835,7 @@ void testeInstanciasSteiner(){
     }
 
     cout<<"HASH:\n"<<endl;
-    for(int k=0;k<10;k++){
+    for(int k=0;k<50;k++){
         int i=1;
         char nome[50];
         sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
@@ -829,6 +854,55 @@ void testeInstanciasSteiner(){
         delete g;
     }
 
+}
+
+void testeGulosoRandomizado(){
+    srand(time(NULL));
+    double menorPeso = HUGE_VAL;
+    double alpha = 0.25;
+    int it = 30;
+    string pasta = "instanciasTestesSteiner";
+    struct dirent *arquivo;
+    DIR *dir = opendir(pasta.c_str());
+    vector<string> arquivos;
+
+    for(int i=0; arquivo = readdir(dir); i++){
+        if(i>1)
+            arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
+    }
+
+    ///apra cada arquivo
+    for(int idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+
+//        system("pause");
+        cout<<"instancia:"<<arquivos[idArquivo]<<endl;
+        ///para cada iteração com o alpha dado
+        for(int k=0;k<it;k++){
+            Grafo *g = new GrafoLista(false);
+            uint *terminais = g->leituraIntanciasSteiner(arquivos[idArquivo]);
+            uint ids[terminais[0]];
+
+    //        cout<<"ids:"<<endl;
+            ///iniciar vetor de ids dos terminais comecando do 1, pois a posicao 0 e o numero de terminais
+            for(int j=0; j<terminais[0]; j++){
+                ids[j] = terminais[j+1];
+    //            cout<<ids[j]<<endl;
+            }
+
+            vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, terminais[0], alpha);
+
+            double peso=0;
+
+            for(int i=0; i<solucao.size(); i++)
+                peso += solucao[i]->getPeso();
+
+//            cout<<"peso obtido pelo guloso randomico : "<<peso<<endl;
+            if(peso<menorPeso) menorPeso = peso;
+            delete g;
+        }
+        cout<<"melhor solucao obtida:"<<menorPeso<<endl<<endl;
+        menorPeso = HUGE_VAL;
+    }
 }
 
 int main(){
@@ -886,9 +960,18 @@ int main(){
 //    testarComponentesConexasNaMao();
 //    testeKConexo();
 
-//    testeGulosoSteiner();
-    testeInstanciasSteiner();
 
+
+
+    cout<<"guloso:"<<endl<<endl<<endl;
+    testeGulosoSteiner();
+    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+    testeGulosoRandomizado();
+
+
+
+//    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+//    testeInstanciasSteiner();
 //    Grafo *G = new GrafoHash(5, false);
 //    for (int i=0; i < 5; i++)
 //        G->insereNo(i);
