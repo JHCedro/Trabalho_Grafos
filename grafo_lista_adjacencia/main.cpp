@@ -905,6 +905,33 @@ void testeGulosoRandomizado(){
     }
 }
 
+testarGulosoNaMao(){
+    Grafo *g = new GrafoLista(false);
+
+    for(int i=1; i<=7; i++)
+        g->insereNo(i);
+
+    g->insereArcoID(1 ,4 , 1 ,false, 4.0);
+    g->insereArcoID(1 ,3 , 1 ,false, 3.0);
+    g->insereArcoID(1 ,2 , 1 ,false, 2.0);
+    g->insereArcoID(2 ,3 , 1 ,false, 8.0);
+    g->insereArcoID(2 ,6 , 1 ,false, 2.0);
+    g->insereArcoID(2 ,7 , 1 ,false, 4.0);
+    g->insereArcoID(3 ,4 , 1 ,false, 1.0);
+    g->insereArcoID(3 ,5 , 1 ,false, 2.0);
+    g->insereArcoID(4 ,5 , 1 ,false, 5.0);
+    g->insereArcoID(5 ,6 , 1 ,false, 3.0);
+    g->insereArcoID(5 ,7 , 1 ,false, 6.0);
+    g->insereArcoID(6 ,7 , 1 ,false, 5.0);
+    uint ids[] = {3, 5, 7};
+
+    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
+
+    cout<<"solucao"<<endl;
+    for(int i=0; i<solucao.size(); i++)
+        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -962,11 +989,11 @@ int main(){
 
 
 
-
+//    testarGulosoNaMao();
     cout<<"guloso:"<<endl<<endl<<endl;
     testeGulosoSteiner();
-    cout<<"guloso randomizado:"<<endl<<endl<<endl;
-    testeGulosoRandomizado();
+//    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+//    testeGulosoRandomizado();
 
 
 

@@ -1132,8 +1132,9 @@ double Grafo::funcaoCriterio(Arco *a){
     double result = mediaPesosArcos/a->getPeso();
 
     double gamma = (1.0/3.0);
-//    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
-//        result += gamma*this->mediaPesosArcos;
+    ///esse bonus esta ruim!!
+    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
+        result += gamma*this->mediaPesosArcos;
 
     return result;
 }
@@ -1462,22 +1463,40 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
     return melhorSolucao;
 }
 
+bool comparaGrau(Arco *a1, Arco* a2){
+    No* orig1 = a1->getNoOrigem();
+    No* dest1 = a1->getNoDestino();
+    No* orig2 = a2->getNoOrigem();
+    No* dest2 = a2->getNoDestino();
+
+    uint menorGrau1 = min(orig1->getGrau(), dest1->getGrau());
+    uint menorGrau2 = min(orig2->getGrau(), dest2->getGrau());
+
+    ///se alguma ponta for terminal e tem grau1 o arco tem que ficar por ultimo na ordenacao
+    if( (orig1->ehTerminal() && orig1->getGrau()==1) || (dest1->ehTerminal() && dest1->getGrau()==1) || (orig1->ehTerminal() && dest1->ehTerminal()) )
+        menorGrau1 = HUGE_VAL;
+    if( (orig2->ehTerminal() && orig2->getGrau()==1) || (dest2->ehTerminal() && dest2->getGrau()==1) || (orig1->ehTerminal() && dest1->ehTerminal()) )
+        menorGrau2 = HUGE_VAL;
+
+    return menorGrau1 < menorGrau2;
+}
+
 vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){
     No *orig, *dest;
-    int tam = solucao.size();
+    sort(solucao.begin(), solucao.end(), comparaGrau);
 
-    for(int i=0; i<solucao.size(); i++){
-        orig = solucao[i]->getNoOrigem();
-        dest = solucao[i]->getNoDestino();
+    ///enquanto ainda existem arcos para serem podados
+    while((solucao[0]->getNoOrigem()->ehTerminal()==false && solucao[0]->getNoOrigem()->getGrau()==1)
+       || (solucao[0]->getNoDestino()->ehTerminal()==false && solucao[0]->getNoDestino()->getGrau()==1)){
 
-        ///se alguma ponta do arco tem grau 1 e essa ponta nao e um ponto terminal
-        if((orig->getGrau() == 1 && !orig->ehTerminal()) || (dest->getGrau() == 1 && !dest->ehTerminal())){
-            orig->setGrau(orig->getGrau()-1);
-            dest->setGrau(dest->getGrau()-1);
+        orig = solucao[0]->getNoOrigem();
+        dest = solucao[0]->getNoDestino();
 
-            solucao.erase(solucao.begin() + i);
-            i=0;
-        }
+        orig->setGrau(orig->getGrau()-1);
+        dest->setGrau(dest->getGrau()-1);
+        solucao.erase(solucao.begin());
+
+        sort(solucao.begin(), solucao.end(), comparaGrau);
     }
     return solucao;
 }
