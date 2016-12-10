@@ -21,6 +21,8 @@ protected:
     uint numeroArcos;   /// m
     uint contAux;       /// contador auxiliar
     bool flagDir;       /// flag indicando se o grafo é direcionado ou não
+    uint maiorNivel;
+
     int auxEhNoArticulacao(No* no);
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
     vector<vector<No*>> auxRetornarComponentesConexas(No* no,vector<vector<No*>> componentes, int num);
@@ -29,6 +31,7 @@ protected:
     double mediaPesosArcos;
     bool auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination);
     bool verificaSeEhConexoSemOsNos(vector<No*> nos);
+    vector<Arco*> auxGulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, uint semente);
 public:
     Grafo(bool direcionado);
     uint getGrau(){     return grau;    };
@@ -156,10 +159,12 @@ public:
     bool nosMesmaComponenteConexa(vector<No*> nos);
 
     void calculaMediaPesosArcos();
+    void definirNivelNos();
 
     vector<Arco*> gulosoSteiner(uint ids[], uint tam);
-    vector<Arco*> gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha);
+    double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes);
     vector<Arco*> gulosoRandomizadoReativoSteiner(uint ids[], uint tam);
+    vector<Arco*> gulosoRandomizadoReativoSteiner2(uint ids[], uint tam);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();

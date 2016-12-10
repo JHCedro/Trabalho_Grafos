@@ -1131,10 +1131,14 @@ void Grafo::calculaMediaPesosArcos(){
 double Grafo::funcaoCriterio(Arco *a){
     double result = mediaPesosArcos/a->getPeso();
 
-    double gamma = (1.0/3.0);
-    ///esse bonus esta ruim!!
-    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
-        result += gamma*this->mediaPesosArcos;
+    double gamma = 0.3;
+//    if(a->getNoOrigem()->ehTerminal() || a->getNoDestino()->ehTerminal())
+//        result += gamma*this->mediaPesosArcos;
+    ///PODE ESTAR ERRADO!!!
+    double bonus = ((double) a->getNoDestino()->getNivel() / this->maiorNivel)*gamma;
+//    printf("\nvalor: %f \t bonus: %f", result, bonus);
+
+    result += bonus;
 
     return result;
 }
@@ -1180,52 +1184,6 @@ bool Grafo::comparaCriterioSteiner(pair<double, Arco*> p1, pair<double, Arco*> p
     return p1.first > p2.first;
 }
 
-//vector<Arco*> Grafo::bubbleSort(vector<Arco*> arcos){
-//    Arco *aux;
-//    // coloca em ordem crescente (1,2,3,4,5...)
-//    for( int x = 0; x < arcos.size(); x++ )
-//    {
-//        for( int y = x + 1; y < arcos.size(); y++ ) // sempre 1 elemento à frente
-//        {
-//            // se o (x > (x+1)) então o x passa pra frente (ordem crescente)
-//            if ( !comparaCriterioSteiner(arcos[x], arcos[y]) )
-//            {
-//             aux = arcos[x];
-//             arcos[x] = arcos[y];
-//             arcos[y] = aux;
-//            }
-//        }
-//    } // fim da ordenação
-//    return arcos;
-//}
-
-//void Grafo::quickSort(vector<Arco*> arr, int left, int right) {
-//      int i = left, j = right;
-//      Arco *tmp;
-//      Arco *pivot = arr[(left + right) / 2];
-//
-//      /* partition */
-//      while (i <= j) {
-//            while (comparaCriterioSteiner(arr[i], pivot))
-//                  i++;
-//            while (!comparaCriterioSteiner(arr[j], pivot))
-//                  j--;
-//            if (i <= j) {
-//                  tmp = arr[i];
-//                  arr[i] = arr[j];
-//                  arr[j] = tmp;
-//                  i++;
-//                  j--;
-//            }
-//      };
-//
-//      /* recursion */
-//      if (left < j)
-//            quickSort(arr, left, j);
-//      if (i < right)
-//            quickSort(arr, i, right);
-//}
-
 bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
     int idAux = nos[0]->getIdArvore();
     for(int i=1; i<nos.size(); i++){
@@ -1233,6 +1191,34 @@ bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
             return false;
     }
     return true;
+}
+
+void Grafo::definirNivelNos(){
+    this->maiorNivel = 0;
+
+    /// nos terminais terao nivel 1
+    /// demais nos terao nivel 0
+    for(itInicio(); !itEhFim(); itProx())
+        getIt()->setNivel(getIt()->ehTerminal() ? 1 : 0);
+
+    /// novo nivel depende d nivel os vizinhos
+    vector<pair<No*, uint>> nosNiveis;
+    for(itInicio(); !itEhFim(); itProx()){
+        No* no = getIt();
+        uint novoNivel = no->getNivel();
+        for(no->itInicio(); !no->itEhFim(); no->itProx())
+            novoNivel +=  no->getIt()->getNoDestino()->getNivel();
+
+        nosNiveis.push_back( make_pair(no, novoNivel) );
+
+        ///atualiza maior nivel do grafo
+        if(novoNivel > this->maiorNivel)
+            this->maiorNivel = novoNivel;
+    }
+//    printf("\nMaior nivel: %d\n", maiorNivel);
+
+    for(auto p : nosNiveis)
+        p.first->setNivel(p.second);
 }
 
 void Grafo::imprimirIdsArvore(){
@@ -1263,13 +1249,45 @@ Recebe um vetor de indices e o tamanho do vetor, entao cria um vector de nos par
 Retorna conjunto de arcos que forma a solucao da arvore de Steiner para esses nos terminais
 */
 vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
-    return this->gulosoRandomizadoSteiner(ids, tam, 0.0);
+    return this->auxGulosoRandomizadoSteiner(ids, tam, 0.0, 0);
 }
 
-vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha){
+double Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha, int num_iteracoes){
+    double* solucoes = new double[num_iteracoes];
+    double melhorSolucao = INFINITO;
+    vector<Arco*> conjuntoSolucao;
+
+    ///executa guloso randomizado (num_iteracoes) vezes
+    for (int i=0; i < num_iteracoes; i++){
+        conjuntoSolucao = this->auxGulosoRandomizadoSteiner(idTerminais, nTerminais, alpha, i);
+        solucoes[i] = 0;
+        for(Arco* arco : conjuntoSolucao)
+            solucoes[i] += arco->getPeso();
+
+        if(solucoes[i] < melhorSolucao)
+            melhorSolucao = solucoes[i];
+    }
+
+    /// media
+    double somaSolucoes = accumulate(solucoes, solucoes+num_iteracoes, 0.0);
+    double mediaSolucoes = somaSolucoes / num_iteracoes;
+
+    /// desvio padrao
+    double sq_sum = inner_product(solucoes, solucoes+num_iteracoes, solucoes, 0.0);
+    double stdev = sqrt(sq_sum / num_iteracoes - mediaSolucoes * mediaSolucoes);
+
+    printf("\t melhor solucao: %f", melhorSolucao);
+    printf("\n\t desvio padrao: %f", stdev);
+    printf("\n\t media: %f", mediaSolucoes);
+    printf("\n\t desvio percentual: %f%%\n\n", stdev/mediaSolucoes * 100);
+
+    delete [] solucoes;
+    return melhorSolucao;
+}
+
+vector<Arco*> Grafo::auxGulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha, uint semente){
     if(flagDir)
         cout << "\nUSANDO ARVORE DE STEINER EM GRAFO DIRECIONADO!" << endl;
-
 
     this->iniciaIdArvore();
     this->desmarcaArcos();
@@ -1277,10 +1295,6 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
     this->calculaMediaPesosArcos();
     this->zeraGraus();
     this->zeraTerminais();
-
-//    cout<<"tempo pre-processamento guloso:"<<( clock() - t ) / CLOCKS_PER_SEC<<endl;
-
-//    cout << "\nnumero de arcos: "<<this->numeroArcos<<"\tMedia dos pesos: " << this->mediaPesosArcos << endl;
 
     vector<No*> terminais;
     vector<Arco*> arcosSolucao;
@@ -1294,6 +1308,8 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
         terminais.push_back(no);
     }
 
+    definirNivelNos();
+
     ///arcos marcados são candidatos ou solucao
     candidatosArco = arcosAdjacentesDesmarcados(terminais);
 
@@ -1302,13 +1318,10 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
 
     ///enquanto terminais nao estao na mesma componente conexa
     while(!nosMesmaComponenteConexa(terminais) && !candidatosArco.empty()){
-//        candidatosArco = bubbleSort(candidatosArco);    ///  <----------------------- CONSERTAR ORDENACAO CADAGA ###############
         sort(candidatosArco.begin(), candidatosArco.end(), comparaCriterioSteiner);
 
         ///  PARTE RANOMIZADA
         uint idCandidato = rand() % (uint)(alpha * candidatosArco.size() + 1);
-//        cout << "candidatosArco.size() =  " << candidatosArco.size() << "\t";
-//        cout << "idCandidato: " << idCandidato << endl;
         Arco *arco = candidatosArco[idCandidato].second;
         No *no;
 
@@ -1351,10 +1364,7 @@ vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminai
         return vazio;
     }
 
-//    imprimeVectorArco(arcosSolucao);
     arcosSolucao = podarArcosSteiner(arcosSolucao);
-//    cout << "\ndepois da poda" <<endl;
-//    imprimeVectorArco(arcosSolucao);
     this->atualizaGrau(true);
 
 
@@ -1390,19 +1400,19 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
         dUniforme[i] = 1.0;
     }
 
-    /// gerador de inteiros [0, m) a partir de distribuicao
-    default_random_engine generator;
     discrete_distribution<int> distribuicao(dUniforme, dUniforme+m);
 
     double melhorResultado = INFINITO;  /// F(S*)
 
     /// para cada alpha
     for (int i = 0; i < max_iteracoes; i++){
+        /// gerador de inteiros [0, m) a partir de distribuicao
+        default_random_engine generator(i);
 //        printf("\n\ni = %d", i);
 //        cout << "\nDistribuicao:\n\t";
-        for (double p : distribuicao.probabilities()){
+//        for (double p : distribuicao.probabilities()){
 //            cout << p << "  ";
-        }
+//        }
 
         /// escolha alpha aleatoriaente com distribuicao atual
         uint alpha = distribuicao(generator);
@@ -1410,7 +1420,125 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
 //        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
 
         /// testa o guloso randomizado para este alpha
-        vector<Arco*> solucao = this->gulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha]);
+        vector<Arco*> solucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
+
+        /// calcula soma dos pesos da solucao
+        double somaPesos = 0;
+        for(Arco *arco : solucao)
+            somaPesos += arco->getPeso();
+
+        soma_i[alpha] += somaPesos;    /// soma dos pesos das execucoes deste alpha
+        n_i[alpha]++;                  /// numero de execucoes deste alpha
+
+        ///atualiza melhor resultado F(S*)
+        if(somaPesos < melhorResultado){
+            melhorResultado = somaPesos;
+            melhorSolucao = solucao;
+        }
+
+//        printf("\nMelhor resultado ate i = %d : %f", i, melhorResultado);
+
+        /// ##########  PARTE REATIVA   ##########
+        if((i+1) % bloco_iteracoes == 0){
+            /// a cada bloco de iteracoes
+            double soma_q = 0;
+            double A_i = 0;     /// media dos resultados para alpha = alphas[i]
+
+            for (int j = 0; j < m ; j++){
+                if(n_i[j] > 0){
+                    double A_i = soma_i[j] / n_i[j];
+                    q_i[j] = pow(melhorResultado / A_i, sigma);
+                    soma_q += q_i[j];
+                }
+            }
+
+//            cout << "\n\nNova Distribuicao:\n";
+            double auxNovaDistribuicao[m];
+            for (int j=0; j < m; j++){
+                auxNovaDistribuicao[j] = q_i[j] / soma_q;
+//                cout << auxNovaDistribuicao[j] << "  ";
+            }
+//            cout << endl;
+//            system("pause");
+
+            /// atualiza distribuicao
+            discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
+            distribuicao = novaDistribuicao;
+
+            ///para ver se ta rodando e nao em loop infinito
+            cout<<".";
+        }
+    }
+
+    return melhorSolucao;
+}
+/*
+bool comparaAlphas(pair<double, double> p1, pair<double, double> p2){
+    return p1.second > p2.second;
+}
+
+void atualizaAlfas(vector<pair<double, double>> alphas, double prec){
+    sort(alphas.begin(), alphas.end(), comparaAlphas);
+
+    alphas
+}
+*/
+
+void atualizaAlfas(double* alphas, double* pesos, uint tam, double prec){
+
+}
+
+vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner2(uint idTerminais[], uint tam){
+    /// espaco amostral de alpha
+    uint bloco_iteracoes = 30;      /// intervalo no qual distribuicao sera atualizada
+    uint max_iteracoes = 150;       /// total de iteracoes do algoritmo
+
+    uint m = 9;            /// numero de amostras utiizadas
+    double sigma = 1.0;     /// o quanto o melhor resultado altera a novas distribuicoes
+    double soma_i[m];       /// soma dos resultados obtidos com de alpha = alphas[i]
+    uint n_i[m];            /// numero de resultados obtidos com de alpha = alphas[i]
+    double q_i[m];          /// auxiliar para recalcular distribuicoes
+    double prec = 0.05;
+    /// alphas a serem testados
+    double alphas[m];       /// = {0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45}; ///, 0.50};
+
+    /// distribuicao inicialmente uniforme
+    double dUniforme[m];    /// = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
+
+    vector<Arco*> melhorSolucao;
+
+    /// inicializa variaveis
+    for (int i=0; i < m; i++){
+        soma_i[i] = 0.0;
+        n_i[i] = 0;
+        q_i[i] = 0.0;
+
+        alphas[i] = prec*(i+1);
+        dUniforme[i] = 1.0;
+    }
+
+    discrete_distribution<int> distribuicao(dUniforme, dUniforme+m);
+
+    double melhorResultado = INFINITO;  /// F(S*)
+
+    /// para cada alpha
+    for (int i = 0; i < max_iteracoes; i++){
+        /// gerador de inteiros [0, m) a partir de distribuicao
+        default_random_engine generator(i);
+
+//        printf("\n\ni = %d", i);
+//        cout << "\nDistribuicao:\n\t";
+//        for (double p : distribuicao.probabilities()){
+//            cout << p << "  ";
+//        }
+
+        /// escolha alpha aleatoriaente com distribuicao atual
+        uint alpha = distribuicao(generator);
+
+//        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
+
+        /// testa o guloso randomizado para este alpha
+        vector<Arco*> solucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
 
         /// calcula soma dos pesos da solucao
         double somaPesos = 0;
@@ -1509,63 +1637,4 @@ void Grafo::zeraGraus(){
 void Grafo::zeraTerminais(){
     for(itInicio(); !itEhFim(); itProx())
         getIt()->setTerminal(false);
-}
-
-/**
-RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO É O NÚMERO DE NÓS TERMINAIS
-AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
-*/
-uint *Grafo::leituraIntanciasSteiner(string nome){
-    ifstream entrada;
-    entrada.open(nome, ios::in);
-
-//    cout<<"abriu arquivo"<<endl;
-//    cout<<nome<<endl;
-//    system("pause");
-
-    uint n_nos, n_arcos;
-    char aux[100];
-    entrada>>aux;
-    while(((string)aux) != "SECTION Graph"){
-        entrada.getline(aux, 100);
-//        cout<<(string)aux<<endl;
-    }
-    entrada>>aux>>n_nos;
-    entrada>>aux>>n_arcos;
-//    cout<<"numero de nos: "<<n_nos<<endl;
-//    cout<<"numero de arcos: "<<n_arcos<<endl;
-
-    ///insere todos os nos
-    for(uint i=1; i<=n_nos; i++)
-        this->insereNo(i);
-
-    ///indices de origem e destino dos arcos
-    uint i, j;
-    double peso;
-
-    ///PERCORRER TODOS OS ARCOS DA ENTRADA
-    for(int linha=0; linha<n_arcos; linha++){
-        entrada >> aux >> i >> j >> peso;
-        this->insereArcoID(i, j, 1, false, peso);
-//            system("pause");
-    }
-
-    entrada>>aux>>aux>>aux>>aux;
-
-    uint n_terminais, *terminais, idx=0;
-    entrada>>n_terminais;
-
-//    cout<<"numero de terminais: "<<n_terminais<<endl;
-
-    terminais = new uint[n_terminais + 1];
-    terminais[0] = n_terminais;
-
-    ///leitura de terminais
-    for(int linha=0; linha<n_terminais; linha++){
-        entrada >> aux >>i;
-        ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
-        terminais[linha + 1] = i;
-    }
-
-    return terminais;
 }

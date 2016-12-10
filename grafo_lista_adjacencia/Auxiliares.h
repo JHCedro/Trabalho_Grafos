@@ -12,6 +12,7 @@
 #include <random>
 #include <chrono>
 #include <stdio.h>
+#include <dirent.h>
 #define pastaDesempenho "Desempenho/"
 
 using namespace std;
@@ -170,5 +171,81 @@ Grafo* grafoDuardo(bool GHash = false){
     return di;
 }
 
+vector<string> listarInstanciasSteiner(){
+    string pasta = "instanciasTestesSteiner";
+    struct dirent *arquivo;
+    DIR *dir = opendir(pasta.c_str());
+    vector<string> arquivos;
+
+    for(uint i=0; arquivo = readdir(dir); i++){
+        if(i>1)
+            arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
+    }
+
+    return arquivos;
+}
+
+/**
+RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO É O NÚMERO DE NÓS TERMINAIS
+AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
+Aloca o Grafo *G passado por referencia
+*/
+uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
+    ifstream entrada;
+    entrada.open(nomeArq, ios::in);
+
+//    cout<<"abriu arquivo"<<endl;
+//    cout<<nome<<endl;
+//    system("pause");
+    uint n_nos, n_arcos;
+
+    if(GHash) G = new GrafoHash(n_nos*1.5, false);
+    else      G = new GrafoLista(false);
+
+    char aux[100];
+    entrada>>aux;
+    while(((string)aux) != "SECTION Graph"){
+        entrada.getline(aux, 100);
+//        cout<<(string)aux<<endl;
+    }
+    entrada>>aux>>n_nos;
+    entrada>>aux>>n_arcos;
+//    cout<<"numero de nos: "<<n_nos<<endl;
+//    cout<<"numero de arcos: "<<n_arcos<<endl;
+
+    ///insere todos os nos
+    for(uint i=1; i<=n_nos; i++)
+        G->insereNo(i);
+
+    ///indices de origem e destino dos arcos
+    uint i, j;
+    double peso;
+
+    ///PERCORRER TODOS OS ARCOS DA ENTRADA
+    for(int linha=0; linha<n_arcos; linha++){
+        entrada >> aux >> i >> j >> peso;
+        G->insereArcoID(i, j, 1, false, peso);
+//            system("pause");
+    }
+
+    entrada>>aux>>aux>>aux>>aux;
+
+    uint n_terminais, *terminais, idx=0;
+    entrada>>n_terminais;
+
+//    cout<<"numero de terminais: "<<n_terminais<<endl;
+
+    terminais = new uint[n_terminais + 1];
+    terminais[0] = n_terminais;
+
+    ///leitura de terminais
+    for(int linha=0; linha<n_terminais; linha++){
+        entrada >> aux >>i;
+        ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
+        terminais[linha + 1] = i;
+    }
+//    G->imprimir();
+    return terminais;
+}
 
 #endif // AUXILIARES_H_INCLUDED

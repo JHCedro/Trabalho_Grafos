@@ -1,7 +1,6 @@
 #include "Auxiliares.h"
 #include "GrafoHash.h"
 #include "GrafoLista.h"
-#include <dirent.h>
 
 using namespace std;
 
@@ -141,7 +140,7 @@ void testarNoArticulacao(bool GHash = false){
 }
 
 /*
-///** nao faco ideia do que isso ta fazendo /
+/// nao faco ideia do que isso ta fazendo /
 //void testarInstanciasStenio(bool GHash = false){
 //    ///teste de leitura de instancias do stenio
 //    Grafo *di=new Grafo();
@@ -657,9 +656,9 @@ void testarComponentesConexasNaMao(bool GHash = true){
     g->insereArcoID(5,4,8);
 
     vector<vector<No*>> componentes=g->retornarComponentesConexas();
-    for(int i=0;i<componentes.size();i++){
+    for(uint i=0;i<componentes.size();i++){
         cout<<"Componente "<<i<<endl;
-        for(int j=0;j<componentes[i].size();j++){
+        for(uint j=0;j<componentes[i].size();j++){
             cout<<componentes[i][j]->getID()<<endl;
         }
         cout<<endl;
@@ -717,9 +716,9 @@ void testeKConexo(bool GHash = true){
     cout<<g->ehKConexo(3)<<endl;
 }
 
-void testeGulosoSteiner(){
+void testeExemplosSteiner(){
     Grafo *g = new GrafoLista(false);
-/** EXEMPLO 1*
+/** EXEMPLO 1*/
     for(int i=1; i<=7; i++)
         g->insereNo(i);
 
@@ -736,8 +735,8 @@ void testeGulosoSteiner(){
     g->insereArcoID(5 ,7 , 1 ,false, 6.0);
     g->insereArcoID(6 ,7 , 1 ,false, 5.0);
     uint ids[] = {3, 5, 7};
-/**/
-/** EXEMPLO 2 (bem bosta)*/
+/**
+/** EXEMPLO 2 (bem bosta)/*
 /**
     for(int i=1; i<=12; i++)
         g->insereNo(i);
@@ -772,7 +771,14 @@ void testeGulosoSteiner(){
     g->insereArcoID(6, 7, 1, false, 3.0);
     uint ids[] = {1, 4, 7, 8};
 /**/
+//    g->imprimir(true);
 
+//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
+//    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
+}
+
+void testeGulosoSteiner(){
+    Grafo *g = new GrafoLista(false);
 //    g->imprimir(true);
 
 //    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
@@ -783,18 +789,18 @@ void testeGulosoSteiner(){
     DIR *dir = opendir(pasta.c_str());
     vector<string> arquivos;
 
-    for(int i=0; arquivo = readdir(dir); i++){
+    for(uint i=0; arquivo = readdir(dir); i++){
         if(i>1)
             arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
     }
 
-    for(int idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+    for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
 
         cout<<arquivos[idArquivo]<<endl;
 
-        uint * terminais = g->leituraIntanciasSteiner(arquivos[idArquivo]);
+        uint * terminais = leituraIntanciasSteiner(arquivos[idArquivo], g, false);
         uint ids[terminais[0]];
-        for(int j=0; j<terminais[0]; j++)
+        for(uint j=0; j<terminais[0]; j++)
             ids[j] = terminais[j+1];
 
         srand(time(NULL));
@@ -802,18 +808,19 @@ void testeGulosoSteiner(){
 
 //        cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
         uint somaPesos = 0;
-        for(int i=0; i<solucao.size(); i++){
+        for(uint i=0; i<solucao.size(); i++){
 //            cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
             somaPesos += solucao[i]->getPeso();
         }
         cout << "Soma dos pesos: " << somaPesos << endl << endl;
 //        system("pause");
     }
-//    g->imprimir(true);
+    g->imprimir(true);
 
 }
 
 void testeInstanciasSteiner(){
+    /**
     cout<<"LISTA\n"<<endl;
     for(int k=0;k<50;k++){
         int i=1;
@@ -853,59 +860,30 @@ void testeInstanciasSteiner(){
         cout<<"peso obtido pelo guloso: "<<peso<<endl;
         delete g;
     }
-
+    */
 }
 
 void testeGulosoRandomizado(){
-    srand(time(NULL));
-    double menorPeso = HUGE_VAL;
     double alpha = 0.25;
-    int it = 30;
-    string pasta = "instanciasTestesSteiner";
-    struct dirent *arquivo;
-    DIR *dir = opendir(pasta.c_str());
-    vector<string> arquivos;
+    int num_it = 30;
+    vector<string> arquivos = listarInstanciasSteiner();
+    Grafo* G;
 
-    for(int i=0; arquivo = readdir(dir); i++){
-        if(i>1)
-            arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
-    }
-
-    ///apra cada arquivo
-    for(int idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
-
+    ///para cada arquivo
+    for(string arq : arquivos){
 //        system("pause");
-        cout<<"instancia:"<<arquivos[idArquivo]<<endl;
-        ///para cada iteração com o alpha dado
-        for(int k=0;k<it;k++){
-            Grafo *g = new GrafoLista(false);
-            uint *terminais = g->leituraIntanciasSteiner(arquivos[idArquivo]);
-            uint ids[terminais[0]];
+        cout<<"instancia:"<<arq<<endl;
 
-    //        cout<<"ids:"<<endl;
-            ///iniciar vetor de ids dos terminais comecando do 1, pois a posicao 0 e o numero de terminais
-            for(int j=0; j<terminais[0]; j++){
-                ids[j] = terminais[j+1];
-    //            cout<<ids[j]<<endl;
-            }
+        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
+//        G->imprimir();
+//        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
+        G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]);
 
-            vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, terminais[0], alpha);
-
-            double peso=0;
-
-            for(int i=0; i<solucao.size(); i++)
-                peso += solucao[i]->getPeso();
-
-//            cout<<"peso obtido pelo guloso randomico : "<<peso<<endl;
-            if(peso<menorPeso) menorPeso = peso;
-            delete g;
-        }
-        cout<<"melhor solucao obtida:"<<menorPeso<<endl<<endl;
-        menorPeso = HUGE_VAL;
+        delete G;
     }
 }
 
-testarGulosoNaMao(){
+void testarGulosoNaMao(){
     Grafo *g = new GrafoLista(false);
 
     for(int i=1; i<=7; i++)
@@ -928,7 +906,7 @@ testarGulosoNaMao(){
     vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
 
     cout<<"solucao"<<endl;
-    for(int i=0; i<solucao.size(); i++)
+    for(uint i=0; i<solucao.size(); i++)
         cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
 }
 
@@ -990,10 +968,10 @@ int main(){
 
 
 //    testarGulosoNaMao();
-    cout<<"guloso:"<<endl<<endl<<endl;
-    testeGulosoSteiner();
-//    cout<<"guloso randomizado:"<<endl<<endl<<endl;
-//    testeGulosoRandomizado();
+//    cout<<"guloso:"<<endl<<endl<<endl;
+//    testeGulosoSteiner();
+    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+    testeGulosoRandomizado();
 
 
 
