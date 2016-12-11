@@ -998,6 +998,9 @@ void gerarTabela(){
     tabela1.open("tabela1.csv");
     tabela2.open("tabela2.csv");
 
+    tabela1<<"\xef\xbb\xbf"<<endl;
+    tabela2<<"\xef\xbb\xbf"<<endl;
+
     ///primeira linha da tabela com os titulos das colunas
     tabela1<<"Nome instância"<<";"<<"Melhor solução"<<";"<<"Resultado Guloso"<<";"<<"Média Randomico"
           <<";"<<"Desvio percentual da média Randômico"<<";"<<"Média Reativo"<<";"<<"Desvio percentual da média Reativo"<<"\n";

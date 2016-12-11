@@ -1,4 +1,4 @@
-header("content-type:application/csv;charset=UTF-8")
+﻿
 Nome instância;Melhor solução;Resultado Guloso;Média Randomico;Desvio percentual da média Randômico;Média Reativo;Desvio percentual da média Reativo
 instancia 0 (pequena);3297;4332;3635.3;1.74998;3570.67;2.22568
 instancia 1 (pequena);23;29;25.1;3.89679;23.7667;3.01135
