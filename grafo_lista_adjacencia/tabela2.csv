@@ -1,0 +1,6 @@
+header("content-type:application/csv;charset=UTF-8")
+Nome instância;Tempo médio Guloso;Tempo médio Rândomico;Tempo médio Reativo
+instancia 0 (pequena);0.0051;0.133333;0.332833
+instancia 1 (pequena);0.00666667;0.158233;0.4639
+instancia 2 (pequena);0.0082;0.220467;0.6438
+instancia 3 (pequena);0.00386667;0.0642;0.194067
