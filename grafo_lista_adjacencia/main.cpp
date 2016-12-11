@@ -998,6 +998,11 @@ void gerarTabela(){
     tabela1.open("tabela1.csv");
     tabela2.open("tabela2.csv");
 
+
+    ///para excell reconhecer caracters especiais
+    tabela1<<"header(\"content-type:application/csv;charset=UTF-8\")";
+    tabela2<<"header(\"content-type:application/csv;charset=UTF-8\")";
+
     ///primeira linha da tabela com os titulos das colunas
     tabela1<<"Nome instância"<<";"<<"Melhor solução"<<";"<<"Resultado Guloso"<<";"<<"Média Randomico"
           <<";"<<"Desvio percentual da média Randômico"<<";"<<"Média Reativo"<<";"<<"Desvio percentual da média Reativo"<<"\n";
