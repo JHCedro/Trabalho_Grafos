@@ -1201,7 +1201,7 @@ void Grafo::definirNivelNos(){
     for(itInicio(); !itEhFim(); itProx())
         getIt()->setNivel(getIt()->ehTerminal() ? 1 : 0);
 
-    /// novo nivel depende d nivel os vizinhos
+    /// novo nivel depende do nivel os vizinhos
     vector<pair<No*, uint>> nosNiveis;
     for(itInicio(); !itEhFim(); itProx()){
         No* no = getIt();
@@ -1250,14 +1250,15 @@ Retorna conjunto de arcos que forma a solucao da arvore de Steiner para esses no
 */
 double Grafo::gulosoSteiner(uint ids[], uint tam, bool imprimeSolucao){
     vector<Arco*> conjuntoSolucao = this->auxGulosoRandomizadoSteiner(ids, tam, 0.0, 0);
-    if(imprimeSolucao){
-        cout << "\nsolucao:" << endl;
-        imprimeVectorArco(conjuntoSolucao);
-    }
 
     double solucao = 0;
     for(Arco* arco : conjuntoSolucao)
         solucao += arco->getPeso();
+
+    if(imprimeSolucao){
+        cout << "\nsolucao: " << solucao << endl;
+        imprimeVectorArco(conjuntoSolucao);
+    }
 
     return solucao;
 }
@@ -1281,7 +1282,7 @@ double Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, doub
     }
 
     if(imprimeSolucao){
-        cout << "\nsolucao:" << endl;
+        cout << "\nsolucao: " << melhorSolucao << endl;
         imprimeVectorArco(melhorSolucaoArcos);
     }
 
@@ -1388,13 +1389,15 @@ vector<Arco*> Grafo::auxGulosoRandomizadoSteiner(uint idTerminais[], uint nTermi
     return arcosSolucao;
 }
 
+/**
+* Guloso Randomizado Reativo baseado em ponderacao da escolha dos melhores alphas
+*/
 double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool imprimeSolucao){
-    /// espaco amostral de alpha
-    uint bloco_iteracoes = 30;      /// intervalo no qual distribuicao sera atualizada
-    uint max_iteracoes = 150;       /// total de iteracoes do algoritmo
+    uint m = 10;                    /// numero de amostras utiizadas
+    uint bloco_iteracoes = 3*m;      /// intervalo no qual distribuicao sera atualizada
+    uint max_iteracoes = 30*m;       /// total de iteracoes do algoritmo
 
-    uint m = 10;            /// numero de amostras utiizadas
-    double sigma = 1.0;     /// o quanto o melhor resultado altera a novas distribuicoes
+    double sigma = 5.0;     /// o quanto o melhor resultado altera a novas distribuicoes
     double soma_i[m];       /// soma dos resultados obtidos com de alpha = alphas[i]
     uint n_i[m];            /// numero de resultados obtidos com de alpha = alphas[i]
     double q_i[m];          /// auxiliar para recalcular distribuicoes
@@ -1420,14 +1423,17 @@ double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool
 
     discrete_distribution<int> distribuicao(dUniforme, dUniforme+m);
 
-
     /// para cada alpha
     for (int i = 0; i < max_iteracoes; i++){
         /// gerador de inteiros [0, m) a partir de distribuicao
         default_random_engine generator(i);
 
         /// escolha alpha aleatoriaente com distribuicao atual
-        uint alpha = distribuicao(generator);
+        uint alpha;
+        if( i < bloco_iteracoes )
+            alpha = i % m;
+        else
+            alpha = distribuicao(generator);
 
         /// testa o guloso randomizado para este alpha
         vector<Arco*> conjuntoSsolucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
@@ -1456,18 +1462,11 @@ double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool
                 if(n_i[j] > 0){
                     double A_i = soma_i[j] / n_i[j];
                     q_i[j] = pow(melhorSolucao / A_i, sigma);
-                    soma_q += q_i[j];
                 }
             }
 
-            double auxNovaDistribuicao[m];
-            for (int j=0; j < m; j++){
-                auxNovaDistribuicao[j] = q_i[j] / soma_q;
-            }
-
-
             /// atualiza distribuicao
-            discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
+            discrete_distribution<int> novaDistribuicao(q_i, q_i+m);
             distribuicao = novaDistribuicao;
 
             ///para ver se ta rodando e nao em loop infinito
@@ -1477,7 +1476,7 @@ double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool
 //    cout<<endl;
 
     if(imprimeSolucao){
-        cout << "\nsolucao:" << endl;
+        cout << "\nsolucao: " << melhorSolucao << endl;
         imprimeVectorArco(melhorConjuntoSolucao);
     }
 
@@ -1497,6 +1496,9 @@ bool comparaAlphasPesos(pair<double, double> p1, pair<double, double> p2){
     return p1.second > p2.second;
 }
 
+/**
+*   Refina os melhores alphas pata seus vizinhos
+*/
 void atualizaAlfas(double* alphas, double* pesos, uint tam, double* prec){
     vector<pair<double, double>> alphasPesos;
 
@@ -1507,114 +1509,67 @@ void atualizaAlfas(double* alphas, double* pesos, uint tam, double* prec){
     sort(alphasPesos.begin(), alphasPesos.end(), comparaAlphasPesos);
     alphasPesos.erase(alphasPesos.begin()+tam/3, alphasPesos.end());
 
-//    for (auto p : alphasPesos){
-//        printf("\n(alpha, peso) = (%f, %f)", p.first, p.second);
-//    }
-
     /// insere melhores vizinhos
     (*prec) /= 4.0;
     for (int i=0; i < tam/3; i++){
         alphasPesos.push_back( make_pair(alphasPesos[i].first - (*prec), alphasPesos[i].second) );
         alphasPesos.push_back( make_pair(alphasPesos[i].first + (*prec), alphasPesos[i].second) );
     }
-//    sort(alphasPesos.begin(), alphasPesos.end(), comparaAlphasPesos);
-
-//    cout << "\nNovos alphas:" << endl;
-//    for (auto p : alphasPesos){
-//        printf("(alpha, peso) = (%f, %f)\n", p.first, p.second);
-//    }
 
     for (int i=0; i < tam; i++){
         alphas[i] = alphasPesos[i].first;
         pesos[i] = alphasPesos[i].second;
     }
 
-    imprimeArray(alphas, tam, "novos alphas");
+//    imprimeArray(alphas, tam, "\nnovos alphas");
 }
 
+/**
+* Guloso Randomizado Reativo baseado em refinamento para os vizinhos dos melhores alphas
+*/
 double Grafo::gulosoRandomizadoReativoSteiner2(uint idTerminais[], uint tam, bool imprimeSolucao){
     /// espaco amostral de alpha
-    uint bloco_iteracoes = 30;      /// intervalo no qual distribuicao sera atualizada
-    uint max_iteracoes = 150;       /// total de iteracoes do algoritmo
+    uint m = 12;             /// numero de amostras utiizadas
+    uint max_iteracoes = 30*m;       /// total de iteracoes do algoritmo
+    uint bloco_iteracoes = 3*m;      /// intervalo no qual distribuicao sera atualizada
 
-    uint m = 9;             /// numero de amostras utiizadas
     double prec = 0.05;     /// intervalos entre alphas
-    double sigma = 1.0;     /// o quanto o melhor resultado altera a novas distribuicoes
     double soma_i[m];       /// soma dos resultados obtidos com de alpha = alphas[i]
-    uint n_i[m];            /// numero de resultados obtidos com de alpha = alphas[i]
-    double q_i[m];          /// auxiliar para recalcular distribuicoes
 
     /// alphas a serem testados
     double alphas[m];       /// = {0.05, 0.10, 0.15, 0.20, 0.25, 0.30, 0.35, 0.40, 0.45, 0.50};
-
-    /// distribuicao inicialmente uniforme
-    double dUniforme[m];    /// = {1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0};
 
     vector<Arco*> melhorConjuntoSolucao;
     double melhorSolucao = INFINITO;
 
     /// inicializa variaveis
-    for (int i=0; i < m; i++){
-        soma_i[i] = 0.0;
-        n_i[i] = 0;
-        q_i[i] = 0.0;
-
+    for (int i=0; i < m; i++)
         alphas[i] = 0.05*(i+1);
-        dUniforme[i] = 1.0;
-    }
-
-    discrete_distribution<int> distribuicao(dUniforme, dUniforme+m);
-
 
     /// para cada alpha
-    for (int i = 0; i < max_iteracoes; i++){
-        /// gerador de inteiros [0, m) a partir de distribuicao
-        default_random_engine generator(i);
-
-        /// escolha alpha aleatoriaente com distribuicao atual
-        uint alpha = distribuicao(generator);
+    for (uint i = 0; i < max_iteracoes; i++){
+        uint alpha = i % m;
 
         /// testa o guloso randomizado para este alpha
-        vector<Arco*> conjuntoSsolucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
+        vector<Arco*> conjuntoSolucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
 
         /// calcula soma dos pesos da solucao
         double somaPesos = 0;
-        for(Arco *arco : conjuntoSsolucao)
+        for(Arco *arco : conjuntoSolucao)
             somaPesos += arco->getPeso();
 
         soma_i[alpha] += somaPesos;    /// soma dos pesos das execucoes deste alpha
-        n_i[alpha]++;                  /// numero de execucoes deste alpha
 
         ///atualiza melhor resultado F(S*)
         if(somaPesos < melhorSolucao){
             melhorSolucao = somaPesos;
-            melhorConjuntoSolucao = conjuntoSsolucao;
+            melhorConjuntoSolucao = conjuntoSolucao;
         }
 
         /// ##########  PARTE REATIVA   ##########
         if((i+1) % bloco_iteracoes == 0){
             /// a cada bloco de iteracoes
-            double soma_q = 0;
-            double A_i = 0;     /// media dos resultados para alpha = alphas[i]
-
-            for (int j = 0; j < m ; j++){
-                if(n_i[j] > 0){
-                    double A_i = soma_i[j] / n_i[j];
-                    q_i[j] = pow(melhorSolucao / A_i, sigma);
-                    soma_q += q_i[j];
-                }
-            }
-
-            double auxNovaDistribuicao[m];
-            atualizaAlfas(alphas, q_i, m, &prec);
-//            double auxNovaDistribuicao[m];
-//            for (int j=0; j < m; j++){
-//                auxNovaDistribuicao[j] = q_i[j] / soma_q;
-//            }
-
-            /// atualiza distribuicao
-            discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
-            distribuicao = novaDistribuicao;
+            atualizaAlfas(alphas, soma_i, m, &prec);
 
             ///para ver se ta rodando e nao em loop infinito
             cout<<".";

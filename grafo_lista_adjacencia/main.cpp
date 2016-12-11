@@ -931,11 +931,14 @@ void testeGulosoRandomizado(){
 
         uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
 //        G->imprimir();
-        cout<<"GULOSO RANDOMIZADO:"<<endl;
-        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
+        cout<<"\nGULOSO RANDOMIZADO: "
+            << G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it) << endl;
 
-//        cout<<"GULOSO RANDOMIZADO REATIVO:"<<endl;
-//        G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]);
+        cout<<"\nGULOSO RANDOMIZADO REATIVO: "
+            << G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]) << endl;
+
+        cout<<"\nGULOSO RANDOMIZADO REATIVO 2: "
+            << G->gulosoRandomizadoReativoSteiner2(infoTerminais+1, infoTerminais[0]) << endl;
 
         delete G;
     }
@@ -1175,21 +1178,16 @@ int main(){
 
 
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
-    gerarTabela();
+//    gerarTabela();
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
-
-
-
 
 //    testarGulosoNaMao();
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
 
-//    testeGulosoRandomizado();
+    testeGulosoRandomizado();
 
-//    testeExemplosSteiner();
-
-
+    testeExemplosSteiner();
 
 //    cout<<"guloso randomizado:"<<endl<<endl<<endl;
 //    testeInstanciasSteiner();
