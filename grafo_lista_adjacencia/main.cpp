@@ -1000,8 +1000,8 @@ void gerarTabela(){
 
 
     ///para excell reconhecer caracters especiais
-    tabela1<<"header(\"content-type:application/csv;charset=UTF-8\")";
-    tabela2<<"header(\"content-type:application/csv;charset=UTF-8\")";
+    tabela1<<"header(\"content-type:application/csv;charset=UTF-8\")\n";
+    tabela2<<"header(\"content-type:application/csv;charset=UTF-8\")\n";
 
     ///primeira linha da tabela com os titulos das colunas
     tabela1<<"Nome instância"<<";"<<"Melhor solução"<<";"<<"Resultado Guloso"<<";"<<"Média Randomico"
