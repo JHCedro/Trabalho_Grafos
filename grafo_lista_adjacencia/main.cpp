@@ -2,6 +2,7 @@
 #include "GrafoHash.h"
 #include "GrafoLista.h"
 #include <ctime>
+#include <set>
 
 using namespace std;
 
@@ -736,9 +737,9 @@ void testeExemplosSteiner(){
     g->insereArcoID(5 ,7 , 1 ,false, 6.0);
     g->insereArcoID(6 ,7 , 1 ,false, 5.0);
     uint ids[] = {3, 5, 7};
-/**
-/** EXEMPLO 2 (bem bosta)/*
-/**
+/**/
+
+/** EXEMPLO 2 (bem bosta)*
     for(int i=1; i<=12; i++)
         g->insereNo(i);
 
@@ -755,10 +756,9 @@ void testeExemplosSteiner(){
     g->insereArcoID(8, 12, 1, false, 8.0);
     g->insereArcoID(10, 11, 1, true, 3.0);
     uint ids[] = {5, 7, 9};
-*/
 /**/
 
-/** EXEMPLO 3
+/** EXEMPLO 3*
     for(int i=1; i<=8; i++)
         g->insereNo(i);
 
@@ -772,10 +772,20 @@ void testeExemplosSteiner(){
     g->insereArcoID(6, 7, 1, false, 3.0);
     uint ids[] = {1, 4, 7, 8};
 /**/
-//    g->imprimir(true);
+    g->imprimir(true);
+    double solucao;
 
-//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
-//    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
+    cout<<"GULOSO PURO:"<<endl;
+    solucao = g->gulosoSteiner(ids, 3, true);
+
+    cout<<"GULOSO RANDOMIZADO:"<<endl;
+    solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5, 10, true);
+
+    cout<<"GULOSO RANDOMIZADO REATIVO:"<<endl;
+    solucao = g->gulosoRandomizadoReativoSteiner(ids, 3, true);
+
+    cout<<"GULOSO RANDOMIZADO REATIVO 2:"<<endl;
+    solucao = g->gulosoRandomizadoReativoSteiner2(ids, 3, true);
 }
 
 vector<string> listarArquivosPasta(string nome){
@@ -811,13 +821,13 @@ void testeGulosoSteiner(){
 
         srand(time(NULL));
 
-        vector<Arco*> solucao = g->gulosoSteiner(ids, terminais[0]);
-
-        temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
+        g->gulosoSteiner(ids, terminais[0]);
 
         uint somaPesos = 0;
-        for(uint i=0; i<solucao.size(); i++)
-            somaPesos += solucao[i]->getPeso();
+        somaPesos = temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
+
+//        for(uint i=0; i<solucao.size(); i++)
+//            somaPesos += solucao[i]->getPeso();
 
         solucoesGuloso[idArquivo] = somaPesos;
 
@@ -847,13 +857,13 @@ void testeGulosoRandomizadoSteiner(){
 
         srand(time(NULL));
 
-        vector<Arco*> solucao = g->gulosoSteiner(ids, terminais[0]);
+        uint somaPesos = 0;
+        somaPesos = g->gulosoSteiner(ids, terminais[0], true);
 
         temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
 
-        uint somaPesos = 0;
-        for(uint i=0; i<solucao.size(); i++)
-            somaPesos += solucao[i]->getPeso();
+//        for(uint i=0; i<solucao.size(); i++)
+//            somaPesos += solucao[i]->getPeso();
 
         solucoesGuloso[idArquivo] = somaPesos;
 
@@ -868,19 +878,20 @@ executa 1 vez algum algoritmo guloso para uma instancia e retorna a solucao
 operacao=1 executa guloso, =2 executa randomizado e =3 executa reativo
 */
 double execucaoGuloso(Grafo* &g, string nomeInstancia, int operacao){
-    vector<Arco*> solucaoArcos;
+//    vector<Arco*> solucaoArcos;
+    double peso;
 
     uint * terminais = leituraIntanciasSteiner(nomeInstancia, g, false);
     if(operacao==1)
-        solucaoArcos = g->gulosoSteiner(terminais + 1, terminais[0]);
+        peso = g->gulosoSteiner(terminais + 1, terminais[0]);
     if(operacao==2)
-        solucaoArcos = g->gulosoRandomizadoSteiner(terminais + 1, terminais[0], 0.25, 50);
+        peso = g->gulosoRandomizadoSteiner(terminais + 1, terminais[0], 0.25, 50);
     if(operacao==3)
-        solucaoArcos = g->gulosoRandomizadoReativoSteiner(terminais + 1, terminais[0]);
+        peso = g->gulosoRandomizadoReativoSteiner(terminais + 1, terminais[0]);
 
-    double peso=0;
-    for(int j=0; j<solucaoArcos.size(); j++)
-        peso+=solucaoArcos[j]->getPeso();
+//    double peso=0;
+//    for(int j=0; j<solucaoArcos.size(); j++)
+//        peso+=solucaoArcos[j]->getPeso();
 
     return peso;
 }
@@ -1031,25 +1042,29 @@ void testeInstanciasSteiner(){
     */
 }
 
-//void testeGulosoRandomizado(){
-//    double alpha = 0.25;
-//    int num_it = 30;
-//    vector<string> arquivos = listarInstanciasSteiner();
-//    Grafo* G;
-//
-//    ///para cada arquivo
-//    for(string arq : arquivos){
-////        system("pause");
-//        cout<<"instancia:"<<arq<<endl;
-//
-//        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
-////        G->imprimir();
-////        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
+void testeGulosoRandomizado(){
+    double alpha = 0.25;
+    int num_it = 30;
+    vector<string> arquivos = listarInstanciasSteiner();
+    Grafo* G;
+
+    ///para cada arquivo
+    for(string arq : arquivos){
+//        cout<<"GULOSO RANDOMIZADO REATIVO:"<<endl;
+//        system("pause");
+        cout<<"instancia:"<<arq<<endl;
+
+        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
+//        G->imprimir();
+        cout<<"GULOSO RANDOMIZADO:"<<endl;
+        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
+
+//        cout<<"GULOSO RANDOMIZADO REATIVO:"<<endl;
 //        G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]);
-//
-//        delete G;
-//    }
-//}
+
+        delete G;
+    }
+}
 
 void testarGulosoNaMao(){
     Grafo *g = new GrafoLista(false);
@@ -1071,11 +1086,12 @@ void testarGulosoNaMao(){
     g->insereArcoID(6 ,7 , 1 ,false, 5.0);
     uint ids[] = {3, 5, 7};
 
-    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
+//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
+    g->gulosoSteiner(ids, 3, true);
 
-    cout<<"solucao"<<endl;
-    for(uint i=0; i<solucao.size(); i++)
-        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
+//    cout<<"solucao"<<endl;
+//    for(uint i=0; i<solucao.size(); i++)
+//        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
 }
 
 int main(){
@@ -1135,8 +1151,7 @@ int main(){
 
 
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
-
-    gerarTabela5();
+//    gerarTabela5();  /// <--- roar de novo pode sobrescrever o arquivo exixtente
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
 
 
@@ -1145,8 +1160,10 @@ int main(){
 //    testarGulosoNaMao();
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
-//    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+
 //    testeGulosoRandomizado();
+
+    testeExemplosSteiner();
 
 
 

@@ -161,10 +161,10 @@ public:
     void calculaMediaPesosArcos();
     void definirNivelNos();
 
-    vector<Arco*> gulosoSteiner(uint ids[], uint tam);
-    vector<Arco*> gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes);
-    vector<Arco*> gulosoRandomizadoReativoSteiner(uint ids[], uint tam);
-    vector<Arco*> gulosoRandomizadoReativoSteiner2(uint ids[], uint tam);
+    double gulosoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
+    double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes, bool imprimeSolucao = false);
+    double gulosoRandomizadoReativoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
+    double gulosoRandomizadoReativoSteiner2(uint ids[], uint tam, bool imprimeSolucao = false);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();
