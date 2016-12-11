@@ -873,131 +873,6 @@ void testeGulosoRandomizadoSteiner(){
 
 }
 
-/**
-executa 1 vez algum algoritmo guloso para uma instancia e retorna a solucao
-operacao=1 executa guloso, =2 executa randomizado e =3 executa reativo
-*/
-double execucaoGuloso(Grafo* &g, string nomeInstancia, int operacao){
-//    vector<Arco*> solucaoArcos;
-    double peso;
-
-    uint * terminais = leituraIntanciasSteiner(nomeInstancia, g, false);
-    if(operacao==1)
-        peso = g->gulosoSteiner(terminais + 1, terminais[0]);
-    if(operacao==2)
-        peso = g->gulosoRandomizadoSteiner(terminais + 1, terminais[0], 0.25, 50);
-    if(operacao==3)
-        peso = g->gulosoRandomizadoReativoSteiner(terminais + 1, terminais[0]);
-
-//    double peso=0;
-//    for(int j=0; j<solucaoArcos.size(); j++)
-//        peso+=solucaoArcos[j]->getPeso();
-
-    return peso;
-}
-
-///arquivo global para facilitar a criacao da tabela
-ofstream tabela;
-/**
-gera tabela do item 5 do email do stenio
-*/
-
-void gerarColuna(string nomeInstancia, double melhorSolucao, double valorGuloso, double mediaRand, double desvRand, double mediaReativ, double desvReativ){
-    tabela << nomeInstancia << "\t" << melhorSolucao << "\t" << valorGuloso << "\t" << mediaRand << "\t" << desvRand << "\t" << mediaReativ << "\t" << desvReativ<<"\n";
-}
-
-void gerarTabela5(){
-    tabela.open("tabela.csv");
-
-    ///primeira linha da tabela com os titulos das colunas
-    tabela<<"Nome instancia"<<";"<<"Melhor solucao"<<";"<<"Resultado guloso"<<";"<<"Media randomico"
-          <<";"<<"Desvio padrao randomico"<<";"<<"Media reativo"<<";"<<"Desvio padrao reativo"<<"\n";
-
-    int num_iteracoes = 30;
-
-    string pasta = "instanciasTestesSteiner";
-    vector<string> arquivos = listarArquivosPasta(pasta);
-
-    ///armazenar resultado de cada abordagem para os 10 arquivos de entrada
-    double *solucoesGuloso = new double[10];
-
-    ///variavel para armazenar a menor solucao dentre todas as abordagens
-    double menorSolucao = HUGE_VAL;
-
-    ///2 medias e desvios padroes, para randomizada e reativa
-    double media[2], desvioP[2];
-
-    ///armazena todas as solucoes para as 30 execucoes
-    double* solucoes = new double[num_iteracoes];
-
-    char momeInstancia[100];
-
-    Grafo *g = new GrafoLista(false);
-
-    ///para cada arquivo temos uma linha da tabela
-    for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
-
-        cout<<"\ngerando linha["<<idArquivo+2<<"] da tabela"<<endl;
-
-        ///definir o nome da instancia que vai aparecer na tabela
-        if(idArquivo<=3)
-            sprintf(momeInstancia, "instancia %d (pequena)", idArquivo);
-        if(idArquivo>=4 && idArquivo<=6)
-            sprintf(momeInstancia, "instancia %d (media)", idArquivo);
-        if(idArquivo>=7 && idArquivo<=9)
-            sprintf(momeInstancia, "instancia %d (grande)", idArquivo);
-
-        ///gerar primeira coluna da tabela temos que rodar o guloso, o randomizado e o reativo
-        ///primeira coluna da tabela nos da a melhor solucao dos algoritmos (ver funcao "execucaoGuloso()")
-        for(int i=1; i<=3; i++){
-
-            ///menor valor obitido para uma execucao
-            double menor;
-            ///se executando randomizado ou reativo
-            if(i>1){
-                cout<<"\nrodando 30 vezes para calcular desvio padrao e media"<<endl;
-                ///executar 30 vezes para calcular media e desvio padrao de randomizado e reativo
-                for(int it=0; it<num_iteracoes; it++){
-                    ///menor valor obitido para uma execucao
-                    menor = execucaoGuloso(g, arquivos[idArquivo], i);
-                    solucoes[it] = menor;
-                    if(menor<menorSolucao)
-                        menorSolucao = menor;
-                }
-                /// media
-                double somaSolucoes = accumulate(solucoes, solucoes+num_iteracoes, 0.0);
-                double mediaSolucoes = somaSolucoes / num_iteracoes;
-
-                /// desvio padrao
-                double sq_sum = inner_product(solucoes, solucoes+num_iteracoes, solucoes, 0.0);
-                double stdev = sqrt(sq_sum / num_iteracoes - mediaSolucoes * mediaSolucoes);
-
-                ///armazena media e desvio padrao
-                media[i-2] = mediaSolucoes;
-                desvioP[i-2] = stdev / mediaSolucoes * 100;
-            }
-            else{
-                cout<<"\ncalculando resultado do guloso"<<endl;
-                menor = execucaoGuloso(g, arquivos[idArquivo], i);
-
-                solucoesGuloso[idArquivo] = menor;
-
-                if(menor<menorSolucao)
-                    menorSolucao = menor;
-            }
-        }
-        tabela<<arquivos[idArquivo]<<";"<<menorSolucao<<";"<<solucoesGuloso[idArquivo]
-        <<";"<<media[0]<<";"<<desvioP[0]<<";"<<media[1]<<";"<<desvioP[1]<<"\n";
-
-        delete g;
-        g = new GrafoLista(false);
-//        tabela.close();
-//        system("pause");
-    }
-
-    tabela.close();
-}
-
 void testeInstanciasSteiner(){
     /**
     cout<<"LISTA\n"<<endl;
@@ -1094,6 +969,152 @@ void testarGulosoNaMao(){
 //        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
 }
 
+/**
+executa 1 vez algum algoritmo guloso para uma instancia e retorna a solucao
+operacao=1 executa guloso, =2 executa randomizado e =3 executa reativo
+*/
+double execucaoGuloso(Grafo* &g, string nomeInstancia, int operacao){
+    double menorSolucao;
+
+    uint * terminais = leituraIntanciasSteiner(nomeInstancia, g, false);
+    if(operacao==1)
+        menorSolucao = g->gulosoSteiner(terminais + 1, terminais[0]);
+    if(operacao==2)
+        menorSolucao = g->gulosoRandomizadoSteiner(terminais + 1, terminais[0], 0.25, 50);
+    if(operacao==3)
+        menorSolucao = g->gulosoRandomizadoReativoSteiner(terminais + 1, terminais[0]);
+
+    return menorSolucao;
+}
+
+///tabela1 para resultados e tabela2 para tempo
+ofstream tabela1, tabela2;
+
+/**
+gera tabela de resultados e de tempo
+*/
+void gerarTabela(){
+
+    tabela1.open("tabela1.csv");
+    tabela2.open("tabela2.csv");
+
+    ///primeira linha da tabela com os titulos das colunas
+    tabela1<<"Nome instância"<<";"<<"Melhor solução"<<";"<<"Resultado Guloso"<<";"<<"Média Randomico"
+          <<";"<<"Desvio percentual da média Randômico"<<";"<<"Média Reativo"<<";"<<"Desvio percentual da média Reativo"<<"\n";
+
+    tabela2<<"Nome instância"<<";"<<"Tempo médio Guloso"<<";"<<"Tempo médio Rândomico"<<";"<<"Tempo médio Reativo"<<"\n";
+
+    int num_iteracoes = 30;
+
+    string pasta = "instanciasTestesSteiner";
+    vector<string> arquivos = listarArquivosPasta(pasta);
+
+    ///armazenar tempos e tempo medio para cada abordagem
+    double tempoGuloso[30], tempoMedioGuloso;
+    double tempoGulosoRandomizado[30], tempoMedioGulosoRandomizado;
+    double tempoGulosoRandomizadoReativo[30], tempoMedioGulosoRandomizadoReativo;
+
+    ///armazenar resultado de cada abordagem para os 10 arquivos de entrada
+    double *solucoesGuloso = new double[10];
+
+    ///variavel para armazenar a menor solucao dentre todas as abordagens
+    double menorSolucao = HUGE_VAL;
+
+    ///2 medias e desvios padroes, para randomizada e reativa
+    double media[2], desvioP[2];
+
+    ///armazena todas as solucoes para as 30 execucoes
+    double* solucoes = new double[num_iteracoes];
+
+    char momeInstancia[100];
+
+    Grafo *g = new GrafoLista(false);
+
+    ///para cada arquivo temos uma linha da tabela
+    for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+
+        cout<<"\ngerando linha["<<idArquivo+2<<"] da tabela"<<endl;
+
+        ///definir o nome da instancia que vai aparecer na tabela
+        if(idArquivo<=3)
+            sprintf(momeInstancia, "instancia %d (pequena)", idArquivo);
+        if(idArquivo>=4 && idArquivo<=6)
+            sprintf(momeInstancia, "instancia %d (media)", idArquivo);
+        if(idArquivo>=7 && idArquivo<=9)
+            sprintf(momeInstancia, "instancia %d (grande)", idArquivo);
+
+        ///gerar primeira coluna da tabela temos que rodar o guloso, o randomizado e o reativo
+        ///primeira coluna da tabela nos da a melhor solucao dos algoritmos (ver funcao "execucaoGuloso()")
+        for(int i=1; i<=3; i++){
+
+            ///menor valor obitido para uma execucao
+            double menor;
+            ///se executando randomizado ou reativo
+            if(i>1){
+                cout<<"\nrodando 30 vezes para calcular desvio padrao e media"<<endl;
+                ///executar 30 vezes para calcular media e desvio padrao de randomizado e reativo
+                for(int it=0; it<num_iteracoes; it++){
+                    double t = clock();
+                    ///menor valor obitido para uma execucao
+                    menor = execucaoGuloso(g, arquivos[idArquivo], i);
+                    solucoes[it] = menor;
+                    if(menor<menorSolucao)
+                        menorSolucao = menor;
+
+                    if(i==2) tempoGulosoRandomizado[it] = (clock() - t) / CLOCKS_PER_SEC;
+                    if(i==3) tempoGulosoRandomizadoReativo[it] = (clock() - t) / CLOCKS_PER_SEC;
+                }
+                /// media
+                double somaSolucoes = accumulate(solucoes, solucoes+num_iteracoes, 0.0);
+                double mediaSolucoes = somaSolucoes / num_iteracoes;
+
+                /// desvio padrao
+                double sq_sum = inner_product(solucoes, solucoes+num_iteracoes, solucoes, 0.0);
+                double stdev = sqrt(sq_sum / num_iteracoes - mediaSolucoes * mediaSolucoes);
+
+                ///armazena media e desvio padrao
+                media[i-2] = mediaSolucoes;
+                desvioP[i-2] = stdev / mediaSolucoes * 100;
+
+                if(i==2) tempoMedioGulosoRandomizado = accumulate(tempoGulosoRandomizado, tempoGulosoRandomizado+num_iteracoes, 0.0) / num_iteracoes;
+                if(i==3) tempoMedioGulosoRandomizadoReativo = accumulate(tempoGulosoRandomizadoReativo, tempoGulosoRandomizadoReativo+num_iteracoes, 0.0) / num_iteracoes;
+            }
+            else{
+                ///rodar o guloso 30 vezes para se ter o tempo medio
+                cout<<"\ncalculando resultado do guloso"<<endl;
+                for(int it=0; it<num_iteracoes; it++){
+                    double t = clock();
+                    cout<<"\ncalculando resultado do guloso"<<endl;
+                    menor = execucaoGuloso(g, arquivos[idArquivo], i);
+
+                    solucoesGuloso[idArquivo] = menor;
+
+                    if(menor<menorSolucao)
+                        menorSolucao = menor;
+
+                    tempoGuloso[it] = (clock() - t) / CLOCKS_PER_SEC;
+                }
+                tempoMedioGuloso = accumulate(tempoGuloso, tempoGuloso+num_iteracoes, 0.0) / num_iteracoes;
+            }
+
+        }
+        tabela1<<momeInstancia<<";"<<menorSolucao<<";"<<solucoesGuloso[idArquivo]
+        <<";"<<media[0]<<";"<<desvioP[0]<<";"<<media[1]<<";"<<desvioP[1]<<"\n";
+
+        tabela2<<momeInstancia<<";"<<tempoMedioGuloso<<";"<<tempoMedioGulosoRandomizado
+        <<";"<<tempoMedioGulosoRandomizadoReativo<<"\n";
+
+        menorSolucao = HUGE_VAL;
+        delete g;
+        g = new GrafoLista(false);
+//        tabela.close();
+//        system("pause");
+    }
+
+    tabela1.close();
+    tabela2.close();
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -1151,7 +1172,7 @@ int main(){
 
 
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
-//    gerarTabela5();  /// <--- roar de novo pode sobrescrever o arquivo exixtente
+    gerarTabela();
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
 
 
@@ -1163,7 +1184,7 @@ int main(){
 
 //    testeGulosoRandomizado();
 
-    testeExemplosSteiner();
+//    testeExemplosSteiner();
 
 
 
