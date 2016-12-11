@@ -1252,10 +1252,10 @@ vector<Arco*> Grafo::gulosoSteiner(uint ids[], uint tam){
     return this->auxGulosoRandomizadoSteiner(ids, tam, 0.0, 0);
 }
 
-double Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha, int num_iteracoes){
+vector<Arco*> Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha, int num_iteracoes){
     double* solucoes = new double[num_iteracoes];
     double melhorSolucao = INFINITO;
-    vector<Arco*> conjuntoSolucao;
+    vector<Arco*> conjuntoSolucao, melhorSolucaoArcos;
 
     ///executa guloso randomizado (num_iteracoes) vezes
     for (int i=0; i < num_iteracoes; i++){
@@ -1264,8 +1264,10 @@ double Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, doub
         for(Arco* arco : conjuntoSolucao)
             solucoes[i] += arco->getPeso();
 
-        if(solucoes[i] < melhorSolucao)
+        if(solucoes[i] < melhorSolucao){
             melhorSolucao = solucoes[i];
+            melhorSolucaoArcos = conjuntoSolucao;
+        }
     }
 
     /// media
@@ -1276,13 +1278,13 @@ double Grafo::gulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, doub
     double sq_sum = inner_product(solucoes, solucoes+num_iteracoes, solucoes, 0.0);
     double stdev = sqrt(sq_sum / num_iteracoes - mediaSolucoes * mediaSolucoes);
 
-    printf("\t melhor solucao: %f", melhorSolucao);
-    printf("\n\t desvio padrao: %f", stdev);
-    printf("\n\t media: %f", mediaSolucoes);
-    printf("\n\t desvio percentual: %f%%\n\n", stdev/mediaSolucoes * 100);
+//    printf("\t melhor solucao: %f", melhorSolucao);
+//    printf("\n\t desvio padrao: %f", stdev);
+//    printf("\n\t media: %f", mediaSolucoes);
+//    printf("\n\t desvio percentual: %f%%\n\n", stdev/mediaSolucoes * 100);
 
     delete [] solucoes;
-    return melhorSolucao;
+    return melhorSolucaoArcos;
 }
 
 vector<Arco*> Grafo::auxGulosoRandomizadoSteiner(uint idTerminais[], uint nTerminais, double alpha, uint semente){
@@ -1367,7 +1369,7 @@ vector<Arco*> Grafo::auxGulosoRandomizadoSteiner(uint idTerminais[], uint nTermi
     arcosSolucao = podarArcosSteiner(arcosSolucao);
     this->atualizaGrau(true);
 
-
+    cout<<".";
     return arcosSolucao;
 }
 
@@ -1408,16 +1410,9 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
     for (int i = 0; i < max_iteracoes; i++){
         /// gerador de inteiros [0, m) a partir de distribuicao
         default_random_engine generator(i);
-//        printf("\n\ni = %d", i);
-//        cout << "\nDistribuicao:\n\t";
-//        for (double p : distribuicao.probabilities()){
-//            cout << p << "  ";
-//        }
 
         /// escolha alpha aleatoriaente com distribuicao atual
         uint alpha = distribuicao(generator);
-
-//        printf("\nalpha escolhido: alpha[%d] = %f", alpha, alphas[alpha]);
 
         /// testa o guloso randomizado para este alpha
         vector<Arco*> solucao = this->auxGulosoRandomizadoSteiner(idTerminais, tam, alphas[alpha], i);
@@ -1436,8 +1431,6 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
             melhorSolucao = solucao;
         }
 
-//        printf("\nMelhor resultado ate i = %d : %f", i, melhorResultado);
-
         /// ##########  PARTE REATIVA   ##########
         if((i+1) % bloco_iteracoes == 0){
             /// a cada bloco de iteracoes
@@ -1452,24 +1445,21 @@ vector<Arco*> Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint ta
                 }
             }
 
-//            cout << "\n\nNova Distribuicao:\n";
             double auxNovaDistribuicao[m];
             for (int j=0; j < m; j++){
                 auxNovaDistribuicao[j] = q_i[j] / soma_q;
-//                cout << auxNovaDistribuicao[j] << "  ";
             }
-//            cout << endl;
-//            system("pause");
+
 
             /// atualiza distribuicao
             discrete_distribution<int> novaDistribuicao(auxNovaDistribuicao, auxNovaDistribuicao+m);
             distribuicao = novaDistribuicao;
 
             ///para ver se ta rodando e nao em loop infinito
-            cout<<".";
+//            cout<<".";
         }
     }
-
+//    cout<<endl;
     return melhorSolucao;
 }
 /*

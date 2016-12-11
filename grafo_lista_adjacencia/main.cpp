@@ -1,6 +1,7 @@
 #include "Auxiliares.h"
 #include "GrafoHash.h"
 #include "GrafoLista.h"
+#include <ctime>
 
 using namespace std;
 
@@ -777,14 +778,8 @@ void testeExemplosSteiner(){
 //    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
 }
 
-void testeGulosoSteiner(){
-    Grafo *g = new GrafoLista(false);
-//    g->imprimir(true);
-
-//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
-//    vector<Arco*> solucao = g->gulosoRandomizadoSteiner(ids, 3, 0.5);
-
-    string pasta = "instanciasTestesSteiner";
+vector<string> listarArquivosPasta(string nome){
+    string pasta = nome;
     struct dirent *arquivo;
     DIR *dir = opendir(pasta.c_str());
     vector<string> arquivos;
@@ -793,30 +788,203 @@ void testeGulosoSteiner(){
         if(i>1)
             arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
     }
+    return arquivos;
+}
+
+void testeGulosoSteiner(){
+    string pasta = "instanciasTestesSteiner";
+    vector<string> arquivos = listarArquivosPasta(pasta);
+
+    ///armazenar tempo e valor da solucao do guloso
+    double *temposGuloso = new double[10], *solucoesGuloso = new double[10];
+
+    Grafo *g = new GrafoLista(false);
 
     for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
-
-        cout<<arquivos[idArquivo]<<endl;
 
         uint * terminais = leituraIntanciasSteiner(arquivos[idArquivo], g, false);
         uint ids[terminais[0]];
         for(uint j=0; j<terminais[0]; j++)
             ids[j] = terminais[j+1];
 
+        double t = clock();
+
         srand(time(NULL));
+
         vector<Arco*> solucao = g->gulosoSteiner(ids, terminais[0]);
 
-//        cout<<"\nRESULTADO FINAL ARCOS:"<<endl;
+        temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
+
         uint somaPesos = 0;
-        for(uint i=0; i<solucao.size(); i++){
-//            cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
+        for(uint i=0; i<solucao.size(); i++)
             somaPesos += solucao[i]->getPeso();
+
+        solucoesGuloso[idArquivo] = somaPesos;
+
+        cout << " solucao para instancia:" << arquivos[idArquivo] << ", foi " << solucoesGuloso[idArquivo]<<endl;
+        cout << " tempo gasto no algoritmo:" << temposGuloso[idArquivo]<<endl;
+    }
+
+}
+
+void testeGulosoRandomizadoSteiner(){
+    string pasta = "instanciasTestesSteiner";
+    vector<string> arquivos = listarArquivosPasta(pasta);
+
+    ///armazenar tempo e valor da solucao do guloso
+    double *temposGuloso = new double[10], *solucoesGuloso = new double[10];
+
+    Grafo *g = new GrafoLista(false);
+
+    for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+
+        uint * terminais = leituraIntanciasSteiner(arquivos[idArquivo], g, false);
+        uint ids[terminais[0]];
+        for(uint j=0; j<terminais[0]; j++)
+            ids[j] = terminais[j+1];
+
+        double t = clock();
+
+        srand(time(NULL));
+
+        vector<Arco*> solucao = g->gulosoSteiner(ids, terminais[0]);
+
+        temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
+
+        uint somaPesos = 0;
+        for(uint i=0; i<solucao.size(); i++)
+            somaPesos += solucao[i]->getPeso();
+
+        solucoesGuloso[idArquivo] = somaPesos;
+
+        cout << " solucao para instancia:" << arquivos[idArquivo] << ", foi " << solucoesGuloso[idArquivo]<<endl;
+        cout << " tempo gasto no algoritmo:" << temposGuloso[idArquivo]<<endl;
+    }
+
+}
+
+/**
+executa 1 vez algum algoritmo guloso para uma instancia e retorna a solucao
+operacao=1 executa guloso, =2 executa randomizado e =3 executa reativo
+*/
+double execucaoGuloso(Grafo* &g, string nomeInstancia, int operacao){
+    vector<Arco*> solucaoArcos;
+
+    uint * terminais = leituraIntanciasSteiner(nomeInstancia, g, false);
+    if(operacao==1)
+        solucaoArcos = g->gulosoSteiner(terminais + 1, terminais[0]);
+    if(operacao==2)
+        solucaoArcos = g->gulosoRandomizadoSteiner(terminais + 1, terminais[0], 0.25, 50);
+    if(operacao==3)
+        solucaoArcos = g->gulosoRandomizadoReativoSteiner(terminais + 1, terminais[0]);
+
+    double peso=0;
+    for(int j=0; j<solucaoArcos.size(); j++)
+        peso+=solucaoArcos[j]->getPeso();
+
+    return peso;
+}
+
+///arquivo global para facilitar a criacao da tabela
+ofstream tabela;
+/**
+gera tabela do item 5 do email do stenio
+*/
+
+void gerarColuna(string nomeInstancia, double melhorSolucao, double valorGuloso, double mediaRand, double desvRand, double mediaReativ, double desvReativ){
+    tabela << nomeInstancia << "\t" << melhorSolucao << "\t" << valorGuloso << "\t" << mediaRand << "\t" << desvRand << "\t" << mediaReativ << "\t" << desvReativ<<"\n";
+}
+
+void gerarTabela5(){
+    tabela.open("tabela.csv");
+
+    ///primeira linha da tabela com os titulos das colunas
+    tabela<<"Nome instancia"<<";"<<"Melhor solucao"<<";"<<"Resultado guloso"<<";"<<"Media randomico"
+          <<";"<<"Desvio padrao randomico"<<";"<<"Media reativo"<<";"<<"Desvio padrao reativo"<<"\n";
+
+    int num_iteracoes = 30;
+
+    string pasta = "instanciasTestesSteiner";
+    vector<string> arquivos = listarArquivosPasta(pasta);
+
+    ///armazenar resultado de cada abordagem para os 10 arquivos de entrada
+    double *solucoesGuloso = new double[10];
+
+    ///variavel para armazenar a menor solucao dentre todas as abordagens
+    double menorSolucao = HUGE_VAL;
+
+    ///2 medias e desvios padroes, para randomizada e reativa
+    double media[2], desvioP[2];
+
+    ///armazena todas as solucoes para as 30 execucoes
+    double* solucoes = new double[num_iteracoes];
+
+    char momeInstancia[100];
+
+    Grafo *g = new GrafoLista(false);
+
+    ///para cada arquivo temos uma linha da tabela
+    for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
+
+        cout<<"\ngerando linha["<<idArquivo+2<<"] da tabela"<<endl;
+
+        ///definir o nome da instancia que vai aparecer na tabela
+        if(idArquivo<=3)
+            sprintf(momeInstancia, "instancia %d (pequena)", idArquivo);
+        if(idArquivo>=4 && idArquivo<=6)
+            sprintf(momeInstancia, "instancia %d (media)", idArquivo);
+        if(idArquivo>=7 && idArquivo<=9)
+            sprintf(momeInstancia, "instancia %d (grande)", idArquivo);
+
+        ///gerar primeira coluna da tabela temos que rodar o guloso, o randomizado e o reativo
+        ///primeira coluna da tabela nos da a melhor solucao dos algoritmos (ver funcao "execucaoGuloso()")
+        for(int i=1; i<=3; i++){
+
+            ///menor valor obitido para uma execucao
+            double menor;
+            ///se executando randomizado ou reativo
+            if(i>1){
+                cout<<"\nrodando 30 vezes para calcular desvio padrao e media"<<endl;
+                ///executar 30 vezes para calcular media e desvio padrao de randomizado e reativo
+                for(int it=0; it<num_iteracoes; it++){
+                    ///menor valor obitido para uma execucao
+                    menor = execucaoGuloso(g, arquivos[idArquivo], i);
+                    solucoes[it] = menor;
+                    if(menor<menorSolucao)
+                        menorSolucao = menor;
+                }
+                /// media
+                double somaSolucoes = accumulate(solucoes, solucoes+num_iteracoes, 0.0);
+                double mediaSolucoes = somaSolucoes / num_iteracoes;
+
+                /// desvio padrao
+                double sq_sum = inner_product(solucoes, solucoes+num_iteracoes, solucoes, 0.0);
+                double stdev = sqrt(sq_sum / num_iteracoes - mediaSolucoes * mediaSolucoes);
+
+                ///armazena media e desvio padrao
+                media[i-2] = mediaSolucoes;
+                desvioP[i-2] = stdev / mediaSolucoes * 100;
+            }
+            else{
+                cout<<"\ncalculando resultado do guloso"<<endl;
+                menor = execucaoGuloso(g, arquivos[idArquivo], i);
+
+                solucoesGuloso[idArquivo] = menor;
+
+                if(menor<menorSolucao)
+                    menorSolucao = menor;
+            }
         }
-        cout << "Soma dos pesos: " << somaPesos << endl << endl;
+        tabela<<arquivos[idArquivo]<<";"<<menorSolucao<<";"<<solucoesGuloso[idArquivo]
+        <<";"<<media[0]<<";"<<desvioP[0]<<";"<<media[1]<<";"<<desvioP[1]<<"\n";
+
+        delete g;
+        g = new GrafoLista(false);
+//        tabela.close();
 //        system("pause");
     }
-    g->imprimir(true);
 
+    tabela.close();
 }
 
 void testeInstanciasSteiner(){
@@ -863,25 +1031,25 @@ void testeInstanciasSteiner(){
     */
 }
 
-void testeGulosoRandomizado(){
-    double alpha = 0.25;
-    int num_it = 30;
-    vector<string> arquivos = listarInstanciasSteiner();
-    Grafo* G;
-
-    ///para cada arquivo
-    for(string arq : arquivos){
-//        system("pause");
-        cout<<"instancia:"<<arq<<endl;
-
-        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
-//        G->imprimir();
-//        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
-        G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]);
-
-        delete G;
-    }
-}
+//void testeGulosoRandomizado(){
+//    double alpha = 0.25;
+//    int num_it = 30;
+//    vector<string> arquivos = listarInstanciasSteiner();
+//    Grafo* G;
+//
+//    ///para cada arquivo
+//    for(string arq : arquivos){
+////        system("pause");
+//        cout<<"instancia:"<<arq<<endl;
+//
+//        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
+////        G->imprimir();
+////        G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it);
+//        G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]);
+//
+//        delete G;
+//    }
+//}
 
 void testarGulosoNaMao(){
     Grafo *g = new GrafoLista(false);
@@ -966,12 +1134,19 @@ int main(){
 //    testeKConexo();
 
 
+///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
+
+    gerarTabela5();
+///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
+
+
+
 
 //    testarGulosoNaMao();
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
-    cout<<"guloso randomizado:"<<endl<<endl<<endl;
-    testeGulosoRandomizado();
+//    cout<<"guloso randomizado:"<<endl<<endl<<endl;
+//    testeGulosoRandomizado();
 
 
 

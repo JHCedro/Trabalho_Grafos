@@ -162,7 +162,7 @@ public:
     void definirNivelNos();
 
     vector<Arco*> gulosoSteiner(uint ids[], uint tam);
-    double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes);
+    vector<Arco*> gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes);
     vector<Arco*> gulosoRandomizadoReativoSteiner(uint ids[], uint tam);
     vector<Arco*> gulosoRandomizadoReativoSteiner2(uint ids[], uint tam);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
