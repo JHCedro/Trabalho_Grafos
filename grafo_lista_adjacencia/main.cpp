@@ -3,7 +3,12 @@
 #include "GrafoLista.h"
 #include <ctime>
 #include <set>
-
+/** PARA LINUX
+#include "sys/types.h"
+#include "sys/sysinfo.h"
+*/
+#include <string.h>
+#include <stdio.h>
 using namespace std;
 
 void testeFechamentoTransitivoNaMao(bool GHash = false){
@@ -1121,6 +1126,144 @@ void gerarTabela(){
     tabela2.close();
 }
 
+uint testarInsersao(uint n, uint amostra, bool GHash = false){
+    Grafo* G;
+
+    uint t = 0, tAux;
+    for (uint i=0; i < amostra; i++){
+        if(GHash)   G = new GrafoHash(n);
+        else        G = new GrafoLista();
+
+        tAux = clock();
+        for(uint j = 0; j < n; j++)
+            G->insereNo(j);
+        t += clock() - tAux;
+        delete G;
+    }
+
+    return t;
+}
+
+uint testarColisaoHash(uint n, uint amostra){
+    GrafoHash* G;
+
+    uint t = 0, tAux;
+    for (uint i=0; i < amostra; i++){
+        G = new GrafoHash(n);
+
+        for(uint j = 0; j < n; j++)
+            G->insereNo(j);
+        delete G;
+    }
+
+//    cout << "\n Colisoes: " << (double) G->getNumColisoes() / amostra << endl;
+
+    return G->getNumColisoes();
+}
+
+uint testarBusca(uint n, uint amostra, bool GHash = false){
+    Grafo* G;
+
+    if(GHash)   G = GrafoHash::grafoCompleto(n);
+    else        G = GrafoLista::grafoCompleto(n);
+
+    uint ids[amostra];
+    for(uint i = 0; i < amostra; i++)
+        ids[i] = rand()%(n+1)+1;
+
+    uint t = 0, tAux;
+    for (uint i=0; i < amostra; i++){
+        tAux = clock();
+        G->buscaNo(ids[i]);
+        t += clock() - tAux;
+    }
+
+    delete G;
+    return t;
+}
+
+uint testarRemocao(uint n, uint amostra, bool GHash = false){
+    Grafo* G;
+
+    uint t = 0, tAux;
+    for (uint i=0; i < amostra; i++){
+        if(GHash)   G = GrafoHash::grafoCompleto(n);
+        else        G = GrafoLista::grafoCompleto(n);
+        uint id = rand()%(n+1)+1;
+
+        tAux = clock();
+        G->removeNo(id);
+        t += clock() - tAux;
+        delete G;
+    }
+
+    return t;
+}
+
+void analiseDesempenhoEstruturas(uint n, uint passo, uint amostra){
+    string subPasta = "Estrutural/";
+    ///tempo de insercao de nos
+    analiseDesempenho(testarInsersao, n, passo, amostra, false, "Teste Insercao Lista", subPasta + "Teste_Insercao_LISTA.csv");
+    graficoPython(subPasta + "Teste_Insercao_LISTA.csv", "python3");
+    analiseDesempenho(testarInsersao, n, passo, amostra, true, "Teste Insercao Hash", subPasta + "Teste_Insercao_HASH.csv");
+    graficoPython(subPasta + "Teste_Insercao_HASH.csv", "python3");
+
+    ///Numero de Colisoes na tabela de nos
+    /*
+    for (uint i=0; i<n; i+=passo){
+        printf("\nn=%d \tamostra= %d", i, amostra);
+        double colisoes = (double) testarColisaoHash(i, amostra) / amostra;
+        printf("\tcolisoes= %f \t razao: %f", colisoes, colisoes/n);
+    }
+    */
+//    analiseDesempenho(testarColisaoHash, n, passo, amostra, true/*, "Colisoes Hash", subPasta + "Colisoes_HASH.csv"*/);
+//    graficoPython(subPasta + "Colisoes_HASH.csv", "python3");
+
+    ///tempo de busca de nos
+    analiseDesempenho(testarInsersao, n, passo, amostra, false, "Teste Busca Lista", subPasta + "Teste_Busca_LISTA.csv");
+    graficoPython(subPasta + "Teste_Busca_LISTA.csv", "python3");
+    analiseDesempenho(testarInsersao, n, passo, amostra, true, "Teste Busca Hash", subPasta + "Teste_Busca_HASH.csv");
+    graficoPython(subPasta + "Teste_Busca_HASH.csv", "python3");
+
+    ///tempo de insercao de arcos
+    ///tempo de busca de arcos
+        //são da ordem de busca de nos
+
+    ///tempo de remocao de no
+    analiseDesempenho(testarInsersao, n, passo, amostra, false, "Teste Remocao Lista", subPasta + "Teste_Remocao_LISTA.csv");
+    graficoPython(subPasta + "Teste_Remocao_LISTA.csv", "python3");
+    analiseDesempenho(testarInsersao, n, passo, amostra, true, "Teste Remocao Hash", subPasta + "Teste_Remocao_HASH.csv");
+    graficoPython(subPasta + "Teste_Remocao_HASH.csv", "python3");
+
+    ///memoria alocada
+
+}
+
+int parseLine(char* line){
+    int i = strlen(line);
+    const char* p = line;
+    while(*p < '0' || *p > '9')
+        p++;
+    line[i-3] = '\0';
+    i = atoi(p);
+    return i;
+}
+
+int getValue(){
+    FILE* file = fopen("/proc/self/status", "r");
+    int result = -1;
+    char line[128];
+    while(fgets(line, 128, file) != NULL){
+        if(strncmp(line, "VmRSS", 6) == 0){
+            result = parseLine(line);
+            break;
+        }
+    }
+    fclose(file);
+
+    return result;
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
@@ -1172,7 +1315,7 @@ int main(){
 //    testeListaHashRidiculo();
 //    testarEhArcoPonte(0, 0, false);
 
-//    cout << THash<uint>::NextPrime(11);
+//    cout << THash<uint>::proxPrimo(11);
 //    testarComponentesConexasNaMao();
 //    testeKConexo();
 
@@ -1185,9 +1328,14 @@ int main(){
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
 
-    testeGulosoRandomizado();
+//    testeGulosoRandomizado();
 
-    testeExemplosSteiner();
+//    testeExemplosSteiner();
+//Grafo* g = GrafoHash::grafoCompleto(8000);
+    analiseDesempenhoEstruturas(1000, 10, 30);
+
+//    cout << "memoria: " << getValue();
+//    pauseGambiarra();
 
 //    cout<<"guloso randomizado:"<<endl<<endl<<endl;
 //    testeInstanciasSteiner();

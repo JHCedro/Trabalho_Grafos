@@ -40,6 +40,8 @@ public:
 //    uint fReHashNo(uint id, uint tam);
 //    uint noGetID(NoHash* no);
 
+    uint getNumColisoes();
+
     void imprimir(bool detalhado = false);
     void imprimirTabela();
 

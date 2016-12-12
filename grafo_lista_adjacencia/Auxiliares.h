@@ -62,7 +62,7 @@ void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string
 
 /**
 * Analisa desempenho de funcao(i) para i = 0, passo, 2*passo... i < n
-* Retorna vetor de tempos médio para cada (i) obtido da média de (amostras)
+* Retorna vetor de tempos mÃ©dio para cada (i) obtido da mÃ©dia de (amostras)
 */
 double* analiseDesempenho(uint(*funcao)(uint, uint, bool), uint n, uint passo, uint amostra, bool Ghash){
     double *tempos = new double[n/passo];
@@ -178,7 +178,7 @@ vector<string> listarInstanciasSteiner(){
     vector<string> arquivos;
 
     for(uint i=0; arquivo = readdir(dir); i++){
-        if(i>1)
+        if(arquivo->d_name[0] != '.')
             arquivos.push_back(pasta + "/" + (string)arquivo->d_name);
     }
 
@@ -186,8 +186,8 @@ vector<string> listarInstanciasSteiner(){
 }
 
 /**
-RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO É O NÚMERO DE NÓS TERMINAIS
-AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
+RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÃ‡ÃƒO Ã‰ O NÃšMERO DE NÃ“S TERMINAIS
+AS DEMAIS POSIÃ‡Ã•ES SÃƒO OS IDS DOS TERMINAIS
 Aloca o Grafo *G passado por referencia
 */
 uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){

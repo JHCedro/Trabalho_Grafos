@@ -44,8 +44,8 @@ public:
     bool remover(uint id);
     void imprimir();
 
-    static bool IsPrime(uint number);
-    static uint NextPrime(uint a);
+    static bool ehPrimo(uint number);
+    static uint proxPrimo(uint a);
 
     ~THash();
 };
@@ -57,7 +57,7 @@ template<class T>
 THash<T>::THash(uint ordem, T NULO, T RM){
     this->NULO = NULO;
     this->RM = RM;
-    this->tam = this->NextPrime(ordem);
+    this->tam = this->proxPrimo(ordem);
     this->insercoes = 0;
     this->colisoes = 0;
     tabela = new T[tam];
@@ -88,19 +88,19 @@ void THash<T>::setGetID(uint (*funcao)(T)){
 }
 
 template<class T>
-bool THash<T>::IsPrime(uint number){
-    if (number == 2 || number == 3)
+bool THash<T>::ehPrimo(uint num){
+    if (num == 2 || num == 3)
         return true;
 
-    if (number % 2 == 0 || number % 3 == 0)
+    if (num % 2 == 0 || num % 3 == 0)
         return false;
 
     uint divisor = 6;
-    while (divisor * divisor - 2 * divisor + 1 <= number){
-        if (number % (divisor - 1) == 0)
+    while (divisor * divisor - 2 * divisor + 1 <= num){
+        if (num % (divisor - 1) == 0)
             return false;
 
-        if (number % (divisor + 1) == 0)
+        if (num % (divisor + 1) == 0)
             return false;
 
         divisor += 6;
@@ -110,23 +110,23 @@ bool THash<T>::IsPrime(uint number){
 }
 
 template<class T>
-uint THash<T>::NextPrime(uint a){
-    while (!IsPrime(++a)){ }
+uint THash<T>::proxPrimo(uint a){
+    while (!ehPrimo(++a)){ }
     return a;
 
 }
 
 template<class T>
 bool THash<T>::inserir(T obj){
-    if(alocados+removidos < tam){
-        uint cont = 1;
+    if(alocados < tam){
+        uint cont = 0;
         uint pos = funcaoHash(getID(obj), tam);
 //        printf("\npos: %d\t tem %d\n", pos, tabela[pos]);
-        while(tabela[pos] != NULO){
+        while(tabela[pos] != NULO && tabela[pos] != RM){
             pos = (pos+funcaoReHash(getID(obj), tam))%tam;
 //            printf("\npos: %d\t tem %d\n", pos, tabela[pos]);
             cont++;
-            if (cont == tam){
+            if (cont == tam - 1){
                 cout << "\nLoop infinito na insercao!\n";
                 return false;
             }
@@ -134,7 +134,7 @@ bool THash<T>::inserir(T obj){
         tabela[pos] = obj;
         alocados++;
         insercoes++;
-        colisoes += cont - 1;
+        colisoes += cont;
         return true;
     }
     else{

@@ -12,25 +12,25 @@
 
 using namespace std;
 
-uint fHashNo(uint id, uint tam){
-    id = ((id >> 16) ^ id) * 0x45d9f3b;
-    id = ((id >> 16) ^ id) * 0x45d9f3b;
-    id = (id >> 16) ^ id;
-
-    return (id)%tam;
-}
-
-uint fReHashNo(uint id, uint tam){
-    return id*2654435761 % 2^32 + 1;
-}
-
 //uint fHashNo(uint id, uint tam){
+//    id = ((id >> 16) ^ id) * 0x45d9f3b;
+//    id = ((id >> 16) ^ id) * 0x45d9f3b;
+//    id = (id >> 16) ^ id;
+//
 //    return (id)%tam;
 //}
 //
 //uint fReHashNo(uint id, uint tam){
-//    return (id)%(tam/3)+1;
+//    return id*2654435761 % 2^32 + 1;
 //}
+
+uint fHashNo(uint id, uint tam){
+    return (id)%tam;
+}
+
+uint fReHashNo(uint id, uint tam){
+    return (id)%(tam/3)+1;
+}
 
 uint noGetID(NoHash* no){
     return no->getID();
@@ -99,6 +99,10 @@ void GrafoHash::imprimirTabela(){
     for(itInicio(); !itEhFim(); itProx()){
         getIt()->imprimir(flagDir);
     }
+}
+
+uint GrafoHash::getNumColisoes(){
+    return tabelaNos->getColisoes();
 }
 
 /** IMPLEMENTAR DESTRUTOR */
