@@ -43,6 +43,7 @@ public:
     No* getNoOrigem(){  return noOrigem;};
     uint getTam(){ return pos.size(); };
 
+    /** Retorna a distancia do noOrigem ao destino*/
     double distancia(uint destino){
         return distancias[ pos[destino] ];
     };

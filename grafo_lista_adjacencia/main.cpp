@@ -922,7 +922,7 @@ void testeInstanciasSteiner(){
     */
 }
 
-void testeGulosoRandomizado(){
+void testeHeuristicasGulosas(){
     double alpha = 0.25;
     int num_it = 30;
     vector<string> arquivos = listarInstanciasSteiner();
@@ -1278,7 +1278,7 @@ int main(){
 //    testeNoArticulacao();
 //    testeRubustezVertice();
 
-//    analiseDesempenho(testarDijkstra, 1000, 50, 5, "Teste Dijkstra", "teste_dijkstra.csv");
+//    analiseDesempenho(testarDijkstra, 1000, 50, 5, false, "Teste Dijkstra", "teste_dijkstra.csv");
 //    graficoPython("teste_dijkstra.csv");
 
 //    verificaGrafoKRegular();
@@ -1328,11 +1328,11 @@ int main(){
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
 
-//    testeGulosoRandomizado();
+    testeHeuristicasGulosas();
 
 //    testeExemplosSteiner();
 //Grafo* g = GrafoHash::grafoCompleto(8000);
-    analiseDesempenhoEstruturas(1000, 10, 30);
+//    analiseDesempenhoEstruturas(1000, 10, 30);
 
 //    cout << "memoria: " << getValue();
 //    pauseGambiarra();

@@ -86,7 +86,6 @@ bool Grafo::mesmaComponenteFortementeConexa(No *i1, No *i2){
 /**
 Percorre grafo a partir de um nó e sai marcando todo mundo da mesma componente conexa
 */
-//void Grafo::percursoProfundidade(No *no,  void(Grafo::*funcao)(No*)){
 void Grafo::percursoProfundidade(No *no){
     if(no == NULL)
         cout<<"\n No NULL \n"<<endl;
@@ -395,9 +394,6 @@ int Grafo::auxEhNoArticulacao(No *no){
     }
     return 0;
 }
-//void Grafo::incrementaContador(No* n){
-//    this->contAux++;
-//}
 
 /**
 ESSA FUNÇÃO DO JEITO QUE ESTAVA ANTES NÃO FUNCIONAVA!!!!!
@@ -733,7 +729,7 @@ double Grafo::dijkstra(uint origem, uint destino){
     return this->dijkstra(buscaNo(origem), buscaNo(destino));
 }
 
-Dijkstra* Grafo::dijkstra(uint origem){
+Dijkstra* Grafo::dijkstra(uint origem, bool imprimeSolucao){
     return dijkstra( buscaNo(origem) );
 }
 
@@ -741,7 +737,7 @@ Dijkstra* Grafo::dijkstra(uint origem){
 * Usa Algoritmo de Dijkstra para criar informações de menor distância (e se caminho)
 * para todos oa nos do Grafo
 */
-Dijkstra* Grafo::dijkstra(No* origem){
+Dijkstra* Grafo::dijkstra(No* origem, bool imprimeSolucao){
     this->desmarcaNos();
     ///mapeamento (id -> pos) nos vetores (distancias) e (naoVisitados)
     map<uint, uint> pos;
@@ -802,7 +798,11 @@ Dijkstra* Grafo::dijkstra(No* origem){
     }
 
     ///Retorna estrutura Dijkstra
-    return new Dijkstra(this, origem, pos, distancias, proximo);
+    Dijkstra *solucao = new Dijkstra(this, origem, pos, distancias, proximo);
+    if(imprimeSolucao)
+        solucao->imprimirDistancias();
+
+    return solucao;
 }
 
 double** Grafo::algoritmoFloyd(){

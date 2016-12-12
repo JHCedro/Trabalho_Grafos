@@ -26,7 +26,6 @@ protected:
     int auxEhNoArticulacao(No* no);
     void auxBuscaProfundidade(No *no, No* noArv, Grafo* Arv);
     vector<vector<No*>> auxRetornarComponentesConexas(No* no,vector<vector<No*>> componentes, int num);
-//    void incrementaContador(No* n);
     void atualizaDist(No* u, map<uint, No*> Q, map<uint, double> distancias);
     double mediaPesosArcos;
     bool auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination);
@@ -38,7 +37,6 @@ public:
     uint getNumeroNos(){    return numeroNos;   };
     uint getNumeroArcos(){    return numeroArcos;   };
     bool getFlagDir(){  return flagDir; };
-//    void setFlagDir(bool flag){ flagDir=flag;   };
     uint getContAux(){  return contAux; };
     void setContAux(uint i){ contAux=i;   };
 
@@ -47,8 +45,6 @@ public:
     virtual No* getIt() = 0;
     virtual void itProx() = 0;
     virtual bool itEhFim() = 0;
-
-//    void leDataArquivo(char nome[]);
 
     virtual No* buscaNo(uint id) = 0;
     virtual No* insereNo(uint id) = 0;
@@ -93,7 +89,6 @@ public:
     uint rubustezVertice(uint *ids);
     uint rubustezAresta();
 
-//    void percursoProfundidade(No *inicio, void(Grafo::*funcao)(No*) = NULL);
     void percursoProfundidade(No *inicio);
     void percursoIgnorandoArco(No *inicio, Arco *arcoIgnorado);
 
@@ -116,8 +111,8 @@ public:
     Arco* buscaArco(No* noOrigem, No* noDestino);
     Arco* buscaArco(uint id);
 
-    Dijkstra* dijkstra(No* origem);
-    Dijkstra* dijkstra(uint origem);
+    Dijkstra* dijkstra(No* origem, bool imprimeSolucao = false);
+    Dijkstra* dijkstra(uint origem, bool imprimeSolucao = false);
     double dijkstra(uint origem, uint destino);
     double dijkstra(No* origem, No* destino);
 
@@ -148,14 +143,14 @@ public:
 //    virtual Grafo* grafoCircular(uint n);
 //    virtual Grafo* grafoEscadinha(uint n);
 
-
+    /// ----------------------------------------------
+    /// Algoritmos para problema da Arvore de Steiner
+    /// ----------------------------------------------
     double funcaoCriterio(Arco *a);
     void iniciaIdArvore();
     vector<pair<double, Arco*>> arcosAdjacentesDesmarcados(vector<No*> nos);
     vector<pair<double, Arco*>> arcosAdjacentesDesmarcados(No* no);
     static bool comparaCriterioSteiner(pair<double, Arco*> p1, pair<double, Arco*> p2);
-    void quickSort(vector<Arco*> arr, int left, int right);
-    vector<Arco*> bubbleSort(vector<Arco*> arcos);
     bool nosMesmaComponenteConexa(vector<No*> nos);
 
     void calculaMediaPesosArcos();
@@ -171,6 +166,7 @@ public:
     void imprimirGraus();
     void zeraTerminais();
     uint *leituraIntanciasSteiner(string nome);
+    /// ----------------------------------------------
 
     virtual ~Grafo(){};
 };
