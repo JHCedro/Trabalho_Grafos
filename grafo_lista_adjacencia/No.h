@@ -63,7 +63,6 @@ public:
     bool getMarcado(){  return this->marcado;   };
 
     bool ehAdjacente(No *no);
-    double hashing(uint id);
     void imprimirDetelhado(bool direcionado);
     void imprimir(bool direcionado);
 

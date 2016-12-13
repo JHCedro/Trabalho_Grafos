@@ -13,14 +13,6 @@ No::No(uint id){
     this->nivel = 0;
 }
 
-double No::hashing(uint id){
-    uint valor = 0;
-//    int primos[7] = {251,337,157,193,229,263,127};
-//    for(double i = 0; i < id; i+=0.01)
-//        valor = valor*primos[valor%7] + id;
-    return valor%101;
-}
-
 void No::atualizaGrau(){
     this->grau = 0;
     for(itInicio(); !itEhFim(); itProx())

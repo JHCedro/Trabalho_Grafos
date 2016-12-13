@@ -42,7 +42,6 @@
 		<Unit filename="GrafoHash.h" />
 		<Unit filename="GrafoLista.cpp" />
 		<Unit filename="GrafoLista.h" />
-		<Unit filename="Hashing.cpp" />
 		<Unit filename="Hashing.h" />
 		<Unit filename="No.cpp" />
 		<Unit filename="No.h" />

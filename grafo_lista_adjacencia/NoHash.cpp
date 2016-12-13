@@ -16,14 +16,6 @@ uint fReHashArco(uint id, uint tam){
     return id*2654435761 % 2^32 + 1;
 }
 
-//uint fHashArco(uint id, uint tam){
-//    return (id)%tam;
-//}
-//
-//uint fReHashArco(uint id, uint tam){
-//    return (id)%(tam/3)+1;
-//}
-
 uint arcoGetID(Arco* arco){
     return arco->getID();
 }
@@ -103,7 +95,6 @@ bool NoHash::removeArco(No* noDestino){
     for(itInicio(); !itEhFim(); itProx()){
         Arco *arco = this->getIt();
         if(arco->getNoDestino() == noDestino){
-//            cout << "Remover arco: " << arco->getID();
             return tabelaArcos->remover(arco->getID());
         }
 	}

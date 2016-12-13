@@ -100,7 +100,7 @@ void graficoPython(string nomeArq, string versao = "python", string arg_plot="")
 
 Grafo* criarGrafoEscadinha(bool GHash = false){
     uint n_nos;
-    cout << "numero de nos(gerar em escadinha de forma cadaga):" << endl;
+    cout << "numero de nos(gerar em escadinha):" << endl;
     cin >> n_nos;
 
     Grafo *G;
@@ -193,9 +193,6 @@ uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
     ifstream entrada;
     entrada.open(nomeArq, ios::in);
 
-//    cout<<"abriu arquivo"<<endl;
-//    cout<<nome<<endl;
-//    system("pause");
     uint n_nos, n_arcos;
 
     if(GHash) G = new GrafoHash(n_nos*1.5, false);
@@ -205,13 +202,9 @@ uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
     entrada>>aux;
     while(((string)aux) != "SECTION Graph"){
         entrada.getline(aux, 100);
-//        cout<<(string)aux<<endl;
     }
     entrada>>aux>>n_nos;
     entrada>>aux>>n_arcos;
-//    cout<<"numero de nos: "<<n_nos<<endl;
-//    cout<<"numero de arcos: "<<n_arcos<<endl;
-
     ///insere todos os nos
     for(uint i=1; i<=n_nos; i++)
         G->insereNo(i);
@@ -224,15 +217,12 @@ uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
     for(int linha=0; linha<n_arcos; linha++){
         entrada >> aux >> i >> j >> peso;
         G->insereArcoID(i, j, 1, false, peso);
-//            system("pause");
     }
 
     entrada>>aux>>aux>>aux>>aux;
 
     uint n_terminais, *terminais, idx=0;
     entrada>>n_terminais;
-
-//    cout<<"numero de terminais: "<<n_terminais<<endl;
 
     terminais = new uint[n_terminais + 1];
     terminais[0] = n_terminais;
@@ -243,7 +233,6 @@ uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
         ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
         terminais[linha + 1] = i;
     }
-//    G->imprimir();
     return terminais;
 }
 

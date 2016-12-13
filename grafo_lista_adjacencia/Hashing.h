@@ -50,9 +50,6 @@ public:
     ~THash();
 };
 
-/// DEVERIA ESTAR EM "Hashing.cpp":
-/// NAO SEI PORQUE NAO FUNCIONA SE ESTIVER LA
-
 template<class T>
 THash<T>::THash(uint ordem, T NULO, T RM){
     this->NULO = NULO;
@@ -121,10 +118,8 @@ bool THash<T>::inserir(T obj){
     if(alocados < tam){
         uint cont = 0;
         uint pos = funcaoHash(getID(obj), tam);
-//        printf("\npos: %d\t tem %d\n", pos, tabela[pos]);
         while(tabela[pos] != NULO && tabela[pos] != RM){
             pos = (pos+funcaoReHash(getID(obj), tam))%tam;
-//            printf("\npos: %d\t tem %d\n", pos, tabela[pos]);
             cont++;
             if (cont == tam - 1){
                 cout << "\nLoop infinito na insercao!\n";
@@ -145,13 +140,10 @@ bool THash<T>::inserir(T obj){
 
 template<class T>
 uint THash<T>::buscarPos(uint id){
-//    cout<< "\nBuscando: " << id << endl;
     uint cont = 1; /// contar posicoes testadas
     uint pos = funcaoHash(id, tam);
-//    printf("\npos: %d\t tem %d\n", pos, getID(tabela[pos]));
     while(tabela[pos] != NULO && getID(tabela[pos]) != id){
         pos = (pos+funcaoReHash(id, tam))%tam;
-//        printf("\npos: %d\t tem %d\n", pos, getID(tabela[pos]));
         cont++;
         if (cont == tam){
             cout << "\nLoop infinito na busca!\n";
@@ -163,7 +155,6 @@ uint THash<T>::buscarPos(uint id){
         return -1;
     }
 
-//    cout << "\nreturn pos"<< pos <<endl;
     return pos;
 }
 
@@ -188,20 +179,6 @@ bool THash<T>::remover(uint id){
     removidos++;
 
     return true;
-//    uint proxPos = (pos+funcaoReHash(obj, tam))%tam;
-//    while(tabela[proxPos] != NULO){
-//        tabela[pos] = tabela[proxPos];
-//        pos = proxPos;
-//        proxPos = (proxPos+funcaoReHash(obj, tam))%tam;
-////        printf("\npos: %d\t tem %d\n", pos, tabela[pos]);
-////        cont++;
-////        if (cont == tam){
-////            cout << "\nLoop infinito na insercao!\n";
-////            return;
-////        }
-//    }
-//    tabela[pos] = NULO;
-//    n--;
 }
 
 template<class T>

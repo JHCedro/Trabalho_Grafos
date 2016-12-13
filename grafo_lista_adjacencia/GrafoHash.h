@@ -36,10 +36,6 @@ public:
     static GrafoHash* grafoCircular(uint n, bool direcionado = true);
     static GrafoHash* grafoEscadinha(uint n, bool direcionado = true);
 
-//    uint fHashNo(uint id, uint tam);
-//    uint fReHashNo(uint id, uint tam);
-//    uint noGetID(NoHash* no);
-
     uint getNumColisoes();
 
     void imprimir(bool detalhado = false);

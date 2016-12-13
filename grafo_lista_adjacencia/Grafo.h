@@ -139,9 +139,6 @@ public:
 
     /// Criacoes de grafos mais comuns
     virtual Grafo* novoGrafo(uint ordem, bool direcionado) = 0;
-//    virtual Grafo* grafoCompleto(uint n);
-//    virtual Grafo* grafoCircular(uint n);
-//    virtual Grafo* grafoEscadinha(uint n);
 
     /// ----------------------------------------------
     /// Algoritmos para problema da Arvore de Steiner
