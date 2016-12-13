@@ -75,7 +75,6 @@ bool GrafoLista::removeNo(uint id){
         }
     }
     if(noRemover!=NULL){
-//        cout <<"\nremovendo no com id:" << noRemover->getID()<<endl;
         this->removeArcos(noRemover, false);
         this->removeArcosLigadasAoNo(noRemover, false);
         delete noRemover;
@@ -91,7 +90,7 @@ void GrafoLista::imprimir(bool detalhado){
     Grafo::imprimir(detalhado);
 }
 
-/** IMPLEMENTAR DESTRUTOR */
+/** IMPLEMENTAÇÃO DO DESTRUTOR */
 GrafoLista::~GrafoLista(){
     ///percorre nos
     this->itInicio();
@@ -101,25 +100,6 @@ GrafoLista::~GrafoLista(){
         listaNos = getIt();
     }
     listaNos = NULL;
-//    NoLista *no, *noAux;
-//    Arco *arco, *arcoAux;
-//    ///percorre nos
-//    no = this->listaNos;
-//    while( this->listaNos!=NULL ){
-//        ///percorre arcos do no
-//        arco = this->listaNoslistaNoslistaNos->getListaArcos();
-//        while( arco!=NULL ){
-//            arcoAux = arco;
-//            arco = arco->getProxArco();
-//            this->listaNos->setListaArcos(arco);
-//            delete arcoAux;
-//        }
-//
-//        noAux = this->listaNos;
-//        this->listaNos = this->listaNos->getProxNo();
-//        delete noAux;
-//    }
-//    this->listaNos=NULL;
 }
 
 GrafoLista* GrafoLista::grafoCompleto(uint n, bool direcionado){

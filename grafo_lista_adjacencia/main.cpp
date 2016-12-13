@@ -71,11 +71,10 @@ void testeGeral(bool GHash = false){
     }
 }
 
-/** testar a inser��o de 100.000 nos e Arcos */
+/** testar a inserção de 100.000 nos e Arcos */
 void testarGrandeInsersao(bool GHash = false){
     uint tam = 100000;
     cout<<"numero de nos e Arcos:"<<endl;
-    //    cin>>tam;
     geraArquivoDeEntrada(tam);
     Grafo *di;
     if(GHash)   di = new GrafoHash(tam);
@@ -146,30 +145,7 @@ void testarNoArticulacao(bool GHash = false){
     }
 }
 
-/*
-/// nao faco ideia do que isso ta fazendo /
-//void testarInstanciasStenio(bool GHash = false){
-//    ///teste de leitura de instancias do stenio
-//    Grafo *di=new Grafo();
-//    char nome[50];
-//    for(int i=1;i<=16;i++){
-//        if(i<=8)sprintf(nome, "instancias/grafo_1000_%d.txt", i);
-//        else sprintf(nome, "instancias/grafo_10000_%d.txt", i%9+1);
-//        di->leArquivo(nome);
-//        cout<<" arquivo:"<<nome<<" lido com sucesso!"<<endl;
-//        cout<<" o grafo e completo?"  << di->ehGrafoCompleto()<<"   (0= nao completo, 1=completo)"<<endl;
-//        system("pause");
-////        cin>>i;
-////        cout<<"O no:"<<i<<" tem grau:"<<di->buscaNo(i)->getGrau()<<endl;
-////        system("pause");
-////        for(int i=1;i<=10000;i++)
-////            di->removeNoPorID(i);
-////        system("pause");
-//    }
-//}*/
-
 void testeComponenteConexa(bool GHash = false){
-//    Grafo *di= grafoDuardo();
     Grafo *di;
     if(GHash)   di = new GrafoHash(10);
     else        di = new GrafoLista();
@@ -186,7 +162,7 @@ void testeComponenteConexa(bool GHash = false){
 }
 
 void testePercursoProfundidade(bool GHash = false){
-    Grafo *di=grafoDuardo();
+    Grafo *di=grafoExemplo();
 
     di->imprimir();
     cout<<"busca a partir de 1"<<endl;
@@ -201,30 +177,24 @@ void testePercursoProfundidade(bool GHash = false){
 }
 
 void testeBuscaProdundidadeLargura(bool GHash = false){
-    Grafo *di = grafoDuardo();
-//    Grafo* di = grafoCompleto(5);
-//    Grafo* di = grafoEscadinha(5);
-
+    Grafo *di = grafoExemplo();
     di->imprimir();
     cout<<"busca a partir de 1"<<endl;
-//    Grafo* Arv = di->buscaProfundidade(di->buscaNo(1));
     Grafo* Arv = di->buscaLargura(di->buscaNo(1));
     Arv->imprimir();
     delete Arv;
 
     cout<<"busca a partir de 3"<<endl;
-//    Arv = di->buscaProfundidade(di->buscaNo(3));
     Arv = di->buscaLargura(di->buscaNo(3));
     Arv->imprimir();
 
     cout<<"busca a partir de 8"<<endl;
-//    Arv = di->buscaProfundidade(di->buscaNo(3));
     Arv = di->buscaLargura(di->buscaNo(8));
     Arv->imprimir();
 }
 
 void testeNoArticulacao(bool GHash = false){
-    Grafo *di=grafoDuardo();
+    Grafo *di=grafoExemplo();
 
     for(int i=1;i<=8;i++)
         cout<<"numero de nos da componente fortemente conexa de "<<i<<":"<<di->numeroNosComponenteFortementeConexa(di->buscaNo(i))<<endl;
@@ -243,7 +213,6 @@ void testeRubustezVertice(bool GHash = false){
     sprintf(nome, "instancias/grafo_1000_%d.txt", 1);
     di->leArquivo(nome);
     cout<<"arquivo:"<<nome<<" lido"<<endl;
-    cout<<" calculando a rubustez de vertices desse grafo enorme!!! vai demorar para um caralho!"<<endl;
     cout<<"rubustes de vertice:"<<di->rubustezVertice(ids);
 }
 
@@ -268,7 +237,7 @@ void vizinhancaAberta(bool GHash = false){
     int id;
     cout<<"Digite o id do no para verificar vizinhanca aberta: ";
     cin>>id;
-    vector<No*> nos = G->vizinhancaAberta(id);///ver pq nao da pra usar o default nessa caralha
+    vector<No*> nos = G->vizinhancaAberta(id);
 
     imprimirVizinhanca(nos);
 }
@@ -278,7 +247,7 @@ void vizinhancaFechada(bool GHash = false){
     int id;
     cout<<"Digite o id do no para verificar vizinhanca fechada: ";
     cin>>id;
-    vector<No*> nos = G->vizinhancaFechada(id);///ver pq nao da pra usar o default nessa caralha
+    vector<No*> nos = G->vizinhancaFechada(id);
 
     imprimirVizinhanca(nos);
 }
@@ -324,22 +293,11 @@ uint testarDijkstra(uint n, bool GHash = false){
     if(GHash)   G = new GrafoHash(10);
     else        G = new GrafoLista();
 
-//    G->imprimir();
-
     /// Dijkstra a partir de um (id) aleatorio
     uint id = rand()%(n+1)+1;
     uint t = clock();
     Dijkstra* resultado = G->dijkstra(id);
     t = clock() - t;
-//    resultado->imprimirDistancias();
-
-//    G->insereArcoID(8,1,22);
-//    G->insereArcoID(1,8,21);
-//    cout << "menor percurso de "<< 4 << ":\n";// << " para "<< 2 << ":\n\t";
-//    Dijkstra* resultado = G->dijkstra(4);
-//    cout << resultado->distancia(6);
-//    resultado->imprimirDistancias();
-//    resultado->imprimirPercurso();
 
     delete G;
 
@@ -375,7 +333,6 @@ uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
         di->insereArcoID(5,1,9);
     }
 
-//    di->imprimir();
     uint t;
     t = clock();
     for (uint i=0; i < amostra; i++)
@@ -383,55 +340,18 @@ uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
     t = clock() - t;
 
     return t;
-//    imprimirArvoreMinima(arco);
 }
 
 uint testarKruskal(uint n, bool GHash = false){
     Grafo *di;
-//    Grafo *g=new Grafo(), *arvMin=new Grafo();
-//    int tam;
-//    cout<<"\n\n\TESTE MUITOS NOS:\n\nnnumero de nos:"<<endl;
-//    cin>>tam;
-//    cout<<"Criando grafo..."<<endl;
 
     if(GHash)   di = GrafoHash::grafoCompleto(10);
     else        di = GrafoLista::grafoCompleto(10);
-//    for(int i=1;i<=n;i++)
-//        di->insereNo(i);
-//
-//    for(int i=1;i<n;i++){
-//        for(int j=1;j<n;j++){
-//            if(i!=j)
-//                di->insereArcoID(i,j,i, false);
-//        }
-//    }
-
-//    cout<<"\n\nassim que apertar qualquer tecla kruskal comeca a rodar!"<<endl;
-//    system("pause");
-//    clock_t begin = clock();
-//    Grafo* di = grafoCompleto(n+1);
     uint t;
     t = clock();
     vector<Arco*> arcosMin = di->Kruskal();
     t = clock() - t;
     return t;
-//    cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
-
-//    clock_t end = clock();
-//    double elapsed_secs = double(end - begin) / CLOCKS_PER_SEC;
-//    cout<<"tempo gasto com kruskal para grafo de:"<<tam<<" nos e "<<tam-1<<" arestas:"<<elapsed_secs<<" segundos!"<<endl;
-
-//    system("pause");
-
-//    uint orig, dest, id;
-//
-//    for(int i=0;i<arcosMin.size();i++){
-//        id=arcosMin.at(i)->getID();
-//        orig=arcosMin.at(i)->getNoOrigem()->getID();
-//        dest=arcosMin.at(i)->getNoDestino()->getID();
-//        arvMin->insereArcoID(orig, dest, id);
-//        arvMin->insereArcoID(dest, orig, id);
-//    }
 }
 
 void testarKruskalNaMao(bool GHash = false){
@@ -518,13 +438,6 @@ uint testarProdutoCartesiano(uint n, uint amostra, bool GHash = false){
         A = GrafoLista::grafoCompleto(n+1);
         B = GrafoLista::grafoCompleto(n+1);
     }
-//    cout << "Grafo A:" << endl;
-//    A->imprimir();
-//    cout << "Grafo A:" << endl;
-//    B->imprimir();
-//    cout << "Grafo C:" << endl;
-//    Grafo *C = A->produtoCartesiano(B);
-//    C->imprimir();
 
     uint t = 0, tAux;
     for (uint i=0; i < amostra; i++){
@@ -540,11 +453,6 @@ uint testarProdutoCartesiano(uint n, uint amostra, bool GHash = false){
 }
 
 uint testarGrafoEuleriano(uint n, uint amostra, bool GHash = false){
-//    Grafo *A = grafoCompleto(6);
-//
-//    A->imprimir();
-//    cout << "\nGrafo " << (A->ehGrafoEuleriano() ? "" : "nao ") << "eh euleriano.\n";
-
     Grafo *G;
     if(GHash)   G = new GrafoHash(10);
     else        G = new GrafoLista();
@@ -564,19 +472,7 @@ uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
     if(GHash)   G = GrafoHash::grafoCompleto(n);
     else        G = GrafoLista::grafoCompleto(n);
 
-//    G->insereNo(0);
-//    G->insereNo(1);
-//    G->insereNo(2);
-//    G->insereNo(3);
-//    G->insereArcoID(0, 1, 0);
-//    G->insereArcoID(1, 0, 1);
-//    G->insereArcoID(1, 2, 2);
-//    G->insereArcoID(2, 1, 3);
-//    G->insereArcoID(1, 3, 4);
-//    G->insereArcoID(3, 1, 5);
-//    G->insereArcoID(3, 2, 6);
-//    G->insereArcoID(2, 3, 7);
-    G = grafoDuardo(GHash);
+    G = grafoExemplo(GHash);
     G->imprimir();
 
     uint idArco;
@@ -584,29 +480,10 @@ uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
         cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
     n = n+2;
     return 0;
-
-//
-//
-//    uint t, id[amostra];
-//    for (uint i=0; i < amostra; i++)
-//       id[i] = rand()%(n*(n-1));
-//
-////    cout << "\ntestando arco: " << id << endl;
-//
-//    t = clock();
-//    for (uint i=0; i < amostra; i++){
-//        G->ehArcoPonte(id[i]);
-//    }
-//    t = clock() - t;
-//
-//    delete G;
-//
-//    return t;
 }
 
 void testeListaHashRidiculo(){
     GrafoHash *G = new GrafoHash(10);
-//    GrafoLista *G = new GrafoLista();
     G->insereNo(5);
     G->insereNo(5);
     G->insereNo(6);
@@ -625,13 +502,6 @@ void testeListaHashRidiculo(){
     G->removeArco(8, 16);
     G->imprimir();
     cout << G->buscaNo(5)->getID();
-}
-
-/** Para Linux */
-void pauseGambiarra(){
-    char _;
-    cout << "\npause gambiarra\t";
-    cin >> _;
 }
 
 uint h(uint x) {
@@ -676,49 +546,6 @@ void testarComponentesConexasNaMao(bool GHash = true){
 void testeKConexo(bool GHash = true){
     Grafo *g;
     g=criarGrafoCompleto(10);
-//    if(GHash) g=new GrafoHash(10);
-//    else g=new GrafoLista();
-
-
-//    for(int i=1;i<=6;i++){
-//        g->insereNo(i);
-//    }
-//
-//    g->insereArcoID(1,2,1);
-//    g->insereArcoID(2,1,2);
-//
-//    g->insereArcoID(3,2,3);
-//    g->insereArcoID(2,3,4);
-//
-//    g->insereArcoID(3,4,5);
-//    g->insereArcoID(4,3,6);
-//
-//    g->insereArcoID(4,6,7);
-//    g->insereArcoID(6,4,8);
-//
-//    g->insereArcoID(5,6,9);
-//    g->insereArcoID(6,5,10);
-//
-//    g->insereArcoID(1,3,11);
-//    g->insereArcoID(3,1,12);
-//
-//    g->insereArcoID(3,6,13);
-//    g->insereArcoID(6,3,14);
-//
-//    g->insereArcoID(1,6,15);
-//    g->insereArcoID(6,1,16);
-//
-//    g->insereArcoID(5,2,17);
-//    g->insereArcoID(2,5,18);
-//
-//    g->insereArcoID(5,4,19);
-//    g->insereArcoID(4,5,20);
-//
-//    g->insereArcoID(4,2,21);
-//    g->insereArcoID(2,4,22);
-//
-//    g->insereArcoID(5,1,23);
-//    g->insereArcoID(1,5,24);
 
     cout<<g->ehKConexo(3)<<endl;
 }
@@ -831,9 +658,6 @@ void testeGulosoSteiner(){
         uint somaPesos = 0;
         somaPesos = temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
 
-//        for(uint i=0; i<solucao.size(); i++)
-//            somaPesos += solucao[i]->getPeso();
-
         solucoesGuloso[idArquivo] = somaPesos;
 
         cout << " solucao para instancia:" << arquivos[idArquivo] << ", foi " << solucoesGuloso[idArquivo]<<endl;
@@ -866,9 +690,6 @@ void testeGulosoRandomizadoSteiner(){
         somaPesos = g->gulosoSteiner(ids, terminais[0], true);
 
         temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
-
-//        for(uint i=0; i<solucao.size(); i++)
-//            somaPesos += solucao[i]->getPeso();
 
         solucoesGuloso[idArquivo] = somaPesos;
 
@@ -930,12 +751,9 @@ void testeHeuristicasGulosas(){
 
     ///para cada arquivo
     for(string arq : arquivos){
-//        cout<<"GULOSO RANDOMIZADO REATIVO:"<<endl;
-//        system("pause");
         cout<<"instancia:"<<arq<<endl;
 
         uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
-//        G->imprimir();
         cout<<"\nGULOSO RANDOMIZADO: "
             << G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it) << endl;
 
@@ -969,12 +787,7 @@ void testarGulosoNaMao(){
     g->insereArcoID(6 ,7 , 1 ,false, 5.0);
     uint ids[] = {3, 5, 7};
 
-//    vector<Arco*> solucao = g->gulosoSteiner(ids, 3);
     g->gulosoSteiner(ids, 3, true);
-
-//    cout<<"solucao"<<endl;
-//    for(uint i=0; i<solucao.size(); i++)
-//        cout<<"("<<solucao[i]->getNoOrigem()->getID()<<","<<solucao[i]->getNoDestino()->getID()<<")"<<endl;
 }
 
 /**
@@ -1118,8 +931,6 @@ void gerarTabela(){
         menorSolucao = HUGE_VAL;
         delete g;
         g = new GrafoLista(false);
-//        tabela.close();
-//        system("pause");
     }
 
     tabela1.close();
@@ -1155,8 +966,6 @@ uint testarColisaoHash(uint n, uint amostra){
             G->insereNo(j);
         delete G;
     }
-
-//    cout << "\n Colisoes: " << (double) G->getNumColisoes() / amostra << endl;
 
     return G->getNumColisoes();
 }

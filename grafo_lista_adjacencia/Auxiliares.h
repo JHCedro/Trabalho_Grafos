@@ -126,8 +126,7 @@ Grafo* criarGrafoCompleto(bool GHash = false){
     return G;
 }
 
-Grafo* grafoDuardo(bool GHash = false){
-    /// GrafoDuardo.png
+Grafo* grafoExemplo(bool GHash = false){
     Grafo *di;
     if(GHash)   di = new GrafoHash(10);
     else        di = new GrafoLista();
