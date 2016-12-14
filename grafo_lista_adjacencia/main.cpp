@@ -1,6 +1,7 @@
 #include "Auxiliares.h"
 #include "GrafoHash.h"
 #include "GrafoLista.h"
+#include "MenuTrabalho.h"
 #include <ctime>
 #include <set>
 /** PARA LINUX
@@ -71,7 +72,7 @@ void testeGeral(bool GHash = false){
     }
 }
 
-/** testar a inserção de 100.000 nos e Arcos */
+/** testar a insercao de 100.000 nos e Arcos */
 void testarGrandeInsersao(bool GHash = false){
     uint tam = 100000;
     cout<<"numero de nos e Arcos:"<<endl;
@@ -823,10 +824,10 @@ void gerarTabela(){
     tabela2<<"\xef\xbb\xbf"<<endl;
 
     ///primeira linha da tabela com os titulos das colunas
-    tabela1<<"Nome instância"<<";"<<"Melhor solução"<<";"<<"Resultado Guloso"<<";"<<"Média Randomico"
-          <<";"<<"Desvio percentual da média Randômico"<<";"<<"Média Reativo"<<";"<<"Desvio percentual da média Reativo"<<"\n";
+    tabela1<<"Nome instancia"<<";"<<"Melhor solucao"<<";"<<"Resultado Guloso"<<";"<<"Media Randomico"
+          <<";"<<"Desvio percentual da media Randomico"<<";"<<"Media Reativo"<<";"<<"Desvio percentual da media Reativo"<<"\n";
 
-    tabela2<<"Nome instância"<<";"<<"Tempo médio Guloso"<<";"<<"Tempo médio Rândomico"<<";"<<"Tempo médio Reativo"<<"\n";
+    tabela2<<"Nome instancia"<<";"<<"Tempo medio Guloso"<<";"<<"Tempo medio Randomico"<<";"<<"Tempo medio Reativo"<<"\n";
 
     int num_iteracoes = 30;
 
@@ -1036,7 +1037,7 @@ void analiseDesempenhoEstruturas(uint n, uint passo, uint amostra){
 
     ///tempo de insercao de arcos
     ///tempo de busca de arcos
-        //são da ordem de busca de nos
+        //sao da ordem de busca de nos
 
     ///tempo de remocao de no
     analiseDesempenho(testarInsersao, n, passo, amostra, false, "Teste Remocao Lista", subPasta + "Teste_Remocao_LISTA.csv");
@@ -1071,6 +1072,10 @@ int getValue(){
     fclose(file);
 
     return result;
+}
+
+void exibirMenu(){
+    new MenuTrabalho();
 }
 
 int main(){
@@ -1137,7 +1142,9 @@ int main(){
 //    cout<<"guloso:"<<endl<<endl<<endl;
 //    testeGulosoSteiner();
 
-    testeHeuristicasGulosas();
+//    testeHeuristicasGulosas();
+
+    exibirMenu();
 
 //    testeExemplosSteiner();
 //Grafo* g = GrafoHash::grafoCompleto(8000);

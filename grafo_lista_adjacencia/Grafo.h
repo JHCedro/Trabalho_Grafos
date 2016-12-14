@@ -16,11 +16,11 @@ class Grafo
 {
 protected:
     No *it;  /// iterador (it) para lista de nos
-    uint grau;          /// maior grau de vértice do grafo
+    uint grau;          /// maior grau de vertice do grafo
     uint numeroNos;     /// n
     uint numeroArcos;   /// m
     uint contAux;       /// contador auxiliar
-    bool flagDir;       /// flag indicando se o grafo é direcionado ou não
+    bool flagDir;       /// flag indicando se o grafo ehdirecionado ou nao
     uint maiorNivel;
 
     int auxEhNoArticulacao(No* no);
@@ -122,7 +122,7 @@ public:
     vector<Arco*> algorimoPrim();
 
     /**
-    Retorna o subgrafo (ou floresta de subgrafos se o grafo nao e não-conexo)
+    Retorna o subgrafo (ou floresta de subgrafos se o grafo nao e nao-conexo)
     contendo as arestas de peso minimo que ligam todos os nos do grafo
     que formam a arvore/floresta
     */

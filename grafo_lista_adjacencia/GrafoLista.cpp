@@ -16,7 +16,7 @@ GrafoLista::GrafoLista(bool direcionado) : Grafo(direcionado){
     this->listaNos = NULL;
 }
 
-///Função que insere nó no inicio(cabeça) do GrafoLista
+///Funcao que insere no no inicio(cabeca) do GrafoLista
 NoLista *GrafoLista::insereNo(uint id){
     NoLista *no = new NoLista(id);
     no->setProxNo(listaNos);

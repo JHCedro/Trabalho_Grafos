@@ -6,7 +6,7 @@ using namespace std;
 class Grafo;
 
 /**
- * Estrutura com informações do algoritmo de Dijkstra
+ * Estrutura com informacoes do algoritmo de Dijkstra
 */
 class Dijkstra{
 private:

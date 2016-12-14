@@ -62,7 +62,7 @@ void persisteDesempenho(double* tempos, uint n, uint passo, uint amostra, string
 
 /**
 * Analisa desempenho de funcao(i) para i = 0, passo, 2*passo... i < n
-* Retorna vetor de tempos médio para cada (i) obtido da média de (amostras)
+* Retorna vetor de tempos medio para cada (i) obtido da media de (amostras)
 */
 double* analiseDesempenho(uint(*funcao)(uint, uint, bool), uint n, uint passo, uint amostra, bool Ghash){
     double *tempos = new double[n/passo];

@@ -37,7 +37,7 @@ GrafoHash::GrafoHash(uint ordem, bool direcionado) : Grafo(direcionado){
     tabelaNos->setGetID(noGetID);
 }
 
-///Função que insere nó no inicio(cabeça) do GrafoHash
+///Funcao que insere no no inicio(cabeca) do GrafoHash
 NoHash *GrafoHash::insereNo(uint id){
     NoHash *no = new NoHash(id, (uint) ordem * ajusteTam);
     tabelaNos->inserir(no);
