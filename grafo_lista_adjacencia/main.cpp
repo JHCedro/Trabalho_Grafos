@@ -1078,6 +1078,35 @@ void exibirMenu(){
     new MenuTrabalho();
 }
 
+void testarComponentesConexasNaMao(){
+//    Grafo *g=grafoDuardo();
+    Grafo *g=new Grafo();
+    for(int i=0;i<=5;i++){
+        g->insereNo(i);
+    }
+    g->insereArcoID(0,2,1);
+    g->insereArcoID(2,0,2);
+
+    g->insereArcoID(2,1,3);
+    g->insereArcoID(1,2,4);
+
+    g->insereArcoID(1,0,5);
+    g->insereArcoID(0,1,6);
+
+    g->insereArcoID(4,5,7);
+    g->insereArcoID(5,4,8);
+
+    vector<vector<No*>> componentes=g->retornarComponentesConexas();
+    for(int i=0;i<componentes.size();i++){
+        cout<<"Componente "<<i<<endl;
+        for(int j=0;j<componentes[i].size();j++){
+            cout<<componentes[i][j]->getID()<<endl;
+        }
+        cout<<endl;
+    }
+    delete g;
+}
+
 int main(){
     ///testar na mao
 //    testarGrandeInsersao();
