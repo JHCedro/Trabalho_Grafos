@@ -20,7 +20,7 @@ protected:
     uint numeroNos;     /// n
     uint numeroArcos;   /// m
     uint contAux;       /// contador auxiliar
-    bool flagDir;       /// flag indicando se o grafo ehdirecionado ou nao
+    bool direcionado;       /// flag indicando se o grafo ehdirecionado ou nao
     uint maiorNivel;
 
     int auxEhNoArticulacao(No* no);
@@ -36,7 +36,7 @@ public:
     uint getGrau(){     return grau;    };
     uint getNumeroNos(){    return numeroNos;   };
     uint getNumeroArcos(){    return numeroArcos;   };
-    bool getFlagDir(){  return flagDir; };
+    bool getdirecionado(){  return direcionado; };
     uint getContAux(){  return contAux; };
     void setContAux(uint i){ contAux=i;   };
 
@@ -92,11 +92,15 @@ public:
     void percursoProfundidade(No *inicio);
     void percursoIgnorandoArco(No *inicio, Arco *arcoIgnorado);
 
+    Grafo* buscaProfundidade(uint idNo);
     Grafo* buscaProfundidade(No *no);
+    Grafo* buscaLargura(uint idNo);
     Grafo* buscaLargura(No *no);
 
-    vector<No*> vizinhancaAberta(uint id, bool fechada = false);
-    vector<No*> vizinhancaFechada(uint id, bool fechada = true);
+    /** TODO (jhcedro#1#17-12-2016): Consertar assinaturas */
+    vector<No*> vizinhancaNo(uint id, bool fechada = false);
+    vector<No*> vizinhancaAberta(uint id);
+    vector<No*> vizinhancaFechada(uint id);
     bool ehGrafoKRegular();
 
     Grafo* clone();
@@ -105,6 +109,7 @@ public:
 
     int numeroComponentesConexas();
     vector<vector<No*>> retornarComponentesConexas();
+    bool ehConexo();
     bool ehKConexo(int k);
 
     Arco* buscaArco(uint idOrigem, uint idDestino);

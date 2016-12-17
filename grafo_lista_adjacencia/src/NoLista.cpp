@@ -1,5 +1,5 @@
-#include "NoLista.h"
-#include "Arco.h"
+#include "../include/NoLista.h"
+#include "../include/Arco.h"
 #include <stdio.h>
 #include <iostream>
 

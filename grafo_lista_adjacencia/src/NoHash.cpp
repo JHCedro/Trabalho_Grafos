@@ -1,4 +1,4 @@
-#include "NoHash.h"
+#include "../include/NoHash.h"
 #include <stdio.h>
 #include <iostream>
 

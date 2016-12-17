@@ -43,6 +43,8 @@
 		<Unit filename="GrafoLista.cpp" />
 		<Unit filename="GrafoLista.h" />
 		<Unit filename="Hashing.h" />
+		<Unit filename="MenuTrabalho.cpp" />
+		<Unit filename="MenuTrabalho.h" />
 		<Unit filename="No.cpp" />
 		<Unit filename="No.h" />
 		<Unit filename="NoHash.cpp" />

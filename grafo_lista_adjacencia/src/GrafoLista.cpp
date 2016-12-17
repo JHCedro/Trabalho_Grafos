@@ -1,4 +1,4 @@
-#include "GrafoLista.h"
+#include "../include/GrafoLista.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -90,7 +90,7 @@ void GrafoLista::imprimir(bool detalhado){
     Grafo::imprimir(detalhado);
 }
 
-/** IMPLEMENTAÇÃO DO DESTRUTOR */
+/** IMPLEMENTAï¿½ï¿½O DO DESTRUTOR */
 GrafoLista::~GrafoLista(){
     ///percorre nos
     this->itInicio();

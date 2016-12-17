@@ -4,3 +4,6 @@
 *.o
 grafo_lista_adjacencia/bin/
 grafo_lista_adjacencia/obj/
+*.save-failed
+grafo_lista_adjacencia/cmake-build-debug/
+grafo_lista_adjacencia/cmake-build-release/

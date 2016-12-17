@@ -3,6 +3,7 @@
 //#include "../Auxiliares.h"
 #include "GrafoLista.h"
 #include "GrafoHash.h"
+#define pastaSaidas "Saidas/"
 
 typedef unsigned short usint;
 
@@ -13,6 +14,8 @@ class MenuTrabalho{
         string nomeGrafoSelecionado;
         usint posGrafoSelecionado;
         vector<string> instanciasSteiner;
+
+        vector<string> nomeOpcoes, nomeFuncoes;
 //        vector<pair<void(MenuTrabalho::*)(void), string>> opcoesMenu;
     public:
         MenuTrabalho();
@@ -71,6 +74,8 @@ class MenuTrabalho{
         /** 33 */ void gulosoRandomizadoReativoSteiner1();
         /** 34 */ void gulosoRandomizadoReativoSteiner2();
 
+        /// Auxiliares
+        void salvarArvore(Grafo *G, string nome);
 
         ~MenuTrabalho();
     protected:

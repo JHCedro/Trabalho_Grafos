@@ -1,4 +1,4 @@
-#include "GrafoHash.h"
+#include "../include/GrafoHash.h"
 #include <iostream>
 #include <fstream>
 #include <cmath>
@@ -62,7 +62,7 @@ bool GrafoHash::itEhFim(){
 }
 
 GrafoHash* GrafoHash::novoGrafo(uint ordem, bool direcionado){
-    return new GrafoHash(ordem, flagDir);
+    return new GrafoHash(ordem, direcionado);
 }
 
 NoHash *GrafoHash::buscaNo(uint id){
@@ -89,7 +89,7 @@ void GrafoHash::imprimirTabela(){
     printf("Grau do GrafoHash: %d\t numero de nos: %d\t numero de arcos: %d\t colisoes: %d\n",
            grau, numeroNos, numeroArcos, tabelaNos->getColisoes());
     for(itInicio(); !itEhFim(); itProx()){
-        getIt()->imprimir(flagDir);
+        getIt()->imprimir(direcionado);
     }
 }
 
@@ -97,7 +97,7 @@ uint GrafoHash::getNumColisoes(){
     return tabelaNos->getColisoes();
 }
 
-/** IMPLEMENTAÇÃO DO DESTRUTOR */
+/** IMPLEMENTAï¿½ï¿½O DO DESTRUTOR */
 GrafoHash::~GrafoHash(){
     for(itInicio(); !itEhFim(); itProx()){
         NoHash *no = getIt();

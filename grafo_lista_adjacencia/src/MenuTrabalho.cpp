@@ -1,6 +1,7 @@
-#include "MenuTrabalho.h"
+#include "../include/MenuTrabalho.h"
 #include "dirent.h"
 #include <iostream>
+#include <fstream>
 
 using namespace std;
 
@@ -24,25 +25,68 @@ MenuTrabalho::MenuTrabalho(){
 
     /** TODO (jhcedro#1#14-12-2016): Listar tambem instacias do Stenio */
 
+    nomeOpcoes = vector<string>({
+        " 1 - Exibir opcoes do menu",
+        " 2 - Exibir funcoes de Grafo",
+        " 3 - Novo grafo",
+        " 4 - Novo grafo exemplo",
+        " 5 - Listar grafos",
+        " 6 - Selecionar grafo",
+        " 7 - Mostrar grafo selecionado",
+        " 8 - Deletar grafo selecionado",
+        " 9 - Listar Instancias da Arvore de Steiner",
+        "10 - Listar Instancias de Teste",
+        "11 - Carregar Instancias de Teste",
+        "12 - Carregar Instancias dA Arvore de Steiner",
+        " 0 - SAIR"
+    });
+
+    nomeFuncoes = vector<string>({
+        " 1 - Exibir funcoes",
+        " 2 - Imprimir",
+        " 3 - Inserir vertice",
+        " 4 - Remover vertice",
+        " 5 - Inserir arco",
+        " 6 - Remover arco",
+        " 7 - Obter grau do grafo",
+        " 8 - Obter grau de um vertice",
+        " 9 - Verificar se eh k-regular",
+        "10 - Verificar se eh completo",
+        "11 - Verificar se dois nos sao adjacentes",
+        "12 - Percurso em profundidade",
+        "13 - Percurso em largura",
+        "14 - Verificar se eh conexo",
+        "15 - Verificar se dois vertices estao na mesma componente conexa",
+        "16 - Verificar se um vertice eh articulacao",
+        "17 - Verificar se um arco eh ponte",
+        "18 - Obter vizinhanca de um vertice",
+        "19 - Obter fechamento transitivo",
+        "20 - Obter ordenacao topologica",
+        "21 - Obter caminho minimo entre dois vertices",
+        "22 - Algoritmo de Djikstra",
+        "23 - Algoritmo de Floyd",
+        "24 - Obter subgrafo induzido por conjunto de vertices",
+        "25 - Listar componentes conexas",
+        "26 - Efetuar produto cartesiano com outro grafo",
+        "27 - Algoritmo de Prim",
+        "28 - Algoritmo de Kruskal",
+        "29 - Verificar se eh k-conexo",
+        "30 - Verificar se eh euleriano",
+        "31 - Algoritmo Guloso",
+        "32 - Algoritmo Guloso Randomizado",
+        "33 - Algoritmo Guloso Randomizado Reativo 1",
+        "34 - Algoritmo Guloso Randomizado Reativo 2",
+        " 0 - VOLTAR"
+    });
+
     this->exibirOpcoes();
 }
 
 void MenuTrabalho::exibirOpcoes(){
     cout << "\n-----------------------------------------------------" << endl;
     cout << "Opcoes do menu:" << endl;
-    cout << "\t  1 - Exibir opcoes do menu" << endl;
-    cout << "\t  2 - Exibir funcoes de Grafo" << endl;
-    cout << "\t  3 - Novo grafo" << endl;
-    cout << "\t  4 - Novo grafo exemplo" << endl;
-    cout << "\t  5 - Listar grafos" << endl;
-    cout << "\t  6 - Selecionar grafo" << endl;
-    cout << "\t  7 - Mostrar grafo selecionado" << endl;
-    cout << "\t  8 - Deletar grafo selecionado" << endl;
-    cout << "\t  9 - Listar Instancias da Arvore de Steiner" << endl;
-    cout << "\t 10 - Listar Instancias de Teste" << endl;
-    cout << "\t 11 - Carregar Instancias de Teste" << endl;
-    cout << "\t 12 - Carregar Instancias dA Arvore de Steiner" << endl;
-    cout << "\t 0 - SAIR" << endl;
+    for(string opcao :  nomeOpcoes)
+        cout << "\t" << opcao << endl;
     cout << "-----------------------------------------------------" << endl;
 
     this->escolherOpcao();
@@ -80,43 +124,12 @@ void MenuTrabalho::exibirFuncoes(){
         ///listar funcoes do grafo
         cout << "\n-----------------------------------------------------" << endl;
         cout << "Funcoes do grafo selecionado:" << endl;
-        cout << "\t  1 - Exibir funcoes" << endl;
-        cout << "\t  2 - Imprimir" << endl;
-        cout << "\t  3 - Inserir vertice" << endl;
-        cout << "\t  4 - Remover vertice" << endl;
-        cout << "\t  5 - Inserir arco" << endl;
-        cout << "\t  6 - Remover arco" << endl;
-        cout << "\t  7 - Obter grau do grafo" << endl;
-        cout << "\t  8 - Obter grau de um vertice" << endl;
-        cout << "\t  9 - Verificar se eh k-regular" << endl;
-        cout << "\t 10 - Verificar se eh completo" << endl;
-        cout << "\t 11 - Verificar se dois nos sao adjacentes" << endl;
-        cout << "\t 12 - Percurso em profundidade" << endl;
-        cout << "\t 13 - Percurso em largura" << endl;
-        cout << "\t 14 - Verificar se eh conexo" << endl;
-        cout << "\t 15 - Verificar se dois vertices estao na mesma componente conexa" << endl;
-        cout << "\t 16 - Verificar se um vertice eh articulacao" << endl;
-        cout << "\t 17 - Verificar se um arco eh ponte" << endl;
-        cout << "\t 18 - Obter vizinhanca de um vertice" << endl;
-        cout << "\t 19 - Obter fechamento transitivo" << endl;
-        cout << "\t 20 - Obter ordenacao topologica" << endl;
-        cout << "\t 21 - Obter caminho minimo entre dois vertices" << endl;
-        cout << "\t 22 - Algoritmo de Djikstra" << endl;
-        cout << "\t 23 - Algoritmo de Floyd" << endl;
-        cout << "\t 24 - Obter subgrafo induzido por conjunto de vertices" << endl;
-        cout << "\t 25 - Listar componentes conexas" << endl;
-        cout << "\t 26 - Efetuar produto cartesiano com outro grafo" << endl;
-        cout << "\t 27 - Algoritmo de Prim" << endl;
-        cout << "\t 28 - Algoritmo de Kruskal" << endl;
-        cout << "\t 29 - Verificar se eh k-conexo" << endl;
-        cout << "\t 30 - Verificar se eh euleriano" << endl;
-        cout << "\n\t (Heuristicas para problema da Arvore de Steiner)" << endl;
-        cout << "\t 31 - Algoritmo Guloso" << endl;
+        for(uint i = 0; i < nomeFuncoes.size(); i++){
+            if(i == 30)
+                cout << "\n\t (Heuristicas para problema da Arvore de Steiner)" << endl;
+            cout << "\t" << nomeFuncoes[i] << endl;
+        }
 
-        cout << "\t 32 - Algoritmo Guloso Randomizado" << endl;
-        cout << "\t 33 - Algoritmo Guloso Randomizado Reativo 1" << endl;
-        cout << "\t 34 - Algoritmo Guloso Randomizado Reativo 2" << endl;
-        cout << "\t 0 - VOLTAR" << endl;
         cout << "-----------------------------------------------------" << endl;
 
         this->escolherFuncao();
@@ -129,10 +142,7 @@ void MenuTrabalho::exibirFuncoes(){
 
 void MenuTrabalho::escolherFuncao(){
     usint funcao;
-
     cout << "\n>> opcao grafo (int): ";     cin >> funcao;
-
-    Grafo* G = grafoSelecionado;
 
     switch (funcao){
     case  1: this->exibirFuncoes();                     break;
@@ -165,6 +175,7 @@ void MenuTrabalho::escolherFuncao(){
     case 28: this->kruskal();                           break;
     case 29: this->ehKConexo();                         break;
     case 30: this->ehEuleriano();                       break;
+
     case 31: this->gulosoSteiner();                     break;
     case 32: this->gulosoRandomizadoSteiner();          break;
     case 33: this->gulosoRandomizadoReativoSteiner1();  break;
@@ -195,7 +206,7 @@ void MenuTrabalho::novoGrafo(bool exemplo){
     }else{
         cout << ">> Usar grado direcionado? (s/n): ";
         cin >> opcaoDirecionado;
-        direcionado = (opcaoDirecionado == 's' ? true : false);
+        direcionado = opcaoDirecionado == 's';
 
         Grafo* G = NULL;
 
@@ -426,121 +437,245 @@ void MenuTrabalho::carregarInstanciaStenio(){
 void MenuTrabalho::sair(){
     delete this;
 }
+
 /// -------------------------------------------------------------------------#
-/// -------------------          FUNCOES DO GRAFO          ------------------#
+/// -------------          PRINCIPAIS FUNCOES DO GRAFO          -------------#
 /// -------------------------------------------------------------------------#
 
 void MenuTrabalho::imprimir(){
-    if(grafoSelecionado == 0){
-        cout << "Nenhum grafo selecionado!" << endl;
-    }else{
-        char detalhadamente;
-        cout << ">> \t Imprimir grafo detalhadamente? (s/n): \t";
-        cin >> detalhadamente;
+    cout << "\n Imprimindo grafo:" << endl;
+    char detalhadamente;
+    cout << ">> \t Imprimir grafo detalhadamente? (s/n): \t";
+    cin >> detalhadamente;
 
-        cout << "Imprimindo " << nomeGrafoSelecionado << endl;
-        grafoSelecionado->imprimir( detalhadamente == 's' ? true : false );
-    }
+    cout << "Imprimindo " << nomeGrafoSelecionado << endl;
+    grafoSelecionado->imprimir(detalhadamente == 's');
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::inserirVertice(){
+    cout << "\n Inserindo vertice:" << endl;
     uint id, peso;
     cout << ">> id do vertice (int): ";     cin >> id;
     cout << ">> peso do vertice (int): ";   cin >> peso;
     grafoSelecionado->insereNo(id);
 
-
     this->escolherFuncao();
 }
 
 void MenuTrabalho::removeVertive(){
-
+    cout << "\n Removendo vertice:" << endl;
+    uint id;
+    cout << ">> id do vertice (int): ";     cin >> id;
+    grafoSelecionado->removeNo(id);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::inserirArco(){
-
+    cout << "\n Inserindo arco:" << endl;
+    uint idArco, idOrigem,  idDestino, peso;
+    cout << ">> id do vertice origem (int): ";     cin >> idOrigem;
+    cout << ">> id do vertice destino (int): ";    cin >> idDestino;
+    cout << ">> peso do arco (int): ";          cin >> peso;
+    cout << ">> id do arco (int): ";          cin >> idArco;
+    grafoSelecionado->insereArcoID(idOrigem, idDestino, idArco, true, peso);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::removerArco(){
-
+    cout << "\n Removendo arco:" << endl;
+    uint idOrigem, idDestino;
+    cout << ">> id do vertice origem (int): ";     cin >> idOrigem;
+    cout << ">> id do vertice destino (int): ";    cin >> idDestino;
+    grafoSelecionado->removeArco(idOrigem, idDestino);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::grau(){
-
+    cout << "\n Grau do grafo: "<< grafoSelecionado->getGrau() << endl;
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::grauNo(){
-
+    cout << "\n Grau do vertice:" << endl;
+    uint id;
+    cout << ">> id do vertice (int): ";     cin >> id;
+    No* no = grafoSelecionado->buscaNo(id);
+    if(no != NULL)
+        cout << "Vertice tem grau: " << no->getGrau();
+    else
+        cout << "Vertice nao encontrado!";
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::ehKRegular(){
-
+    cout << "\n Verificar k-regularidade:" << endl;
+    uint k;
+    cout << ">> k (int): ";     cin >> k;
+    printf("Grafo%s eh %d-regular\n", (grafoSelecionado->ehGrafoKRegular(k) ? "" : " nao"), k);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::ehCompleto(){
-
+    printf("Grafo%s eh completo\n", (grafoSelecionado->ehGrafoCompleto() ? "" : " nao"));
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::nosSaoAdjacentes(){
+    if(grafoSelecionado->getdirecionado())
+        cout << "\t* Verificando adjacendia de grafo direcionado" << endl;
 
+    cout << "\n Verificar vertices adjacentes:" << endl;
+    uint id1, id2;
+
+    cout << ">> id do vertice 1 (int): ";     cin >> id1;
+    No* no1 = grafoSelecionado->buscaNo(id1);
+
+    if( no1 == NULL )
+        cout << "vertice 1 nao encontrado" << endl;
+    else{
+        cout << ">> id do vertice 2 (int): ";     cin >> id2;
+        No* no2 = grafoSelecionado->buscaNo(id2);
+
+        if( no2 == NULL )
+            cout << "vertice 2 nao encontrado" << endl;
+        else{
+            printf("Vertices %d e %d%s sao adjacentes\n", id1, id2, (no1->ehAdjacente(no2) ? "" : " nao"));
+        }
+    }
 
     this->escolherFuncao();
 }
 
-void MenuTrabalho::buscaProfundidade(){
+void MenuTrabalho::salvarArvore(Grafo *G, string nomeArq){
+    /// mapeamento dos pais de cada no
+    map<No*, uint> nosPais;
+    for(G->itInicio(); !G->itEhFim(); G->itProx()){
+        No* no = G->getIt();
+        if(no->getNivel() == 0)
+            nosPais[no] = 0;
+        for (no->itInicio(); !no->itEhFim(); no->itProx())
+            nosPais[ no->getIt()->getNoDestino() ] = no->getID();
+    }
 
+    nomeArq = pastaSaidas + nomeArq;
+    ofstream arq;
+    arq.open(nomeArq.c_str());
+    arq << "vertice \t pai \t nivel" << endl;
+    for(auto p : nosPais)
+        arq << p.first->getID() << "\t" << p.second << "\t" << p.first->getNivel() << endl;
+
+    arq.close();
+}
+
+void MenuTrabalho::buscaProfundidade(){
+    cout << "\n Percurso em profundidade:" << endl;
+
+    uint idRaiz;
+    cout << ">> id vertice origem (int): "; cin >> idRaiz;
+    Grafo *arv = grafoSelecionado->buscaProfundidade(idRaiz);
+
+    string nomeArq = "percurso_profundidade_" + nomeGrafoSelecionado + ".arv";
+    this->salvarArvore(arv, nomeArq);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::buscaLargura(){
+    cout << "\n Percurso em largura:" << endl;
 
+    uint idRaiz;
+    cout << ">> id vertice origem (int): "; cin >> idRaiz;
+    Grafo *arv = grafoSelecionado->buscaLargura(idRaiz);
+
+    string nomeArq = "percurso_largura_" + nomeGrafoSelecionado + ".arv";
+    this->salvarArvore(arv, nomeArq);
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::ehConexo(){
-
+    printf("Grafo%s eh conexo\n", (grafoSelecionado->ehConexo() ? "" : " nao"));
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::nosMesmaComponenteConexa(){
+/** TODO (jhcedro#1#17-12-2016): Se grafo eh direcionado metodo deve usar componente fortemente conexa */
 
+    cout << "\n Verificar vertices na mesma componente conexa:" << endl;
+    uint id1, id2;
+
+    cout << ">> id do vertice 1 (int): ";     cin >> id1;
+    No* no1 = grafoSelecionado->buscaNo(id1);
+
+    if( no1 == NULL )
+        cout << "vertice 1 nao encontrado" << endl;
+    else{
+        cout << ">> id do vertice 2 (int): ";     cin >> id2;
+        No* no2 = grafoSelecionado->buscaNo(id2);
+
+        if( no2 == NULL )
+            cout << "vertice 2 nao encontrado" << endl;
+        else{
+            bool resultado = grafoSelecionado->nosMesmaComponenteConexa( vector<No*>({no1, no2}) );
+            printf("Vertices %d e %d%s estao na mesma componente conexa\n", id1, id2, (resultado ? "" : " nao"));
+        }
+    }
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::noEhArticulacao(){
+    cout << "\n Verificar vertice de articulacao:" << endl;
+    uint id;
+    cout << ">> id do vertice (int): ";     cin >> id;
+    No* no = grafoSelecionado->buscaNo(id);
+    if(no != NULL)
+        printf("Vertice %d%s eh articulacao\n", id, (grafoSelecionado->ehNoArticulacao(no) ? "" : " nao"));
+    else
+        cout << "Vertice nao encontrado!";
 
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::arestaEhPonte(){
-
+    cout << "\n Verificar arco ponte:" << endl;
+    uint id;
+    cout << ">> id do arco  (int): ";     cin >> id;
+    Arco* arco = grafoSelecionado->buscaArco(id);
+    if(arco != NULL)
+        printf("Arco %d%s eh ponte\n", id, (grafoSelecionado->ehArcoPonte(arco) ? "" : " nao"));
+    else
+        cout << "Arco nao encontrado!";
 
     this->escolherFuncao();
 }
 
 void MenuTrabalho::vizinhancaNo(){
-
+    cout << "\n Obter vizinhanca do no:" << endl;
+    uint id;
+    char fechada;
+    cout << ">> id do vertice (int): ";         cin >> id;
+    No* no = grafoSelecionado->buscaNo(id);
+    if(no != NULL){
+        cout << ">> vizinhanca fechada? (s/n): ";   cin >> fechada;
+        vector<No*> vizinhanca = grafoSelecionado->vizinhancaNo(id, (fechada == 's'));
+        cout << "\tVizinhanca:" << endl;
+        for(No* no : vizinhanca)
+            cout << "\t\t" << no->getID() << endl;
+    }
+    else
+        cout << "Vertice nao encontrado!";
 
     this->escolherFuncao();
 }
