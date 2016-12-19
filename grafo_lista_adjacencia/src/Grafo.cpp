@@ -857,6 +857,9 @@ peso partindo de um vertice da solucao para um vertice fora da solucao considera
 nao formar ciclos.
 ***/
 vector<Arco*> Grafo::algoritmoPrim(){
+    if(direcionado)
+        cout << "\nUSANDO ALGORITMO DE PRIM EM GRAFO DIRECIONADO!" << endl;
+
     vector<No*> solucao;
     vector<Arco*> arcosSolucao;
 
@@ -907,6 +910,8 @@ entao ele encontra uma floresta geradora minima (uma arvore geradora minima para
 O algoritmo de Kruskal eh um exemplo de um algoritmo guloso.
 **/
 vector<Arco*> Grafo::algoritmoKruskal(){
+    if(direcionado)
+        cout << "\nUSANDO ALGORITMO DE KRUSKAL EM GRAFO DIRECIONADO!" << endl;
     ///todos os arcos para ordenacao e 'solucao' que e a solucao (os arcos que forma as arvore/floresta)
     vector<Arco*> arcos, solucao;
     uint idArvore=1;

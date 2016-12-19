@@ -221,8 +221,11 @@ void imprimirVizinhanca(vector<No*> nos, bool GHash = false){
 }
 
 void vizinhancaAberta(bool GHash = false){
-    Grafo* G = criarGrafoEscadinha();
+    Grafo *G;
+    if(GHash)   G = GrafoHash::grafoEscadinha(10, true);
+    else        G = GrafoLista::grafoEscadinha(10, true);
     int id;
+    G->imprimir(false);
     cout<<"Digite o id do no para verificar vizinhanca aberta: ";
     cin>>id;
     vector<No*> nos = G->vizinhancaAberta(id);
@@ -300,15 +303,15 @@ void imprimirArvoreMinima(vector<Arco*> arco, bool GHash = false){
 }
 
 uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
-    bool completo = true;
+    bool completo = false;
     Grafo *di;
     if(completo){
-        if(GHash)   di = GrafoHash::grafoCompleto(n+1);
-        else        di = GrafoLista::grafoCompleto(n+1);
+        if(GHash)   di = GrafoHash::grafoCompleto(n+1, true);
+        else        di = GrafoLista::grafoCompleto(n+1, true);
     }
     else{
-        if(GHash)   di = new GrafoHash(10);
-        else        di = new GrafoLista();
+        if(GHash)   di = GrafoHash::grafoCompleto(n+1, true);
+        else        di = GrafoLista::grafoCompleto(n+1, true);
         for(int i=1;i<=5;i++)
             di->insereNo(i);
         di->insereArcoID(1,2,1);
@@ -324,9 +327,11 @@ uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
 
     uint t;
     t = clock();
-    for (uint i=0; i < amostra; i++)
+//    for (uint i=0; i < amostra; i++){
         vector<Arco*> arco = di->algoritmoPrim();
-    t = clock() - t;
+//    t = clock() - t;
+//    }
+    imprimirArvoreMinima(arco, false);
 
     return t;
 }
@@ -1112,7 +1117,9 @@ int main(){
 
 //    testeHeuristicasGulosas();
 
-    exibirMenu();
+//    exibirMenu();
+    arvoreGeradoraMinima(30, 5, false);
+//   vizinhancaAberta(false);
 //    Grafo *G = GrafoLista::grafoCompleto(1000, true);
 //    system("pause");
 //    delete G;
