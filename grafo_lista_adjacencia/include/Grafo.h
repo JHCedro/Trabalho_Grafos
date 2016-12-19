@@ -76,7 +76,8 @@ public:
 
     Grafo *subGrafoInduzido(uint E[], uint tam);
 
-    uint* sequenciaGrau();
+//    uint* sequenciaGrau();
+    vector<uint> sequenciaGrau();
 
     bool saoAdjacentes(uint id1, uint id2);
     bool saoAdjacentes(No *no1, No *no2);

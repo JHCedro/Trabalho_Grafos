@@ -307,6 +307,18 @@ bool compareReverse(uint a, uint b){
 }
 
 /** retorna a sequencia de inteiros dos graus do no */
+vector<uint> Grafo::sequenciaGrau(){
+    vector<uint> seq;
+
+    for(itInicio(); !itEhFim(); itProx())
+        seq.push_back( this->getIt()->getGrau() );
+
+    sort(seq.begin(), seq.end(), compareReverse);
+
+    return seq;
+}
+
+/** retorna a sequencia de inteiros dos graus do no *
 uint* Grafo::sequenciaGrau(){
     uint* seq = new uint [this->numeroNos];
     uint cont = 0;
@@ -316,7 +328,7 @@ uint* Grafo::sequenciaGrau(){
 
     sort(seq, seq+this->numeroNos, compareReverse);
     return seq;
-}
+}*/
 
 ///Impressao
 void Grafo::imprimir(bool detalhado){

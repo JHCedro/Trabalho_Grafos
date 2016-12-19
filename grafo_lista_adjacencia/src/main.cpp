@@ -123,7 +123,8 @@ void testarSequenciaNos(bool GHash = false){
     Grafo *di= criarGrafoEscadinha();
 
     cout << "Sequencia de nos:\n\t";
-    uint* seq = di->sequenciaGrau();
+//    uint* seq = di->sequenciaGrau();
+    vector<uint> seq = di->sequenciaGrau();
     for (uint i=0; i < di->getNumeroNos(); i++){
         cout << seq[i] << ", ";
     }
@@ -1117,8 +1118,7 @@ int main(){
 
 //    testeHeuristicasGulosas();
 
-//    exibirMenu();
-    arvoreGeradoraMinima(30, 5, false);
+//    arvoreGeradoraMinima(30, 5, false);
 //   vizinhancaAberta(false);
 //    Grafo *G = GrafoLista::grafoCompleto(1000, true);
 //    system("pause");
@@ -1144,6 +1144,8 @@ int main(){
 //    G->insereArcoID(4, 1, 0);
 //    G->imprimir(false);
 //    G->buscaLargura(G->buscaNo(1))->imprimir(true);
+
+    exibirMenu();
 
     return 0;
 }

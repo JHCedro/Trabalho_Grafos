@@ -486,10 +486,13 @@ void MenuTrabalho::grauNo(){
 
 void MenuTrabalho::sequenciaGrau(){
     cout << "Sequencia de grau:" << endl;
+    /*
     uint *sequencia = grafoSelecionado->sequenciaGrau();
     for (int i=0; i < grafoSelecionado->getNumeroNos(); i++){
         cout << "\t" << sequencia[i] << endl;
-    }
+    }*/
+    for(uint grau : grafoSelecionado->sequenciaGrau())
+        cout << "\t" << grau << endl;
 }
 
 
@@ -862,7 +865,7 @@ Grafo* MenuTrabalho::carregarInstanciaStenio(string nomeArq, bool arcoPonderado,
         G->insereArco(nos[i], nos[j], idArco++, false, pesoArco);
     }
 
-    G->atualizaGrau();
+    G->atualizaGrau(true);
 
     entrada.close();
 
