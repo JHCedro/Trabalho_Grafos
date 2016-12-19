@@ -21,25 +21,25 @@ uint fHashNo(uint id, uint tam){
 }
 
 uint fReHashNo(uint id, uint tam){
-    return id*2654435761 % 2^32 + 1;
+    return (uint) (id*2654435761 % 2^32 + 1);
 }
 
 uint noGetID(NoHash* no){
     return no->getID();
 }
 
-GrafoHash::GrafoHash(uint ordem, bool direcionado) : Grafo(direcionado){
+GrafoHash::GrafoHash(uint ordem, bool grafo_direcionado) : Grafo(grafo_direcionado){
     ///criando tabela hash
     this->ordem = ordem;
-    tabelaNos = new THash<NoHash*>((uint) ordem * ajusteTam, NULL, new NoHash(-1, 1));
+    tabelaNos = new THash<NoHash*>((uint) (ordem * ajusteTam), NULL, new NoHash(-1, 1));
     tabelaNos->setFuncaoHash(fHashNo);
     tabelaNos->setFuncaoReHash(fReHashNo);
     tabelaNos->setGetID(noGetID);
 }
 
 ///Funcao que insere no no inicio(cabeca) do GrafoHash
-NoHash *GrafoHash::insereNo(uint id){
-    NoHash *no = new NoHash(id, (uint) ordem * ajusteTam);
+NoHash* GrafoHash::insereNo(uint id){
+    NoHash *no = new NoHash(id, (uint) (ordem * ajusteTam));
     tabelaNos->inserir(no);
     this->numeroNos++;///atualiza numero de vertices(nos)
     return no;
@@ -47,6 +47,14 @@ NoHash *GrafoHash::insereNo(uint id){
 
 void GrafoHash::itInicio(){
     this->tabelaNos->itInicio();
+}
+
+void GrafoHash::pushIt(){
+    tabelaNos->pushIt();
+}
+
+void GrafoHash::popIt(){
+    tabelaNos->popIt();
 }
 
 NoHash* GrafoHash::getIt(){
@@ -61,8 +69,8 @@ bool GrafoHash::itEhFim(){
     return this->tabelaNos->itEhFim();
 }
 
-GrafoHash* GrafoHash::novoGrafo(uint ordem, bool direcionado){
-    return new GrafoHash(ordem, direcionado);
+GrafoHash* GrafoHash::novoGrafo(uint ordem, bool grafo_direcionado){
+    return new GrafoHash(ordem, grafo_direcionado);
 }
 
 NoHash *GrafoHash::buscaNo(uint id){
@@ -97,7 +105,6 @@ uint GrafoHash::getNumColisoes(){
     return tabelaNos->getColisoes();
 }
 
-/** IMPLEMENTA��O DO DESTRUTOR */
 GrafoHash::~GrafoHash(){
     for(itInicio(); !itEhFim(); itProx()){
         NoHash *no = getIt();
@@ -106,14 +113,14 @@ GrafoHash::~GrafoHash(){
 	delete tabelaNos;
 }
 
-GrafoHash* GrafoHash::grafoCompleto(uint n, bool direcionado){
-    GrafoHash* G = new GrafoHash(n, direcionado);
+GrafoHash* GrafoHash::grafoCompleto(uint n, bool grafo_direcionado){
+    GrafoHash* G = new GrafoHash(n, grafo_direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++)
         nos.push_back(G->insereNo(i));
 
     for (uint i=0; i < n; i++){
-        for (uint j=0; j < n; j++){
+        for (uint j=0; j < (grafo_direcionado ? n : i); j++){
             if( i != j )
                 G->insereArco(nos[i], nos[j], i*n+j, false);
         }
@@ -123,19 +130,19 @@ GrafoHash* GrafoHash::grafoCompleto(uint n, bool direcionado){
     return G;
 }
 
-GrafoHash* GrafoHash::grafoCircular(uint n, bool direcionado){
-    GrafoHash* G = new GrafoHash(n, direcionado);
+GrafoHash* GrafoHash::grafoCircular(uint n, bool grafo_direcionado){
+    GrafoHash* G = new GrafoHash(n, grafo_direcionado);
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
     for(uint i=1; i < n; i++){
         aux = G->insereNo(i);
         G->insereArco(ultimo, aux, 2*i);
-        G->insereArco(aux, ultimo, 2*i+1);
+//        G->insereArco(aux, ultimo, 2*i+1);
         ultimo = aux;
     }
     if(ultimo != primeiro){
         G->insereArco(ultimo, primeiro, 2*n);
-        G->insereArco(primeiro, ultimo, 2*n+1);
+//        G->insereArco(primeiro, ultimo, 2*n+1);
     }
 
     G->atualizaGrau();
@@ -143,8 +150,8 @@ GrafoHash* GrafoHash::grafoCircular(uint n, bool direcionado){
 }
 
 /** retorna grafo escadinha com n vertices */
-GrafoHash* GrafoHash::grafoEscadinha(uint n, bool direcionado){
-    GrafoHash* G = new GrafoHash(n, direcionado);
+GrafoHash* GrafoHash::grafoEscadinha(uint n, bool grafo_direcionado){
+    GrafoHash* G = new GrafoHash(n, grafo_direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++){
         nos.push_back(G->insereNo(i));
@@ -154,4 +161,3 @@ GrafoHash* GrafoHash::grafoEscadinha(uint n, bool direcionado){
     G->atualizaGrau();
     return G;
 }
-

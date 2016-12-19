@@ -8,11 +8,12 @@
 #include <math.h>
 #include <map>
 #include <set>
+#include <stack>
 #define INFINITO HUGE_VAL
 
 using namespace std;
 
-GrafoLista::GrafoLista(bool direcionado) : Grafo(direcionado){
+GrafoLista::GrafoLista(bool grafo_direcionado) : Grafo(grafo_direcionado){
     this->listaNos = NULL;
 }
 
@@ -29,6 +30,17 @@ void GrafoLista::itInicio(){
     it = this->listaNos;
 }
 
+void GrafoLista::pushIt(){
+    itPilha.push(it);
+}
+
+void GrafoLista::popIt(){
+    if(!itPilha.empty()){
+        it = itPilha.top();
+        itPilha.pop();
+    }
+}
+
 NoLista* GrafoLista::getIt(){
     return this->it;
 }
@@ -41,8 +53,8 @@ bool GrafoLista::itEhFim(){
     return it == NULL;
 }
 
-GrafoLista* GrafoLista::novoGrafo(uint ordem, bool direcionado){
-    return new GrafoLista(direcionado);
+GrafoLista* GrafoLista::novoGrafo(uint ordem, bool grafo_direcionado){
+    return new GrafoLista(grafo_direcionado);
 }
 
 NoLista *GrafoLista::buscaNo(uint id){
@@ -90,7 +102,7 @@ void GrafoLista::imprimir(bool detalhado){
     Grafo::imprimir(detalhado);
 }
 
-/** IMPLEMENTA��O DO DESTRUTOR */
+/// FIXME (jhcedro#1#18-12-2016): Nao funcionando NO LINUX... encontrar a versao que funcionava
 GrafoLista::~GrafoLista(){
     ///percorre nos
     this->itInicio();
@@ -102,14 +114,14 @@ GrafoLista::~GrafoLista(){
     listaNos = NULL;
 }
 
-GrafoLista* GrafoLista::grafoCompleto(uint n, bool direcionado){
-    GrafoLista* G = new GrafoLista(direcionado);
+GrafoLista* GrafoLista::grafoCompleto(uint n, bool grafo_direcionado){
+    GrafoLista* G = new GrafoLista(grafo_direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++)
         nos.push_back(G->insereNo(i));
 
     for (uint i=0; i < n; i++){
-        for (uint j=0; j < n; j++){
+        for (uint j=0; j < (grafo_direcionado ? n : i); j++){
             if( i != j )
                 G->insereArco(nos[i], nos[j], i*n+j, false);
         }
@@ -119,19 +131,19 @@ GrafoLista* GrafoLista::grafoCompleto(uint n, bool direcionado){
     return G;
 }
 
-GrafoLista* GrafoLista::grafoCircular(uint n, bool direcionado){
-    GrafoLista* G = new GrafoLista(direcionado);
+GrafoLista* GrafoLista::grafoCircular(uint n, bool grafo_direcionado){
+    GrafoLista* G = new GrafoLista(grafo_direcionado);
     No *aux, *primeiro, *ultimo;
     primeiro = ultimo = G->insereNo(0);
     for(uint i=1; i < n; i++){
         aux = G->insereNo(i);
         G->insereArco(ultimo, aux, 2*i);
-        G->insereArco(aux, ultimo, 2*i+1);
+//        G->insereArco(aux, ultimo, 2*i+1);
         ultimo = aux;
     }
     if(ultimo != primeiro){
         G->insereArco(ultimo, primeiro, 2*n);
-        G->insereArco(primeiro, ultimo, 2*n+1);
+//        G->insereArco(primeiro, ultimo, 2*n+1);
     }
 
     G->atualizaGrau();
@@ -139,8 +151,8 @@ GrafoLista* GrafoLista::grafoCircular(uint n, bool direcionado){
 }
 
 /** retorna grafo escadinha com n vertices */
-GrafoLista* GrafoLista::grafoEscadinha(uint n, bool direcionado){
-    GrafoLista* G = new GrafoLista(direcionado);
+GrafoLista* GrafoLista::grafoEscadinha(uint n, bool grafo_direcionado){
+    GrafoLista* G = new GrafoLista(grafo_direcionado);
     vector<No*> nos;
     for(uint i=0; i < n; i++){
         nos.push_back(G->insereNo(i));

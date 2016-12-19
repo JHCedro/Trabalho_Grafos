@@ -26,22 +26,22 @@ public:
     void setIdArvore(unsigned id){this->idArvore=id;};
 
     uint getNivel(){ return nivel;    };
-    void setNivel(int nivel){    this->nivel = nivel;};
+    void setNivel(uint nivel){    this->nivel = nivel;};
 
     uint getGrau(){ return grau;    };
-    void setGrau(int grau){    this->grau = grau;};
+    void setGrau(uint grau){    this->grau = grau;};
 
     uint getGrauEntrada(){ return grauEntrada;    };
-    void setGrauEntrada(int grauEntrada){    this->grauEntrada = grauEntrada;};
+    void setGrauEntrada(uint grauEntrada){    this->grauEntrada = grauEntrada;};
 
     uint getGrauSaida(){ return grauSaida;    };
-    void setGrauSaida(int grauSaida){    this->grauSaida = grauSaida;};
+    void setGrauSaida(uint grauSaida){    this->grauSaida = grauSaida;};
 
     double getPeso(){   return peso;};
     void setPeso(double peso){  this->peso = peso;};
 
     uint getID(){   return this->id;    };
-    void setID(double id){  this->id = id;  };
+    void setID(uint id){  this->id = id;  };
 
     void atualizaGrau();
 

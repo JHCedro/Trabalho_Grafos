@@ -13,11 +13,11 @@
 
 using namespace std;
 
-Grafo::Grafo(bool direcionado){
+Grafo::Grafo(bool grafo_direcionado){
     grau = 0;
     numeroArcos = 0;
     numeroNos = 0;
-    direcionado = direcionado;
+    this->direcionado = grafo_direcionado;
 }
 
 ///Funcao para insercao de arco
@@ -82,7 +82,7 @@ bool Grafo::mesmaComponenteFortementeConexa(No *i1, No *i2){
 }
 
 /**
-Percorre grafo a partir de um no e sai marcando todo mundo da mesma componente conexa
+Percorre grafo a partir de um no e sai marcando todos mundo da mesma componente conexa
 */
 void Grafo::percursoProfundidade(No *no){
     if(no == NULL)
@@ -225,7 +225,6 @@ bool Grafo::ehGrafoKRegular(){
 
 ///Verifica se o grafo eh completo
 bool Grafo::ehGrafoCompleto(){
-/** TODO (jhcedro#1#17-12-2016): So funciona para grafo direcionado */
     return ehGrafoKRegular(this->numeroNos-1);
 }
 
@@ -268,7 +267,9 @@ void Grafo::removeArcos(No *no, bool atualizarGrau = true){
         this->atualizaGrau();
 }
 
-///Atualiza o grau  do grafo
+/// Atualiza o grau  do grafo
+/// !completamente : verifica apenas grau dos nos
+///  completamente : verifica e recalcula grau dos nos
 void Grafo::atualizaGrau(bool completamente){
     this->grau=0;
     for(itInicio(); !itEhFim(); itProx()){
@@ -334,13 +335,13 @@ void Grafo::imprimir(bool detalhado){
 
 ///Leitura de arquivos
 void Grafo::leArquivo(char nome[]){
-    uint i,j,n_nos;
+    uint i , j, n_nos;
     ifstream arq;
     arq.open(nome);
-    if(arq.good()==false)
+    if(!arq.good())
         cout<<"arquivo nao encontrado"<<endl;
     arq>>n_nos;
-    for(uint i=1;i<=n_nos;i++)
+    for(i=1;i<=n_nos;i++)
         insereNo(i);
     while(arq.good()){
         arq>>i>>j;
@@ -366,11 +367,15 @@ Recebe um no e retorna o numero de nos da componente conexa que o no esta presen
 */
 uint Grafo::numeroNosComponenteFortementeConexa(No *no1){
     uint n_nos=0;
+    No* no2;
 
     for(itInicio(); !itEhFim(); itProx()){
-        No *no2 = this->getIt();
-        if(this->mesmaComponenteFortementeConexa(no1, no2))
+        this->pushIt();
+        no2 = this->getIt();
+        if(this->mesmaComponenteFortementeConexa(no1, no2)){
             n_nos++;
+        }
+        this->popIt();/// iterador eh alterado em mesmaComponenteFortementeConexa
     }
     return n_nos;
 }
@@ -396,10 +401,11 @@ bool Grafo::ehNoArticulacao(No *no){
         Arco *arco = no->getIt();
         if(arco!=NULL){
             this->desmarcaNos();
-            this->contAux=0;
+            this->contAux = 1;
             no->setMarcado(true);
             this->percursoProfundidade(arco->getNoDestino());
-            bool result = (this->contAux < this->numeroNosComponenteFortementeConexa(no));
+            uint auxCont = this->contAux;
+            bool result = (auxCont < this->numeroNosComponenteFortementeConexa(no));
             return result;
         }
     }
@@ -421,13 +427,16 @@ Se o grafo eh fortemente conexo cada par de vertice (a,b) estao na mesma conpone
 bool Grafo::ehFortementeConexo(){
     for(itInicio(); !itEhFim(); itProx()){
         No *inicio1 = getIt();
+        this->pushIt();
         for(itInicio(); !itEhFim(); itProx()){
             No *inicio2 = getIt();
+            this->pushIt();
             if(!this->mesmaComponenteFortementeConexa(inicio1, inicio2))
                 return false;
+            this->popIt();
         }
         /// iterador (it) eh alterado em (for) interno
-        this->it = inicio1;
+        this->popIt();
     }
     return true;
 }
@@ -515,15 +524,15 @@ Grafo* Grafo::clone(){
 vector<No*> Grafo::ordenacaoTopologicaDAG(){
     vector<No*> solucao;
     this->atualizaGrausEntradaSaidaDosNos();
-    for(uint k=0;solucao.size()<this->getNumeroNos();k++){
+    for(uint k = 0; solucao.size() < this->getNumeroNos(); k++){
         for(itInicio(); !itEhFim(); itProx()){
             No *no = getIt();
-            if(no->getGrauEntrada()==0 && !no->getMarcado()){
+            if(no->getGrauEntrada() == 0 && !no->getMarcado()){
                 solucao.push_back(no);
                 no->setMarcado(true);
                 for(no->itInicio(); !no->itEhFim(); no->itProx()){
                     Arco *a = no->getIt();
-                    a->getNoDestino()->setGrauEntrada(a->getNoDestino()->getGrauEntrada()-1);
+                    a->getNoDestino()->setGrauEntrada( a->getNoDestino()->getGrauEntrada() - 1 );
                 }
             }
         }
@@ -540,7 +549,8 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
   * nao eh k conexo, mas k+1 (ou maior) conexo.
   */
 bool Grafo::ehKConexo(int k){
-    if(k>=this->numeroNos) return false; ///Tratamento para remocao de todos os nos.
+    if(k >= this->numeroNos) return false; ///Tratamento para remocao de todos os nos.
+    if(k < 1)   return true;
 
     vector<No*> people;
 
@@ -570,9 +580,7 @@ bool Grafo::auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combi
 }
 
 bool Grafo::ehConexo(){
-    /** TODO (jhcedro#1#17-12-2016): Implementar pois eh usada no menu
-    usar numeroComponentesConexas ou ehKConexo?? */
-
+    return this->numeroComponentesConexas() < 2;
 }
 
 /**Teste para ver se ele continua conexo ao se remover o conjunto de nos*/
@@ -613,6 +621,7 @@ int Grafo::numeroComponentesConexas(){
     return num;
 }
 
+
 /**
  * Percorre todos os nos do grafo e, para cada no, incrementa o contador e
  * realiza a busca em profundidade caso ele nao esteja marcado. A busca em profundidade marca
@@ -620,6 +629,9 @@ int Grafo::numeroComponentesConexas(){
  *
 */
 vector<vector<No*>> Grafo::retornarComponentesConexas(){
+    if(direcionado)
+        cout << "\nUSANDO TERORNANDO COMPONENTES CONEXAS DE GRAFO DIRECIONADO!" << endl;
+
     this->desmarcaNos();
     int num=0;
     vector<vector<No*>> componentes;
@@ -695,26 +707,31 @@ double Grafo::consultaMenorCaminhoEntreDoisNos(uint i, uint j){
     return menorCaminho[i][j];
 }
 
-double Grafo::dijkstra(No* origem, No* destino){
-    if(origem != NULL && destino != NULL)
-        return this->dijkstra(origem)->distancia(destino->getID());
+double Grafo::menorCaminhoDijkstra(No* origem, No* destino){
+    if(origem != NULL && destino != NULL){
+        Dijkstra *d = this->algoritmoDijkstra(origem);
+        double resultado = d->distancia(destino->getID());
+        delete d;
+
+        return resultado;
+    }
     else
         return -1.0;
 }
 
-double Grafo::dijkstra(uint origem, uint destino){
-    return this->dijkstra(buscaNo(origem), buscaNo(destino));
+double Grafo::menorCaminhoDijkstra(uint origem, uint destino){
+    return this->menorCaminhoDijkstra(buscaNo(origem), buscaNo(destino));
 }
 
-Dijkstra* Grafo::dijkstra(uint origem, bool imprimeSolucao){
-    return dijkstra( buscaNo(origem) );
+Dijkstra* Grafo::algoritmoDijkstra(uint origem, bool imprimeSolucao){
+    return algoritmoDijkstra( buscaNo(origem), imprimeSolucao );
 }
 
 /**
 * Usa Algoritmo de Dijkstra para criar informacoes de menor distancia (e se caminho)
 * para todos oa nos do Grafo
 */
-Dijkstra* Grafo::dijkstra(No* origem, bool imprimeSolucao){
+Dijkstra* Grafo::algoritmoDijkstra(No* origem, bool imprimeSolucao){
     this->desmarcaNos();
     ///mapeamento (id -> pos) nos vetores (distancias) e (naoVisitados)
     map<uint, uint> pos;
@@ -748,7 +765,7 @@ Dijkstra* Grafo::dijkstra(No* origem, bool imprimeSolucao){
             posMaisProx++;  ///primeira posicao desmarcada
         }
 
-        for (uint i=posMaisProx+1; i < this->numeroNos ; i++){
+        for (i=posMaisProx+1; i < this->numeroNos ; i++){
             if (!nos[i]->getMarcado() && distancias[i] < distancias[posMaisProx]){
                 posMaisProx = i;
             }
@@ -781,6 +798,10 @@ Dijkstra* Grafo::dijkstra(No* origem, bool imprimeSolucao){
     return solucao;
 }
 
+double Grafo::menorCaminhoFloyd(uint idOrigem, uint idDestino){
+    return this->algoritmoFloyd()[idOrigem][idDestino];
+}
+
 /***
 O algoritmo de Floyd eh um algoritmo que resolve o problema de calcular o caminho mais curto entre todos
 os pares de vertices em um grafo orientado (com direcao) ou nao e valorado (com peso).
@@ -789,10 +810,10 @@ O valor de um caminho entre dois vertices eh a soma dos valores de todas as ares
 As arestas do grafo podem ter valores negativos, mas o grafo nao pode conter nenhum ciclo de valor negativo.
 ***/
 double** Grafo::algoritmoFloyd(){
-    double infinito = INFINITO;
     Arco *aux;
     int n = this->getNumeroNos();
     double **mat = new double*[n];
+
     for(int i = 0; i < n; i++){
         mat[i] = new double[n];
         for(int j = 0; j < n; j++){
@@ -803,10 +824,11 @@ double** Grafo::algoritmoFloyd(){
                 if(aux != NULL)
                     mat[i][j] = aux->getPeso();
                 else
-                    mat[i][j] = infinito;
+                    mat[i][j] = INFINITO;
             }
         }
     }
+
     for(int k = 0; k < n; k++){
         for(int i = 0; i < n; i++){
             for(int j = 0; j < n; j++){
@@ -828,7 +850,7 @@ e enquanto houver vertice do grafo fora da solucao, ele procura a aresta de meno
 peso partindo de um vertice da solucao para um vertice fora da solucao considerando
 nao formar ciclos.
 ***/
-vector<Arco*> Grafo::algorimoPrim(){
+vector<Arco*> Grafo::algoritmoPrim(){
     vector<No*> solucao;
     vector<Arco*> arcosSolucao;
 
@@ -836,13 +858,14 @@ vector<Arco*> Grafo::algorimoPrim(){
 
     this->itInicio();
     No* nos = this->getIt();
-    No *noDestinoSolucao, *noOrigemSolucao;
+    No *noDestinoSolucao = NULL;
+    No* noOrigemSolucao = NULL;
 
     this->desmarcaNos();
     nos->setMarcado(true);
 
     solucao.push_back(nos);
-    uint qtdCandidatos = getNumeroNos()-solucao.size();
+    uint qtdCandidatos = getNumeroNos()- (uint) solucao.size();
 
     while(qtdCandidatos > 0){
         valorMenorPeso = INFINITO;
@@ -877,7 +900,7 @@ onde o peso total, dado pela soma dos pesos das arestas da arvore, eh minimizado
 entao ele encontra uma floresta geradora minima (uma arvore geradora minima para cada componente conexo do grafo).
 O algoritmo de Kruskal eh um exemplo de um algoritmo guloso.
 **/
-vector<Arco*> Grafo::Kruskal(){
+vector<Arco*> Grafo::algoritmoKruskal(){
     ///todos os arcos para ordenacao e 'solucao' que e a solucao (os arcos que forma as arvore/floresta)
     vector<Arco*> arcos, solucao;
     uint idArvore=1;
@@ -907,7 +930,7 @@ vector<Arco*> Grafo::Kruskal(){
 
         ///se arco conecta nos de componentes conexas diferentes ele esta na solucao
         if(id_orig!=id_dest){
-            solucao.push_back(arcos.at(pos));
+            solucao.push_back(arcos[pos]);
             ///coloca ids iguais para nos em mesma componente conexa
             for(itInicio(); !itEhFim(); itProx()){
                 No *no = getIt();
@@ -923,9 +946,14 @@ vector<Arco*> Grafo::Kruskal(){
 /**
  * Retorna o Grafo C resultado do produto cartesiano com (this x B)
  * Retorno serah um Grafo do tipo de (this)
+ * Recomendavel que A e B sejam diferentes, pois tem melhor desempenho com essa implementacao
 */
 Grafo* Grafo::produtoCartesiano(Grafo* B){
     Grafo* A = this;    /// <------ pura didatica
+
+    /// FIXME (jhcedro#1#18-12-2016): eh muito custoso! utilizar iteradores auxuliares
+    if(A == B)
+        B = A->clone();
     /// C = A x B
     uint nNosA = A->getNumeroNos();
     uint nNosB = B->getNumeroNos();
@@ -956,7 +984,7 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
         No* noB = B->getIt();
         for(noB->itInicio(); !noB->itEhFim(); noB->itProx()){
             Arco* arcoB = noB->getIt();
-            for(uint a = 0; a < nNosA; a++){
+            for(a = 0; a < nNosA; a++){
                 uint auxPos1 = posB[ noB->getID() ];
                 uint auxPos2 = posB[ arcoB->getNoDestino()->getID() ];
                 C->insereArco( nosC[a][auxPos1], nosC[a][auxPos2], idAresta++, false);
@@ -970,7 +998,7 @@ Grafo* Grafo::produtoCartesiano(Grafo* B){
         No* noA = A->getIt();
         for(noA->itInicio(); !noA->itEhFim(); noA->itProx()){
             Arco* arcoA = noA->getIt();
-            for(uint b = 0; b < nNosB; b++){
+            for(b = 0; b < nNosB; b++){
                 uint auxPos1 = posA[ noA->getID() ];
                 uint auxPos2 = posA[ arcoA->getNoDestino()->getID() ];
                 C->insereArco( nosC[auxPos1][b], nosC[auxPos2][b], idAresta++, false);
@@ -1004,7 +1032,7 @@ vector<No*> Grafo::fechamentoTransitivoDireto(uint id){
 
 /**
 * Dado um no, retorna todos os nos que consegue-se chegar, por intemedio de outros nos, a partir desse no.
-* Ou seja, todos os nos que tem canho a partir dele.
+* Ou seja, todos os nos que tem caminho a partir dele.
 **/
 vector<No*> Grafo::fechamentoTransitivoIndireto(uint id){
     No *no=buscaNo(id);
@@ -1194,6 +1222,8 @@ bool Grafo::comparaCriterioSteiner(pair<double, Arco*> p1, pair<double, Arco*> p
 
 ///Verifica se um conjunto de nos estao na mesma componente fortemente conexa
 bool Grafo::nosMesmaComponenteConexa(vector<No*> nos){
+    if(direcionado)
+        cout << "VERIFICANDO COMPONENTES CONEXAS DE GRAFO DIRECIONADO!" << endl;
     int idAux = nos[0]->getIdArvore();
     for(int i=1; i<nos.size(); i++){
         if(nos[i]->getIdArvore() != idAux)
@@ -1336,9 +1366,6 @@ vector<Arco*> Grafo::auxGulosoRandomizadoSteiner(uint idTerminais[], uint nTermi
     ///arcos marcados sao candidatos ou solucao
     candidatosArco = arcosAdjacentesDesmarcados(terminais);
 
-    ///idArvore do no origem e do no destino do melhor candidato
-    uint idOrig, idDestino;
-
     ///enquanto terminais nao estao na mesma componente conexa
     while(!nosMesmaComponenteConexa(terminais) && !candidatosArco.empty()){
         sort(candidatosArco.begin(), candidatosArco.end(), comparaCriterioSteiner);
@@ -1461,12 +1488,11 @@ double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool
         /// ##########  PARTE REATIVA   ##########
         if((i+1) % bloco_iteracoes == 0){
             /// a cada bloco de iteracoes
-            double soma_q = 0;
             double A_i = 0;     /// media dos resultados para alpha = alphas[i]
 
             for (int j = 0; j < m ; j++){
                 if(n_i[j] > 0){
-                    double A_i = soma_i[j] / n_i[j];
+                    A_i = soma_i[j] / n_i[j];
                     q_i[j] = pow(melhorSolucao / A_i, sigma);
                 }
             }
@@ -1474,8 +1500,6 @@ double Grafo::gulosoRandomizadoReativoSteiner(uint idTerminais[], uint tam, bool
             /// atualiza distribuicao
             discrete_distribution<int> novaDistribuicao(q_i, q_i+m);
             distribuicao = novaDistribuicao;
-
-            ///para ver se ta rodando e nao em loop infinito
         }
     }
 
@@ -1530,7 +1554,7 @@ void atualizaAlfas(double* alphas, double* pesos, uint tam, double* prec){
 /**
 * Guloso Randomizado Reativo baseado em refinamento para os vizinhos dos melhores alphas
 **/
-double Grafo::gulosoRandomizadoReativoSteiner2(uint idTerminais[], uint tam, bool imprimeSolucao){
+double Grafo::gulosoRandomizadoAdaptadoSteiner(uint idTerminais[], uint tam, bool imprimeSolucao){
     /// espaco amostral de alpha
     uint m = 12;             /// numero de amostras utiizadas
     uint max_iteracoes = 30*m;       /// total de iteracoes do algoritmo
@@ -1615,8 +1639,8 @@ vector<Arco*> Grafo::podarArcosSteiner(vector<Arco*> solucao){
     sort(solucao.begin(), solucao.end(), comparaGrau);
 
     ///enquanto ainda existem arcos para serem podados
-    while((solucao[0]->getNoOrigem()->ehTerminal()==false && solucao[0]->getNoOrigem()->getGrau()==1)
-       || (solucao[0]->getNoDestino()->ehTerminal()==false && solucao[0]->getNoDestino()->getGrau()==1)){
+    while((!solucao[0]->getNoOrigem()->ehTerminal() && solucao[0]->getNoOrigem()->getGrau() == 1)
+       || (!solucao[0]->getNoDestino()->ehTerminal() && solucao[0]->getNoDestino()->getGrau() == 1)){
 
         orig = solucao[0]->getNoOrigem();
         dest = solucao[0]->getNoDestino();

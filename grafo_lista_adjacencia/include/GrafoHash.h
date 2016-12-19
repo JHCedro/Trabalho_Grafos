@@ -17,13 +17,15 @@ private:
     THash<NoHash*> *tabelaNos;
     uint ordem;
     float ajusteTam = 1.2;  /// ajuste para o tamanho da tabela
-    NoHash *it;  ///iterador (it) para lista de nos
+
+    void pushIt();
+    void popIt();
 public:
-    GrafoHash(uint ordem, bool direcionado = true);
+    GrafoHash(uint ordem, bool grafo_direcionado = true);
 
     ///funcoes de iteracao na lista de nos
-    void itInicio();
     NoHash* getIt();
+    void itInicio();
     void itProx();
     bool itEhFim();
 
@@ -31,10 +33,10 @@ public:
     NoHash* insereNo(uint id);
     bool removeNo(uint id);
 
-    GrafoHash* novoGrafo(uint ordem, bool direcionado = true);
-    static GrafoHash* grafoCompleto(uint n, bool direcionado = true);
-    static GrafoHash* grafoCircular(uint n, bool direcionado = true);
-    static GrafoHash* grafoEscadinha(uint n, bool direcionado = true);
+    GrafoHash* novoGrafo(uint ordem, bool grafo_direcionado = true);
+    static GrafoHash* grafoCompleto(uint n, bool grafo_direcionado = true);
+    static GrafoHash* grafoCircular(uint n, bool grafo_direcionado = true);
+    static GrafoHash* grafoEscadinha(uint n, bool grafo_direcionado = true);
 
     uint getNumColisoes();
 

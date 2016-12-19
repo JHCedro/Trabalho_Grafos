@@ -204,19 +204,6 @@ void testeNoArticulacao(bool GHash = false){
         cout<<"O no:"<<i<<" e no de articulacao?"<<di->ehNoArticulacao(i)<<endl;
 }
 
-void testeRubustezVertice(bool GHash = false){
-    Grafo *di;
-    if(GHash)   di = new GrafoHash(10);
-    else        di = new GrafoLista();
-
-    uint *ids;
-    char nome[50];
-    sprintf(nome, "instancias/grafo_1000_%d.txt", 1);
-    di->leArquivo(nome);
-    cout<<"arquivo:"<<nome<<" lido"<<endl;
-    cout<<"rubustes de vertice:"<<di->rubustezVertice(ids);
-}
-
 void verificaGrafoKRegular(bool GHash = false){
     Grafo *G = criarGrafoEscadinha();
     cout << endl << "Grafo completo? " << G->ehGrafoKRegular() << endl;
@@ -297,10 +284,11 @@ uint testarDijkstra(uint n, bool GHash = false){
     /// Dijkstra a partir de um (id) aleatorio
     uint id = rand()%(n+1)+1;
     uint t = clock();
-    Dijkstra* resultado = G->dijkstra(id);
+    Dijkstra* resultado = G->algoritmoDijkstra(id);
     t = clock() - t;
 
     delete G;
+    delete resultado;
 
     return t;
 }
@@ -337,7 +325,7 @@ uint arvoreGeradoraMinima(uint n, uint amostra, bool GHash = false){
     uint t;
     t = clock();
     for (uint i=0; i < amostra; i++)
-        vector<Arco*> arco = di->algorimoPrim();
+        vector<Arco*> arco = di->algoritmoPrim();
     t = clock() - t;
 
     return t;
@@ -350,7 +338,7 @@ uint testarKruskal(uint n, bool GHash = false){
     else        di = GrafoLista::grafoCompleto(10);
     uint t;
     t = clock();
-    vector<Arco*> arcosMin = di->Kruskal();
+    vector<Arco*> arcosMin = di->algoritmoKruskal();
     t = clock() - t;
     return t;
 }
@@ -412,7 +400,7 @@ void testarKruskalNaMao(bool GHash = false){
     cout<<"\n\n\ngrafo:\n\n"<<endl;
     g->imprimir();
 
-    vector<Arco*> arcosMin = g->Kruskal();
+    vector<Arco*> arcosMin = g->algoritmoKruskal();
     cout<<"quantidade de arcos da solucao:"<<arcosMin.size()<<endl;
     uint orig, dest, id;
 
@@ -479,7 +467,7 @@ uint testarEhArcoPonte(uint n, uint amostra, bool GHash = false){
     uint idArco;
     while(cin >> idArco)
         cout << "\nArco " << (G->ehArcoPonte(idArco) ? "" : "nao ") << "eh ponte.\n";
-    n = n+2;
+
     return 0;
 }
 
@@ -618,7 +606,9 @@ void testeExemplosSteiner(){
     solucao = g->gulosoRandomizadoReativoSteiner(ids, 3, true);
 
     cout<<"GULOSO RANDOMIZADO REATIVO 2:"<<endl;
-    solucao = g->gulosoRandomizadoReativoSteiner2(ids, 3, true);
+    solucao = g->gulosoRandomizadoAdaptadoSteiner(ids, 3, true);
+
+    delete  g;
 }
 
 vector<string> listarArquivosPasta(string nome){
@@ -645,7 +635,7 @@ void testeGulosoSteiner(){
 
     for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
 
-        uint * terminais = leituraIntanciasSteiner(arquivos[idArquivo], g, false);
+        uint * terminais = leituraIntanciaSteiner(arquivos[idArquivo], g, false);
         uint ids[terminais[0]];
         for(uint j=0; j<terminais[0]; j++)
             ids[j] = terminais[j+1];
@@ -678,7 +668,7 @@ void testeGulosoRandomizadoSteiner(){
 
     for(uint idArquivo=0; idArquivo<arquivos.size(); idArquivo++){
 
-        uint * terminais = leituraIntanciasSteiner(arquivos[idArquivo], g, false);
+        uint * terminais = leituraIntanciaSteiner(arquivos[idArquivo], g, false);
         uint ids[terminais[0]];
         for(uint j=0; j<terminais[0]; j++)
             ids[j] = terminais[j+1];
@@ -687,7 +677,7 @@ void testeGulosoRandomizadoSteiner(){
 
         srand(time(NULL));
 
-        uint somaPesos = 0;
+        double somaPesos = 0;
         somaPesos = g->gulosoSteiner(ids, terminais[0], true);
 
         temposGuloso[idArquivo] = (clock() - t) / CLOCKS_PER_SEC;
@@ -708,7 +698,7 @@ void testeInstanciasSteiner(){
         char nome[50];
         sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
         Grafo *g = new GrafoLista(false);
-        uint *terminais = g->leituraIntanciasSteiner(nome);
+        uint *terminais = g->leituraIntanciaSteiner(nome);
 
         srand(time(NULL));
         vector<Arco*> solucao = g->gulosoRandomizadoSteiner(terminais, terminais[0], 0.4);
@@ -728,7 +718,7 @@ void testeInstanciasSteiner(){
         char nome[50];
         sprintf(nome, "instanciasSteiner/E/e0%d.stp", i);
         Grafo *g = new GrafoLista(false);
-        uint *terminais = g->leituraIntanciasSteiner(nome);
+        uint *terminais = g->leituraIntanciaSteiner(nome);
 
         srand(time(NULL));
         vector<Arco*> solucao = g->gulosoRandomizadoSteiner(terminais, terminais[0], 0.4);
@@ -754,7 +744,7 @@ void testeHeuristicasGulosas(){
     for(string arq : arquivos){
         cout<<"instancia:"<<arq<<endl;
 
-        uint *infoTerminais = leituraIntanciasSteiner(arq, G, false);
+        uint *infoTerminais = leituraIntanciaSteiner(arq, G, false);
         cout<<"\nGULOSO RANDOMIZADO: "
             << G->gulosoRandomizadoSteiner(infoTerminais+1, infoTerminais[0], alpha, num_it) << endl;
 
@@ -762,7 +752,7 @@ void testeHeuristicasGulosas(){
             << G->gulosoRandomizadoReativoSteiner(infoTerminais+1, infoTerminais[0]) << endl;
 
         cout<<"\nGULOSO RANDOMIZADO REATIVO 2: "
-            << G->gulosoRandomizadoReativoSteiner2(infoTerminais+1, infoTerminais[0]) << endl;
+            << G->gulosoRandomizadoAdaptadoSteiner(infoTerminais+1, infoTerminais[0]) << endl;
 
         delete G;
     }
@@ -796,9 +786,9 @@ executa 1 vez algum algoritmo guloso para uma instancia e retorna a solucao
 operacao=1 executa guloso, =2 executa randomizado e =3 executa reativo
 */
 double execucaoGuloso(Grafo* &g, string nomeInstancia, int operacao){
-    double menorSolucao;
+    double menorSolucao = INFINITY;
 
-    uint * terminais = leituraIntanciasSteiner(nomeInstancia, g, false);
+    uint * terminais = leituraIntanciaSteiner(nomeInstancia, g, false);
     if(operacao==1)
         menorSolucao = g->gulosoSteiner(terminais + 1, terminais[0]);
     if(operacao==2)
@@ -958,17 +948,20 @@ uint testarInsersao(uint n, uint amostra, bool GHash = false){
 
 uint testarColisaoHash(uint n, uint amostra){
     GrafoHash* G;
+    uint numColisoes = 0;
 
-    uint t = 0, tAux;
     for (uint i=0; i < amostra; i++){
         G = new GrafoHash(n);
 
         for(uint j = 0; j < n; j++)
             G->insereNo(j);
+
+        numColisoes += G->getNumColisoes();
+
         delete G;
     }
 
-    return G->getNumColisoes();
+    return numColisoes;
 }
 
 uint testarBusca(uint n, uint amostra, bool GHash = false){
@@ -1049,31 +1042,6 @@ void analiseDesempenhoEstruturas(uint n, uint passo, uint amostra){
 
 }
 
-int parseLine(char* line){
-    int i = strlen(line);
-    const char* p = line;
-    while(*p < '0' || *p > '9')
-        p++;
-    line[i-3] = '\0';
-    i = atoi(p);
-    return i;
-}
-
-int getValue(){
-    FILE* file = fopen("/proc/self/status", "r");
-    int result = -1;
-    char line[128];
-    while(fgets(line, 128, file) != NULL){
-        if(strncmp(line, "VmRSS", 6) == 0){
-            result = parseLine(line);
-            break;
-        }
-    }
-    fclose(file);
-
-    return result;
-}
-
 void exibirMenu(){
     new MenuTrabalho();
 }
@@ -1085,7 +1053,7 @@ int main(){
 //    testarGrafoInduzido(); ///entender
 //    testarSequenciaNos();  ///entender o sort
 //    testarNoArticulacao(); ///ta dando certo nao n�?
-//    testarInstanciasStenio();
+//    testarinstanciasArcoPonderados();
 //    testeComponenteConexa();
 //    testePercursoProfundidade();
 //    testeBuscaProdundidadeLargura();
@@ -1143,9 +1111,12 @@ int main(){
 //    testeGulosoSteiner();
 
 //    testeHeuristicasGulosas();
-/** TODO (GET#1#12/17/16): Tem que fazer isso, isso e isso */
 
     exibirMenu();
+//    Grafo *G = GrafoLista::grafoCompleto(1000, true);
+//    system("pause");
+//    delete G;
+//    system("pause");
 
 //    testeExemplosSteiner();
 //Grafo* g = GrafoHash::grafoCompleto(8000);

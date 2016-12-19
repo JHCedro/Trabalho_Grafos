@@ -32,26 +32,27 @@
 			<Add option="-Wall" />
 			<Add option="-fexceptions" />
 		</Compiler>
-		<Unit filename="Arco.cpp" />
-		<Unit filename="Arco.h" />
-		<Unit filename="Auxiliares.h" />
-		<Unit filename="Dijkstra.h" />
-		<Unit filename="Grafo.cpp" />
-		<Unit filename="Grafo.h" />
-		<Unit filename="GrafoHash.cpp" />
-		<Unit filename="GrafoHash.h" />
-		<Unit filename="GrafoLista.cpp" />
-		<Unit filename="GrafoLista.h" />
-		<Unit filename="Hashing.h" />
-		<Unit filename="MenuTrabalho.cpp" />
-		<Unit filename="MenuTrabalho.h" />
-		<Unit filename="No.cpp" />
-		<Unit filename="No.h" />
-		<Unit filename="NoHash.cpp" />
-		<Unit filename="NoHash.h" />
-		<Unit filename="NoLista.cpp" />
-		<Unit filename="NoLista.h" />
-		<Unit filename="main.cpp" />
+		<Unit filename="include/Arco.h" />
+		<Unit filename="include/Auxiliares.h" />
+		<Unit filename="include/Dijkstra.h" />
+		<Unit filename="include/Grafo.h" />
+		<Unit filename="include/GrafoHash.h" />
+		<Unit filename="include/GrafoLista.h" />
+		<Unit filename="include/Hashing.h" />
+		<Unit filename="include/Lista.h" />
+		<Unit filename="include/MenuTrabalho.h" />
+		<Unit filename="include/No.h" />
+		<Unit filename="include/NoHash.h" />
+		<Unit filename="include/NoLista.h" />
+		<Unit filename="src/Arco.cpp" />
+		<Unit filename="src/Grafo.cpp" />
+		<Unit filename="src/GrafoHash.cpp" />
+		<Unit filename="src/GrafoLista.cpp" />
+		<Unit filename="src/MenuTrabalho.cpp" />
+		<Unit filename="src/No.cpp" />
+		<Unit filename="src/NoHash.cpp" />
+		<Unit filename="src/NoLista.cpp" />
+		<Unit filename="src/main.cpp" />
 		<Extensions>
 			<code_completion />
 			<envvars />

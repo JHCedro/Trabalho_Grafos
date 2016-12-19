@@ -5,25 +5,23 @@
 
 using namespace std;
 
-/** TODO (jhcedro#1#14-12-2016): Todas as chamadas de funcoes sao empilhadas na memoria */
-
 MenuTrabalho::MenuTrabalho(){
     grafoSelecionado = NULL;
 //    opcoesMenu.push_back( make_pair(this->listarGrafos , "Listar Grafos") );
-    try{
-        string pasta = "instanciasTestesSteiner";
-        struct dirent *arquivo;
-        DIR *dir = opendir(pasta.c_str());
 
-        for(uint i=0; (arquivo = readdir(dir)); i++){
-            if(arquivo->d_name[0] != '.')
-                instanciasSteiner.push_back((string)arquivo->d_name);
-        }
-    }catch(int e){
-        cout << "Instancias de Steiner nao encontradas!" << endl;
-    }
+    /// buscando instancias da Arvore de Steiner
+    try{ instanciasSteiner = listarArquivos("instanciasTestesSteiner"); }
+    catch(int e){
+        cout << "Instancias de Steiner nao encontradas!" << endl;   }
 
-    /** TODO (jhcedro#1#14-12-2016): Listar tambem instacias do Stenio */
+    /// buscando instancias de teste do Stenio
+    try{ instanciasArcoNaoPonderados = listarArquivos("instancias/arcos_nao_ponderados"); }
+    catch(int e){
+        cout << "Instancias do teste com arcos nao ponderados nao encontradas!" << endl;    }
+
+    try{ instanciasArcoPonderados = listarArquivos("instancias/arcos_ponderados");  }
+    catch(int e){
+        cout << "Instancias do teste com arcos ponderados nao encontradas!" << endl;}
 
     nomeOpcoes = vector<string>({
         " 1 - Exibir opcoes do menu",
@@ -34,10 +32,10 @@ MenuTrabalho::MenuTrabalho(){
         " 6 - Selecionar grafo",
         " 7 - Mostrar grafo selecionado",
         " 8 - Deletar grafo selecionado",
-        " 9 - Listar Instancias da Arvore de Steiner",
-        "10 - Listar Instancias de Teste",
-        "11 - Carregar Instancias de Teste",
-        "12 - Carregar Instancias dA Arvore de Steiner",
+        " 9 - Listar Instancias de Teste",
+        "10 - Carregar Instancia de Teste",
+        "11 - Listar Instancias da Arvore de Steiner",
+        "12 - Resolver Instancia da Arvore de Steiner",
         " 0 - SAIR"
     });
 
@@ -72,14 +70,25 @@ MenuTrabalho::MenuTrabalho(){
         "28 - Algoritmo de Kruskal",
         "29 - Verificar se eh k-conexo",
         "30 - Verificar se eh euleriano",
-        "31 - Algoritmo Guloso",
-        "32 - Algoritmo Guloso Randomizado",
-        "33 - Algoritmo Guloso Randomizado Reativo 1",
-        "34 - Algoritmo Guloso Randomizado Reativo 2",
+        "31 - Arvore de Steiner",
         " 0 - VOLTAR"
     });
 
     this->exibirOpcoes();
+    this->escolherOpcao();
+}
+
+vector<string> MenuTrabalho::listarArquivos(string pasta){
+    vector<string> arquivos;
+    struct dirent *arquivo;
+    DIR *dir = opendir(pasta.c_str());
+
+    for(uint i=0; (arquivo = readdir(dir)); i++){
+        if(arquivo->d_name[0] != '.')
+            arquivos.push_back(string(arquivo->d_name));
+    }
+
+    return arquivos;
 }
 
 void MenuTrabalho::exibirOpcoes(){
@@ -88,35 +97,37 @@ void MenuTrabalho::exibirOpcoes(){
     for(string opcao :  nomeOpcoes)
         cout << "\t" << opcao << endl;
     cout << "-----------------------------------------------------" << endl;
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::escolherOpcao(){
     usint opcao;
 
-    cout << "\n>> opcao menu (int): ";
-    cin >> opcao;
+    cout << "\n>> opcao menu (int): ";    cin >> opcao;
 
-    switch (opcao){
-    case  1: this->exibirOpcoes();               break;
-    case  2: this->exibirFuncoes();              break;
-    case  3: this->novoGrafo();                  break;
-    case  4: this->novoGrafoExemplo();           break;
-    case  5: this->listarGrafos();               break;
-    case  6: this->selecionarGrafo();            break;
-    case  7: this->mostrarSelecionado();         break;
-    case  8: this->deletarGrafo();               break;
-    case  9: this->listarInstanciasSteiner();    break;
-    case 10: this->listarInstanciasStenio();     break;
-    case 11: this->carregarInstanciaStenio();    break;
-    case 12: this->carregarInstanciaSteiner();   break;
-    case  0: this->sair();                       break;
+    while(opcao != 0){
+        switch (opcao){
+            case  1: this->exibirOpcoes();               break;
+            case  2: this->exibirFuncoes();
+                    if(grafoSelecionado != NULL){
+                        this->escolherFuncao();
+                     }                                   break;
+            case  3: this->novoGrafo();                  break;
+            case  4: this->novoGrafoExemplo();           break;
+            case  5: this->listarGrafos();               break;
+            case  6: this->selecionarGrafo();            break;
+            case  7: this->mostrarSelecionado();         break;
+            case  8: this->deletarGrafo();               break;
+            case  9: this->listarInstanciasStenio();     break;
+            case 10: this->carregarInstanciaStenio();    break;
+            case 11: this->listarInstanciasSteiner();    break;
+            case 12: this->resolverInstanciaSteiner();   break;
 
-    default:
-        cout << "Opcao invalida!" << endl;
-        break;
+            default: cout << "Opcao invalida!" << endl;  break;
+        }
+        cout << "\n>> opcao menu (int): ";    cin >> opcao;
     }
+
+    this->sair();
 }
 
 void MenuTrabalho::exibirFuncoes(){
@@ -125,68 +136,61 @@ void MenuTrabalho::exibirFuncoes(){
         cout << "\n-----------------------------------------------------" << endl;
         cout << "Funcoes do grafo selecionado:" << endl;
         for(uint i = 0; i < nomeFuncoes.size(); i++){
+            /*
             if(i == 30)
-                cout << "\n\t (Heuristicas para problema da Arvore de Steiner)" << endl;
+                cout << "\n\t (Heuristicas para problema da Arvore de Steiner)" << endl;*/
             cout << "\t" << nomeFuncoes[i] << endl;
         }
-
         cout << "-----------------------------------------------------" << endl;
-
-        this->escolherFuncao();
     }
     else{
         cout << "Nenhum grafo selecionado!" << endl;
-        this->escolherOpcao();
     }
 }
 
 void MenuTrabalho::escolherFuncao(){
-    usint funcao;
+    usint funcao = 1;
     cout << "\n>> opcao grafo (int): ";     cin >> funcao;
+    while(funcao != 0){
+        switch (funcao){
+            case  1: this->exibirFuncoes();                     break;
+            case  2: this->imprimir();                          break;
+            case  3: this->inserirVertice();                    break;
+            case  4: this->removeVertive();                     break;
+            case  5: this->inserirArco();                       break;
+            case  6: this->removerArco();                       break;
+            case  7: this->grau();                              break;
+            case  8: this->grauNo();                            break;
+            case  9: this->ehKRegular();                        break;
+            case 10: this->ehCompleto();                        break;
+            case 11: this->nosSaoAdjacentes();                  break;
+            case 12: this->buscaProfundidade();                 break;
+            case 13: this->buscaLargura();                      break;
+            case 14: this->ehConexo();                          break;
+            case 15: this->nosMesmaComponenteConexa();          break;
+            case 16: this->noEhArticulacao();                   break;
+            case 17: this->arestaEhPonte();                     break;
+            case 18: this->vizinhancaNo();                      break;
+            case 19: this->fechamentoTransitivo();              break;
+            case 20: this->ordenacaoTopologica();               break;
+            case 21: this->caminhoMinimo();                     break;
+            case 22: this->djikstra();                          break;
+            case 23: this->floyd();                             break;
+            case 24: this->subGrafoInduzido();                  break;
+            case 25: this->componentesConexas();                break;
+            case 26: this->produtoCartesiano();                 break;
+            case 27: this->prim();                              break;
+            case 28: this->kruskal();                           break;
+            case 29: this->ehKConexo();                         break;
+            case 30: this->ehEuleriano();                       break;
 
-    switch (funcao){
-    case  1: this->exibirFuncoes();                     break;
-    case  2: this->imprimir();                          break;
-    case  3: this->inserirVertice();                    break;
-    case  4: this->removeVertive();                     break;
-    case  5: this->inserirArco();                       break;
-    case  6: this->removerArco();                       break;
-    case  7: this->grau();                              break;
-    case  8: this->grauNo();                            break;
-    case  9: this->ehKRegular();                        break;
-    case 10: this->ehCompleto();                        break;
-    case 11: this->nosSaoAdjacentes();                  break;
-    case 12: this->buscaProfundidade();                 break;
-    case 13: this->buscaLargura();                      break;
-    case 14: this->ehConexo();                          break;
-    case 15: this->nosMesmaComponenteConexa();          break;
-    case 16: this->noEhArticulacao();                   break;
-    case 17: this->arestaEhPonte();                     break;
-    case 18: this->vizinhancaNo();                      break;
-    case 19: this->fechamentoTransitivo();              break;
-    case 20: this->ordenacaoTopologica();               break;
-    case 21: this->caminhoMinimo();                     break;
-    case 22: this->djikstra();                          break;
-    case 23: this->floyd();                             break;
-    case 24: this->subGrafoInduzido();                  break;
-    case 25: this->componentesConexas();                break;
-    case 26: this->produtoCartesiano();                 break;
-    case 27: this->prim();                              break;
-    case 28: this->kruskal();                           break;
-    case 29: this->ehKConexo();                         break;
-    case 30: this->ehEuleriano();                       break;
+            case 31: this->heuristicaSteiner(grafoSelecionado); break;
 
-    case 31: this->gulosoSteiner();                     break;
-    case 32: this->gulosoRandomizadoSteiner();          break;
-    case 33: this->gulosoRandomizadoReativoSteiner1();  break;
-    case 34: this->gulosoRandomizadoReativoSteiner2();  break;
-    case  0: this->exibirOpcoes();                      break;
+            default: cout << "Funcao invalida!" << endl;        break;
+        }
 
-    default:
-        cout << "Funcao invalida!" << endl;
-        break;
+        cout << "\n>> opcao grafo (int): ";     cin >> funcao;
     }
-    this->exibirFuncoes();
 }
 
 void MenuTrabalho::novoGrafo(bool exemplo){
@@ -204,7 +208,7 @@ void MenuTrabalho::novoGrafo(bool exemplo){
     if(opcaoGrafo != 1 && opcaoGrafo != 2){
         cout << "Opcao invalida!" << endl;
     }else{
-        cout << ">> Usar grado direcionado? (s/n): ";
+        cout << ">> Usar grafo direcionado? (s/n): ";
         cin >> opcaoDirecionado;
         direcionado = opcaoDirecionado == 's';
 
@@ -223,7 +227,6 @@ void MenuTrabalho::novoGrafo(bool exemplo){
             cout << ">> numero de vertices (int): ";
             cin >> n;
 
-            /// TODO (jhcedro#1#14-12-2016): verificar erro com GrafoHash nao direcionado
             switch (opcaoExemplo){
             case 1:
                 switch(opcaoGrafo){
@@ -254,16 +257,15 @@ void MenuTrabalho::novoGrafo(bool exemplo){
             switch (opcaoGrafo){
                 case 1:
                     G = new GrafoLista(direcionado);
-                    nome = "[LISTA] " + nome;
-                    grafos.push_back( make_pair(G, nome) );
+                    nome = "[LISTA]_" + nome;
                     break;
 
                 case 2:
                     uint ordem;
                     cout << ">> Escolha a ordem de grandeza do grafo (quantidade de nos esperada - int): ";
                     cin >> ordem;
-                    G = new GrafoHash(direcionado, ordem);
-                    nome = "[HASH] " + nome;
+                    G = new GrafoHash(ordem, direcionado);
+                    nome = "[HASH]_" + nome;
                     break;
 
                 default:
@@ -274,8 +276,6 @@ void MenuTrabalho::novoGrafo(bool exemplo){
         if(G != NULL)
             grafos.push_back( make_pair(G, nome) );
     }
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::novoGrafoExemplo(){
@@ -287,8 +287,6 @@ void MenuTrabalho::listarGrafos(){
     uint i = 1;
     for(auto p : grafos)
         cout << "\t" << i++ << " - " << p.second << endl;
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::selecionarGrafo(){
@@ -297,15 +295,13 @@ void MenuTrabalho::selecionarGrafo(){
     cin >> i;
 
     if(i > 0 && i <= grafos.size()){
-        posGrafoSelecionado = i - 1;
+        posGrafoSelecionado = i - (usint) 1;
         grafoSelecionado = grafos[posGrafoSelecionado].first;
         nomeGrafoSelecionado = grafos[posGrafoSelecionado].second;
         cout << "Grafo (" << nomeGrafoSelecionado << ") selecionado." << endl;
     }
     else
         cout << "Opcao invalida!" << endl;
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::mostrarSelecionado(){
@@ -313,91 +309,39 @@ void MenuTrabalho::mostrarSelecionado(){
         cout << "Grafo selecionado: " << nomeGrafoSelecionado << endl;
     else
         cout << "Nenhum grafo selecionado!" << endl;
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::deletarGrafo(){
     if(grafoSelecionado != NULL){
         cout << "Deletando grafo " << nomeGrafoSelecionado << endl;
         delete grafoSelecionado;
-        grafos.erase( grafos.begin() + posGrafoSelecionado);
+        grafos.erase( grafos.begin() + posGrafoSelecionado );
         grafoSelecionado = NULL;
     }
     else
         cout << "Nenhum grafo selecionado!" << endl;
-
-
-    this->escolherOpcao();
 }
 
 void MenuTrabalho::listarInstanciasSteiner(){
     usint i = 1;
+    cout << "Instancias da Arvore de Steiner:" << endl;
     for(string instancia : instanciasSteiner)
-        cout << i++ << " - " << instancia << endl;
-
-    this->escolherOpcao();
+        cout << "\t" << i++ << " - " << instancia << endl;
 }
 
 void MenuTrabalho::listarInstanciasStenio(){
-    cout << "Funcionalidade nao ainda implementada!" << endl;
-    this->escolherOpcao();
+    usint i = 1;
+    cout << "\n Instancias sem arcos ponderados:" << endl;
+    for(string instancia : instanciasArcoNaoPonderados)
+        cout << "\t" << i++ << " - " << instancia << endl;
+
+    i = 1;
+    cout << "\n Instancias com arcos ponderados:" << endl;
+    for(string instancia : instanciasArcoPonderados)
+        cout << "\t" << i++ << " - " << instancia << endl;
 }
 
-/*
-uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
-    ifstream entrada;
-    entrada.open(nomeArq, ios::in);
-
-    uint n_nos, n_arcos;
-
-    char aux[100];
-    entrada >> aux;
-    while(((string)aux) != "SECTION Graph"){
-        entrada.getline(aux, 100);
-    }
-    entrada >> aux >> n_nos;
-    entrada >> aux >> n_arcos;
-
-    if(GHash) G = new GrafoHash(n_nos, false);
-    else      G = new GrafoLista(false);
-
-    ///insere todos os nos
-    for(uint i=1; i<=n_nos; i++)
-        G->insereNo(i);
-
-    ///indices de origem e destino dos arcos
-    uint i, j;
-    double peso;
-
-    ///PERCORRER TODOS OS ARCOS DA ENTRADA
-    for(int linha=0; linha<n_arcos; linha++){
-        entrada >> aux >> i >> j >> peso;
-        G->insereArcoID(i, j, 1, false, peso);
-    }
-
-    entrada>>aux>>aux>>aux>>aux;
-
-    uint n_terminais, *infoTerminais, idx=0;
-    entrada>>n_infoTerminais;
-
-    infoTerminais = new uint[n_terminais + 1];
-    infoTerminais[0] = n_terminais;
-
-    ///leitura de terminais
-    for(int linha=0; linha<n_terminais; linha++){
-        entrada >> aux >>i;
-        ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
-        infoTerminais[linha + 1] = i;
-    }
-
-    return terminais;
-}
-    */
-
-void MenuTrabalho::carregarInstanciaSteiner(){
-    cout << "Funcionalidade nao ainda implementada!" << endl;
-    /** DECIDIR SE CARREGA INSTÂNCIA OU RESOLVE DIRETO
+void MenuTrabalho::resolverInstanciaSteiner(){
     /// escolher uma instancia para carregar em um grafo
     usint opcaoInstancia;
     cout << ">> Carregar instancia da Arvore de Steiner (int): ";
@@ -407,6 +351,7 @@ void MenuTrabalho::carregarInstanciaSteiner(){
         Grafo *G;
         usint opcaoGrafo;
         string nomeInstancia = instanciasSteiner[opcaoInstancia - 1];
+        cout << "Carregar instancia " << nomeInstancia << endl;
 
         cout << "Escolha a estrutura do grafo:" << endl;
         cout << "\t 1 - Lista Encadeada de Ajdacencias" << endl;
@@ -416,22 +361,59 @@ void MenuTrabalho::carregarInstanciaSteiner(){
 
         if(opcaoGrafo == 1 || opcaoGrafo == 2){
             string nomeArq = "instanciasTestesSteiner/" + nomeInstancia;
-            leituraIntanciasSteiner(nomeArq, G, (opcaoGrafo == 1 ? false : true));
-            grafos.push_back( make_pair(G, nomeInstancia) );
+            uint* infoTerminais = this->carregarInstanciaSteiner(nomeArq, G, opcaoGrafo != 1);
+            this->heuristicaSteiner(G, infoTerminais);
         }else{
             cout << "Opcao invalida!" << endl;
         }
     }else{
         cout << "Opcao invalida!" << endl;
     }
-    */
-    this->exibirOpcoes();
 }
 
 void MenuTrabalho::carregarInstanciaStenio(){
-    cout << "Funcionalidade nao ainda implementada!" << endl;
     /// escolher uma instancia para carregar em um grafo
-    this->exibirOpcoes();
+    usint tipoInstancia, opcaoInstancia;
+    cout << "\t 1 - Instancias sem arcos ponderados" << endl;
+    cout << "\t 2 - Instancias com arcos ponderados" << endl;
+    cout << ">> tipo de instancia (int): ";     cin >> tipoInstancia;
+    if(tipoInstancia == 1 || tipoInstancia == 2){
+        string pasta = "instancias/";
+        vector<string> instancias;
+        if(tipoInstancia == 1){
+            pasta += "arcos_nao_ponderados/";
+            instancias = instanciasArcoNaoPonderados;
+        }else{
+            pasta += "arcos_ponderados/";
+            instancias = instanciasArcoPonderados;
+        }
+
+        cout << ">> carregar instancia de teste (int): ";
+        cin >> opcaoInstancia;
+
+        if(opcaoInstancia > 0 && opcaoInstancia <= instancias.size()){
+            Grafo *G;
+            usint tipoGrafo;
+            string nomeInstancia = instancias[opcaoInstancia - 1];
+
+            cout << "Escolha a estrutura do grafo:" << endl;
+            cout << "\t 1 - Lista Encadeada de Ajdacencias" << endl;
+            cout << "\t 2 - Tabela Hash de Ajdacencias" << endl;
+            cout << ">> estrutura (int): ";
+            cin >> tipoGrafo;
+
+            if(tipoGrafo == 1 || tipoGrafo == 2){
+                string nomeArq = pasta + nomeInstancia;
+                /// griar grafo
+                G = carregarInstanciaStenio(nomeArq, tipoInstancia == 2, tipoGrafo == 2);
+                string prefixo = ((tipoGrafo == 1) ? "[LISTA]_" : "[HASH]_");
+                grafos.push_back( make_pair(G, prefixo + nomeInstancia) );
+            }else
+                cout << "Opcao invalida!" << endl;
+        }else
+            cout << "Opcao invalida!" << endl;
+    }else
+        cout << "Opcao invalida!" << endl;
 }
 
 void MenuTrabalho::sair(){
@@ -450,8 +432,6 @@ void MenuTrabalho::imprimir(){
 
     cout << "Imprimindo " << nomeGrafoSelecionado << endl;
     grafoSelecionado->imprimir(detalhadamente == 's');
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::inserirVertice(){
@@ -460,8 +440,6 @@ void MenuTrabalho::inserirVertice(){
     cout << ">> id do vertice (int): ";     cin >> id;
     cout << ">> peso do vertice (int): ";   cin >> peso;
     grafoSelecionado->insereNo(id);
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::removeVertive(){
@@ -469,8 +447,6 @@ void MenuTrabalho::removeVertive(){
     uint id;
     cout << ">> id do vertice (int): ";     cin >> id;
     grafoSelecionado->removeNo(id);
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::inserirArco(){
@@ -481,8 +457,6 @@ void MenuTrabalho::inserirArco(){
     cout << ">> peso do arco (int): ";          cin >> peso;
     cout << ">> id do arco (int): ";          cin >> idArco;
     grafoSelecionado->insereArcoID(idOrigem, idDestino, idArco, true, peso);
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::removerArco(){
@@ -491,14 +465,10 @@ void MenuTrabalho::removerArco(){
     cout << ">> id do vertice origem (int): ";     cin >> idOrigem;
     cout << ">> id do vertice destino (int): ";    cin >> idDestino;
     grafoSelecionado->removeArco(idOrigem, idDestino);
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::grau(){
     cout << "\n Grau do grafo: "<< grafoSelecionado->getGrau() << endl;
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::grauNo(){
@@ -510,8 +480,6 @@ void MenuTrabalho::grauNo(){
         cout << "Vertice tem grau: " << no->getGrau();
     else
         cout << "Vertice nao encontrado!";
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::ehKRegular(){
@@ -519,14 +487,10 @@ void MenuTrabalho::ehKRegular(){
     uint k;
     cout << ">> k (int): ";     cin >> k;
     printf("Grafo%s eh %d-regular\n", (grafoSelecionado->ehGrafoKRegular(k) ? "" : " nao"), k);
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::ehCompleto(){
     printf("Grafo%s eh completo\n", (grafoSelecionado->ehGrafoCompleto() ? "" : " nao"));
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::nosSaoAdjacentes(){
@@ -551,29 +515,6 @@ void MenuTrabalho::nosSaoAdjacentes(){
             printf("Vertices %d e %d%s sao adjacentes\n", id1, id2, (no1->ehAdjacente(no2) ? "" : " nao"));
         }
     }
-
-    this->escolherFuncao();
-}
-
-void MenuTrabalho::salvarArvore(Grafo *G, string nomeArq){
-    /// mapeamento dos pais de cada no
-    map<No*, uint> nosPais;
-    for(G->itInicio(); !G->itEhFim(); G->itProx()){
-        No* no = G->getIt();
-        if(no->getNivel() == 0)
-            nosPais[no] = 0;
-        for (no->itInicio(); !no->itEhFim(); no->itProx())
-            nosPais[ no->getIt()->getNoDestino() ] = no->getID();
-    }
-
-    nomeArq = pastaSaidas + nomeArq;
-    ofstream arq;
-    arq.open(nomeArq.c_str());
-    arq << "vertice \t pai \t nivel" << endl;
-    for(auto p : nosPais)
-        arq << p.first->getID() << "\t" << p.second << "\t" << p.first->getNivel() << endl;
-
-    arq.close();
 }
 
 void MenuTrabalho::buscaProfundidade(){
@@ -586,7 +527,7 @@ void MenuTrabalho::buscaProfundidade(){
     string nomeArq = "percurso_profundidade_" + nomeGrafoSelecionado + ".arv";
     this->salvarArvore(arv, nomeArq);
 
-    this->escolherFuncao();
+    adcionarGrafo(arv);
 }
 
 void MenuTrabalho::buscaLargura(){
@@ -599,18 +540,14 @@ void MenuTrabalho::buscaLargura(){
     string nomeArq = "percurso_largura_" + nomeGrafoSelecionado + ".arv";
     this->salvarArvore(arv, nomeArq);
 
-    this->escolherFuncao();
+    adcionarGrafo(arv);
 }
 
 void MenuTrabalho::ehConexo(){
     printf("Grafo%s eh conexo\n", (grafoSelecionado->ehConexo() ? "" : " nao"));
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::nosMesmaComponenteConexa(){
-/** TODO (jhcedro#1#17-12-2016): Se grafo eh direcionado metodo deve usar componente fortemente conexa */
-
     cout << "\n Verificar vertices na mesma componente conexa:" << endl;
     uint id1, id2;
 
@@ -630,8 +567,6 @@ void MenuTrabalho::nosMesmaComponenteConexa(){
             printf("Vertices %d e %d%s estao na mesma componente conexa\n", id1, id2, (resultado ? "" : " nao"));
         }
     }
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::noEhArticulacao(){
@@ -643,9 +578,6 @@ void MenuTrabalho::noEhArticulacao(){
         printf("Vertice %d%s eh articulacao\n", id, (grafoSelecionado->ehNoArticulacao(no) ? "" : " nao"));
     else
         cout << "Vertice nao encontrado!";
-
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::arestaEhPonte(){
@@ -656,13 +588,11 @@ void MenuTrabalho::arestaEhPonte(){
     if(arco != NULL)
         printf("Arco %d%s eh ponte\n", id, (grafoSelecionado->ehArcoPonte(arco) ? "" : " nao"));
     else
-        cout << "Arco nao encontrado!";
-
-    this->escolherFuncao();
+        cout << "Arco nao encontrado!" << endl;
 }
 
 void MenuTrabalho::vizinhancaNo(){
-    cout << "\n Obter vizinhanca do no:" << endl;
+    cout << "\n Obter vizinhanca do vertice:" << endl;
     uint id;
     char fechada;
     cout << ">> id do vertice (int): ";         cin >> id;
@@ -676,106 +606,383 @@ void MenuTrabalho::vizinhancaNo(){
     }
     else
         cout << "Vertice nao encontrado!";
-
-    this->escolherFuncao();
 }
 
 void MenuTrabalho::fechamentoTransitivo(){
-
-
-    this->escolherFuncao();
+    cout << "\n Obter fechamento transitivo de um vertice:" << endl;
+    uint id, fechamento;
+    cout << "\t 1 - fechamento transitivo direto"   << endl;
+    cout << "\t 2 - fechamento transitivo indireto" << endl;
+    cout << ">> fechamento (int): ";         cin >> fechamento;
+    cout << ">> id do vertice (int): ";      cin >> id;
+    No* no = grafoSelecionado->buscaNo(id);
+    if(no != NULL){
+        vector<No*> nosFechamento;
+        switch(fechamento){
+        case 1 :
+            nosFechamento = grafoSelecionado->fechamentoTransitivoDireto(id);
+            cout << "\tFechamento transitivo direto:" << endl;
+            break;
+        case 2 :
+            nosFechamento = grafoSelecionado->fechamentoTransitivoIndireto(id);
+            cout << "\tFechamento transitivo indireto:" << endl;
+            break;
+        }
+        for(No* no : nosFechamento)
+            cout << "\t\t" << no->getID() << endl;
+    }
+    else
+        cout << "Vertice nao encontrado!";
 }
 
 void MenuTrabalho::ordenacaoTopologica(){
-
-
-    this->escolherFuncao();
+    cout << "\n Obter ordenacao topologica de DAG:" << endl;
+    vector<No*> ordTopologica = grafoSelecionado->ordenacaoTopologicaDAG();
+    for(No* no : ordTopologica)
+        cout << "\t\t" << no->getID() << endl;
 }
 
 void MenuTrabalho::caminhoMinimo(){
+    cout << "\n Caminho minimo entre dois vertices:" << endl;
+    uint id1, id2;
+    usint algoritmo;
+    cout << ">> id do vertice origem  (int): ";     cin >> id1;
+    No* no1 = grafoSelecionado->buscaNo(id1);
+    if( no1 == NULL )
+        cout << "vertice origem nao encontrado" << endl;
+    else{
+        cout << ">> id do vertice destino (int): ";     cin >> id2;
+        No* no2 = grafoSelecionado->buscaNo(id2);
 
-
-    this->escolherFuncao();
+        if( no2 == NULL )
+            cout << "vertice destino nao encontrado" << endl;
+        else{
+            cout << "\t 1 - Usar algoritmo de Djikstra" << endl;
+            cout << "\t 2 - Usar algoritmo de Floyd"    << endl;
+            cout << ">> algoritmo (int): ";             cin >> algoritmo;
+            double resultado = -1;
+            if(algoritmo == 1){
+                resultado = grafoSelecionado->menorCaminhoDijkstra(no1, no2);
+                printf("\t Menor camminho entre (%d) e (%d) tem custo %f.\n", id1, id2, resultado);
+            }else if(algoritmo == 2){
+                resultado = grafoSelecionado->menorCaminhoFloyd(id1, id2);
+                printf("\t Menor camminho entre (%d) e (%d) tem custo %f.\n", id1, id2, resultado);
+            }else
+                cout << "Opcao invalida!" << endl;
+        }
+    }
 }
 
 void MenuTrabalho::djikstra(){
-
-
-    this->escolherFuncao();
+    cout << "Algoritimo de Djikstra:" << endl;
+    uint idOrigem;
+    cout << ">> id do vertice origem  (int): ";     cin >> idOrigem;
+    No* noOrigem = grafoSelecionado->buscaNo(idOrigem);
+    if( noOrigem == NULL )
+        cout << "vertice origem nao encontrado" << endl;
+    else{
+        Dijkstra *d = grafoSelecionado->algoritmoDijkstra(idOrigem, true);
+        d->imprimirPercurso();
+        cout << endl;
+        delete d;
+    }
 }
 
 void MenuTrabalho::floyd(){
-
-
-    this->escolherFuncao();
+    cout << "Algoritimo de Floyd:" << endl;
+    double** distancias = grafoSelecionado->algoritmoFloyd();
+    cout << "Distancias entre vertices:" << endl;
+    uint n = grafoSelecionado->getNumeroNos();
+    for (uint i = 0; i < n; i++){
+        for (uint j = i+1; j < n; j--)
+            printf("\t [%2d, %2d]: %f\n", i, j, distancias[i][j]);
+    }
 }
 
 void MenuTrabalho::subGrafoInduzido(){
+    cout << "Subgrafo induzido por conjunto de vertices:" << endl;
+    uint nNos, *idNos;
+    cout << ">> numero de vertices (int): ";    cin >> nNos;
+    idNos = new uint[nNos];
+    cout << ">> vertices (" << nNos << " x int): ";
+    for (uint i = 0; i < nNos; i++){
+        cin >> idNos[i];
+    }
+    Grafo *subGrafo = grafoSelecionado->subGrafoInduzido(idNos, nNos);
 
+    string nomeArq = "subgrafo_induzido_" + nomeGrafoSelecionado + ".grafo";
+    this->salvarGrafo(subGrafo, nomeArq);
 
-    this->escolherFuncao();
+    adcionarGrafo(subGrafo);
+
+    delete [] idNos;
 }
 
 void MenuTrabalho::componentesConexas(){
-
-
-    this->escolherFuncao();
+    cout << "Obter componentes conexas:" << endl;
+    vector<vector<No*>> componentes = grafoSelecionado->retornarComponentesConexas();
+    uint i = 1;
+    for(vector<No*> componente : componentes){
+        cout << "Componente conexa " << i++ << ":" << endl;
+        for(No* no : componente){
+            cout << "\t" << no->getID() << endl;
+        }
+    }
 }
 
 void MenuTrabalho::produtoCartesiano(){
+    cout << "Produto cartesiano:" << endl;
+    usint grafoB;
+    this->listarGrafos();
 
+    cout << ">> efetuar produto cartesiano com (int): ";   cin >> grafoB;
+    Grafo *B = grafos[ grafoB-1 ].first;
+    string nomeGrafoB = grafos[ grafoB-1 ].second;
 
-    this->escolherFuncao();
+    cout << "efetuando produto cartesiano entre (" << nomeGrafoSelecionado << ") e (" << nomeGrafoB << ") " << endl;
+    Grafo *C = grafoSelecionado->produtoCartesiano(B);
+
+    string nomeArq = "produto_cartesiano_(" + nomeGrafoSelecionado + ")_x_(" + nomeGrafoB + ").grafo";
+    salvarGrafo(C, nomeArq);
+    adcionarGrafo(C);
 }
 
 void MenuTrabalho::prim(){
+    cout << "Arvore geradora minima utilizando algoritmo de Prim:" << endl;
+    vector<Arco*> AGM = grafoSelecionado->algoritmoPrim();
 
-
-    this->escolherFuncao();
+    string nomeArq = "AMG_Prim_" + nomeGrafoSelecionado + ".grafo";
+    salvarGrafo(AGM, nomeArq);
 }
 
 void MenuTrabalho::kruskal(){
+    cout << "Floresta geradora minima utilizando algoritmo de Kruskal:" << endl;
+    vector<Arco*> AGM = grafoSelecionado->algoritmoKruskal();
 
-
-    this->escolherFuncao();
+    string nomeArq = "FMG_Kruskal_" + nomeGrafoSelecionado + ".grafo";
+    salvarGrafo(AGM, nomeArq);
 }
 
 void MenuTrabalho::ehKConexo(){
-
-
-    this->escolherFuncao();
+    cout << "\n Verificar k-conexidade:" << endl;
+    uint k;
+    cout << ">> k (int): ";     cin >> k;
+    printf("Grafo%s eh %d-conexo\n", (grafoSelecionado->ehKConexo(k) ? "" : " nao"), k);
 }
 
 void MenuTrabalho::ehEuleriano(){
-
-
-    this->escolherFuncao();
+    printf("Grafo%s eh euleriano\n", (grafoSelecionado->ehGrafoEuleriano() ? "" : " nao"));
 }
 
-void MenuTrabalho::gulosoSteiner(){
+///----------      FUNCOES DA ARVORE DE STEINER       ----------#
 
+void  MenuTrabalho::heuristicaSteiner(Grafo *G, uint* infoTerminais){
+    cout << "Problema da Arvore de Steiner: " << endl;
+    usint heuristica;
+    cout << "Selecione a heuristica a ser utilizada:" << endl;
+    cout << "\t 1 - Algoritmo Guloso" << endl;
+    cout << "\t 2 - Algoritmo Guloso Randomizado" << endl;
+    cout << "\t 3 - Algoritmo Guloso Randomizado Reativo" << endl;
+    cout << "\t 4 - Algoritmo Guloso Randomizado Adaptado" << endl;
+    cout << ">> heuristica (int): ";    cin >> heuristica;
 
-    this->escolherFuncao();
+    if(heuristica < 1 || heuristica > 4){
+        cout << "Opcao invalida!" << endl;
+    }else{
+        uint nTerminais, *idTerminais;
+        double alpha;
+
+        if(infoTerminais == NULL){
+            /// caso  metodo nao tenha sido chamado por resolverInstanciaSteiner
+            cout << ">> numero de vertices terminais (int): ";    cin >> nTerminais;
+            idTerminais = new uint[nTerminais];
+
+            cout << ">> vertices terminais (" << nTerminais << " x int): ";
+            for (uint i = 0; i < nTerminais; i++)
+                cin >> idTerminais[i];
+        }else{
+            nTerminais = infoTerminais[0];
+            idTerminais = infoTerminais + 1;
+        }
+
+        if(heuristica == 2){
+            cout << ">> alpha para randomizacao (double, [0 ... 1]): ";
+            cin >> alpha;
+        }
+
+        char opImprimir;
+        cout << ">> imprimir solucao? (s/n): ";    cin >> opImprimir;
+
+        double resultado;
+        switch(heuristica){
+        case 1: resultado = G->gulosoSteiner(idTerminais, nTerminais, (opImprimir == 's'));                          break;
+        case 2: resultado = G->gulosoRandomizadoSteiner(idTerminais, nTerminais, alpha, 30, (opImprimir == 's'));    break;
+        case 3: resultado = G->gulosoRandomizadoReativoSteiner(idTerminais, nTerminais, (opImprimir == 's'));        break;
+        case 4: resultado = G->gulosoRandomizadoAdaptadoSteiner(idTerminais, nTerminais, (opImprimir == 's'));       break;
+        }
+    }
 }
 
-void MenuTrabalho::gulosoRandomizadoSteiner(){
+///-----------------      AUXILIARES       -----------------#
+Grafo* MenuTrabalho::carregarInstanciaStenio(string nomeArq, bool arcoPonderado, bool GHash){
+    /** instancias de grafo direcionado, podendo ser ponderado ou nao*/
+    ifstream entrada;
+    entrada.open(nomeArq, ios::in);
 
+    uint n_nos, i, j;
+    uint idArco = 1;
 
-    this->escolherFuncao();
+    entrada >> n_nos;
+
+    Grafo *G;
+    if(GHash) G = new GrafoHash(n_nos*1.2, false);
+    else      G = new GrafoLista(false);
+
+    ///insere todos os nos
+    No* nos[n_nos];
+    for(i = 1; i <= n_nos; i++)
+        nos[i] = G->insereNo(i);
+
+    double pesoArco;
+    while(entrada.good()){
+        entrada >> i >> j;
+        if(arcoPonderado)   entrada >> pesoArco;
+        else                pesoArco = 1.0;
+        G->insereArco(nos[i], nos[j], idArco++, false, pesoArco);
+    }
+
+    G->atualizaGrau();
+
+    entrada.close();
+
+    return G;
 }
 
-void MenuTrabalho::gulosoRandomizadoReativoSteiner1(){
+uint* MenuTrabalho::carregarInstanciaSteiner(string nomeArq, Grafo* &G, bool GHash){
+    ifstream entrada;
+    entrada.open(nomeArq, ios::in);
 
+    uint n_nos, n_arcos;
 
-    this->escolherFuncao();
+    string aux;
+    entrada>>aux;
+    while(((string)aux) != "SECTION"){
+        entrada >> aux;
+    }
+    entrada >> aux;
+
+    entrada>>aux>>n_nos;
+    entrada>>aux>>n_arcos;
+    ///insere todos os nos
+    if(GHash) G = new GrafoHash(n_nos*1.2, false);
+    else      G = new GrafoLista(false);
+
+    for(uint i=1; i<=n_nos; i++) {
+        G->insereNo(i);
+    }
+
+    ///indices de origem e destino dos arcos
+    uint i, j;
+    double peso;
+
+    ///PERCORRER TODOS OS ARCOS DA ENTRADA
+    for(int linha=0; linha<n_arcos; linha++){
+        entrada >> aux >> i >> j >> peso;
+        G->insereArcoID(i, j, 1, false, peso);
+    }
+    G->atualizaGrau(true);
+
+    entrada>>aux>>aux>>aux>>aux;
+
+    uint n_terminais, *infoTerminais;
+    entrada>>n_terminais;
+
+    infoTerminais = new uint[n_terminais + 1];
+    infoTerminais[0] = n_terminais;
+
+    ///leitura de terminais
+    for(int linha=0; linha<n_terminais; linha++){
+        entrada >> aux >>i;
+        ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
+        infoTerminais[linha + 1] = i;
+    }
+    return infoTerminais;
 }
 
-void MenuTrabalho::gulosoRandomizadoReativoSteiner2(){
+/** Utilizado para salvar arvores geradas por busca em largura e busca em profundidade */
+void MenuTrabalho::salvarArvore(Grafo *G, string nomeArq){
+    /// mapeamento dos pais de cada no
+    map<No*, uint> nosPais;
+    for(G->itInicio(); !G->itEhFim(); G->itProx()){
+        No* no = G->getIt();
+        if(no->getNivel() == 0)
+            nosPais[no] = 0;
+        for (no->itInicio(); !no->itEhFim(); no->itProx())
+            nosPais[ no->getIt()->getNoDestino() ] = no->getID();
+    }
 
+    nomeArq = pastaSaidas + nomeArq;
+    ofstream arq;
+    arq.open(nomeArq.c_str());
+    arq << "vertice \t pai \t nivel" << endl;
+    for(auto p : nosPais)
+        arq << p.first->getID() << "\t" << p.second << "\t" << p.first->getNivel() << endl;
 
-    this->escolherFuncao();
+    arq.close();
+
+    cout << "Resultado salvo em \"" << nomeArq << "\"" <<endl;
 }
 
+/** Utilizado para salvar AGM */
+void MenuTrabalho::salvarGrafo(vector<Arco*> arcos, string nomeArq){
+    double peso = 0.0;
+    for(Arco* arco : arcos)
+        peso += arco->getPeso();
+
+    nomeArq = pastaSaidas + nomeArq;
+    ofstream arq;
+    arq.open(nomeArq.c_str());
+    arq << "Soma dos pesos " << peso << endl;
+    arq << "Arcos: \norigem \t destino" << endl;
+    for(Arco* arco : arcos)
+        arq << arco->getNoOrigem()->getID() << "\t" << arco->getNoDestino()->getID()
+            << "\t" << arco->getPeso() << endl;
+    arq.close();
+
+    cout << "Resultado salvo em \"" << nomeArq << "\"" <<endl;
+}
+
+void MenuTrabalho::salvarGrafo(Grafo *G, string nomeArq){
+    nomeArq = pastaSaidas + nomeArq;
+    ofstream arq;
+    arq.open(nomeArq.c_str());
+    arq << "Grau do grafo: " << G->getGrau() << endl;
+    arq << "Arcos: \norigem \t destino" << endl;
+    for(G->itInicio(); !G->itEhFim(); G->itProx()){
+        No *no = G->getIt();
+        for(no->itInicio(); !no->itEhFim(); no->itProx())
+            arq << no->getID() << "\t" << no->getIt()->getNoDestino()->getID() << endl;;
+    }
+    arq.close();
+
+    cout << "Resultado salvo em \"" << nomeArq << "\"" <<endl;
+}
+
+/** Menu que da a opcao de salvar um grafo */
+void MenuTrabalho::adcionarGrafo(Grafo *G){
+    char add;
+    string nome;
+    cout << ">> adcionar grafo a lista (s/n): ";
+    cin >> add;
+
+    if(add == 's'){
+        cout << ">> Escolha o nome do grafo (sem espacos): ";
+        cin >> nome;
+        grafos.push_back( make_pair(G, nome) );
+    }else{
+        delete G;
+    }
+}
 
 MenuTrabalho::~MenuTrabalho(){
     for (auto p : grafos)

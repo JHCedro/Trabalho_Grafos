@@ -28,20 +28,19 @@ public:
     Arco** getPercurso(){  return this->percurso;   };
 
     void imprimirPercurso(){
-        for (uint i=0; i < pos.size() ; i++){
-            cout << "\n\t" << i << ": ";
-            if(percurso[i] != NULL ){
-                printf("(%d)", percurso[i]->getNoOrigem()->getID());
-                percurso[i]->imprimir();
+//        for (uint i=0; i < pos.size() ; i++){
+        cout << "Arcos do menor caminho: ";
+        for (auto p : pos){
+            if(percurso[p.second] != NULL ){
+                printf("\n\t(%2d)", percurso[p.second]->getNoOrigem()->getID());
+                percurso[p.second]->imprimir();
             }
-            else
-                cout << "--";
         }
     };
 
     Grafo* getGrafo(){  return grafo;   };
     No* getNoOrigem(){  return noOrigem;};
-    uint getTam(){ return pos.size(); };
+    uint getTam(){ return (uint) pos.size(); };
 
     /** Retorna a distancia do noOrigem ao destino*/
     double distancia(uint destino){
@@ -52,7 +51,7 @@ public:
         printf("\nDistancias de (%d) para:\n", noOrigem->getID());
         map<uint, uint>::iterator it = pos.begin();
         for (; it != pos.end(); ++it){
-            printf("\t(%d):%f\n", it->first, distancias[it->second]);
+            printf("\t(%d) : %f\n", it->first, distancias[it->second]);
         }
     };
 };

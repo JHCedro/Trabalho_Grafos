@@ -15,13 +15,17 @@ class GrafoLista : public Grafo
 {
 private:
     NoLista *listaNos, *it;  ///iterador (it) para lista de nos
+    stack<NoLista*> itPilha;
     NoLista *proxNo;
+
+    void pushIt();
+    void popIt();
 public:
-    GrafoLista(bool direcionado = true);
+    GrafoLista(bool grafo_direcionado = true);
 
     ///funcoes de iteracao na lista de nos
-    void itInicio();
     NoLista* getIt();
+    void itInicio();
     void itProx();
     bool itEhFim();
 
@@ -29,10 +33,10 @@ public:
     NoLista* insereNo(uint id);
     bool removeNo(uint id);
 
-    GrafoLista* novoGrafo(uint ordem, bool direcionado = true);
-    static GrafoLista* grafoCompleto(uint n, bool direcionado = true);
-    static GrafoLista* grafoCircular(uint n, bool direcionado = true);
-    static GrafoLista* grafoEscadinha(uint n, bool direcionado = true);
+    GrafoLista* novoGrafo(uint ordem, bool grafo_direcionado = true);
+    static GrafoLista* grafoCompleto(uint n, bool grafo_direcionado = true);
+    static GrafoLista* grafoCircular(uint n, bool grafo_direcionado = true);
+    static GrafoLista* grafoEscadinha(uint n, bool grafo_direcionado = true);
 
     void imprimir(bool detalhado = false);
 

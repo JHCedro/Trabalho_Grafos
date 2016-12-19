@@ -15,7 +15,6 @@ typedef unsigned int uint;
 class Grafo
 {
 protected:
-    No *it;  /// iterador (it) para lista de nos
     uint grau;          /// maior grau de vertice do grafo
     uint numeroNos;     /// n
     uint numeroArcos;   /// m
@@ -31,8 +30,10 @@ protected:
     bool auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination);
     bool verificaSeEhConexoSemOsNos(vector<No*> nos);
     vector<Arco*> auxGulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, uint semente);
+
+    ///funcoes de iteracao na lista de nos
 public:
-    Grafo(bool direcionado);
+    Grafo(bool grafo_direcionado);
     uint getGrau(){     return grau;    };
     uint getNumeroNos(){    return numeroNos;   };
     uint getNumeroArcos(){    return numeroArcos;   };
@@ -41,8 +42,10 @@ public:
     void setContAux(uint i){ contAux=i;   };
 
     ///funcoes de iteracao na lista de nos
-    virtual void itInicio() = 0;
     virtual No* getIt() = 0;
+    virtual void pushIt() = 0;
+    virtual void popIt() = 0;
+    virtual void itInicio() = 0;
     virtual void itProx() = 0;
     virtual bool itEhFim() = 0;
 
@@ -97,7 +100,6 @@ public:
     Grafo* buscaLargura(uint idNo);
     Grafo* buscaLargura(No *no);
 
-    /** TODO (jhcedro#1#17-12-2016): Consertar assinaturas */
     vector<No*> vizinhancaNo(uint id, bool fechada = false);
     vector<No*> vizinhancaAberta(uint id);
     vector<No*> vizinhancaFechada(uint id);
@@ -116,27 +118,28 @@ public:
     Arco* buscaArco(No* noOrigem, No* noDestino);
     Arco* buscaArco(uint id);
 
-    Dijkstra* dijkstra(No* origem, bool imprimeSolucao = false);
-    Dijkstra* dijkstra(uint origem, bool imprimeSolucao = false);
-    double dijkstra(uint origem, uint destino);
-    double dijkstra(No* origem, No* destino);
+    Dijkstra* algoritmoDijkstra(No* origem, bool imprimeSolucao = false);
+    Dijkstra* algoritmoDijkstra(uint origem, bool imprimeSolucao = false);
+    double menorCaminhoDijkstra(uint origem, uint destino);
+    double menorCaminhoDijkstra(No* origem, No* destino);
 
     double** algoritmoFloyd();
+    double menorCaminhoFloyd(uint idOrigem, uint idDestino);
     double consultaMenorCaminhoEntreDoisNos(uint i, uint j);
 
-    vector<Arco*> algorimoPrim();
+    vector<Arco*> algoritmoPrim();
 
     /**
     Retorna o subgrafo (ou floresta de subgrafos se o grafo nao e nao-conexo)
     contendo as arestas de peso minimo que ligam todos os nos do grafo
     que formam a arvore/floresta
     */
-    vector<Arco*> Kruskal();
+    vector<Arco*> algoritmoKruskal();
 
     Grafo* produtoCartesiano(Grafo* B);
 
-    vector<No*> fechamentoTransitivoDireto(uint id);
     void precursoFechamentoIndireto(No *no, vector<No*> fechamentoDireto, vector<No*> fechamentoIndireto);
+    vector<No*> fechamentoTransitivoDireto(uint id);
     vector<No*> fechamentoTransitivoIndireto(uint id);
 
     bool ehGrafoConexo();
@@ -161,13 +164,13 @@ public:
     double gulosoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
     double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes, bool imprimeSolucao = false);
     double gulosoRandomizadoReativoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
-    double gulosoRandomizadoReativoSteiner2(uint ids[], uint tam, bool imprimeSolucao = false);
+    double gulosoRandomizadoAdaptadoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();
     void imprimirGraus();
     void zeraTerminais();
-    uint *leituraIntanciasSteiner(string nome);
+    uint *leituraIntanciaSteiner(string nome);
     /// ----------------------------------------------
 
     virtual ~Grafo(){};

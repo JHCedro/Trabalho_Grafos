@@ -14,6 +14,8 @@ class MenuTrabalho{
         string nomeGrafoSelecionado;
         usint posGrafoSelecionado;
         vector<string> instanciasSteiner;
+        vector<string> instanciasArcoPonderados;
+        vector<string> instanciasArcoNaoPonderados;
 
         vector<string> nomeOpcoes, nomeFuncoes;
 //        vector<pair<void(MenuTrabalho::*)(void), string>> opcoesMenu;
@@ -32,10 +34,9 @@ class MenuTrabalho{
         /**  9 */ void listarInstanciasSteiner();
         /** 10 */ void listarInstanciasStenio();
         /** 11 */ void carregarInstanciaStenio();
-        /** 12 */ void carregarInstanciaSteiner();
+        /** 12 */ void resolverInstanciaSteiner();
         /**  0 */ void sair();
 
-        /** TODO (jhcedro#1#14-12-2016): Listar e impelemtar chamada das funcoes pedidas na descricao do trabalho */
         /// FUNCOES DO GRAFO
         /**  1   void exibirFuncoes(); */
         /**  2 */ void imprimir();
@@ -69,13 +70,16 @@ class MenuTrabalho{
         /** 30 */ void ehEuleriano();
 
         /// FUNCOES DA ARVORE DE STEINER
-        /** 31 */ void gulosoSteiner();
-        /** 32 */ void gulosoRandomizadoSteiner();
-        /** 33 */ void gulosoRandomizadoReativoSteiner1();
-        /** 34 */ void gulosoRandomizadoReativoSteiner2();
+        /** 31 */ void heuristicaSteiner(Grafo *G, uint *infoTerminais = NULL);
 
         /// Auxiliares
+        vector<string> listarArquivos(string pasta);
+        Grafo* carregarInstanciaStenio(string nomeArq, bool arcoPonderado, bool GHash);
+        uint* carregarInstanciaSteiner(string nomeArq, Grafo* &G, bool GHash);
         void salvarArvore(Grafo *G, string nome);
+        void salvarGrafo(vector<Arco*> arcos, string nome);
+        void salvarGrafo(Grafo *G, string nome);
+        void adcionarGrafo(Grafo *G);
 
         ~MenuTrabalho();
     protected:

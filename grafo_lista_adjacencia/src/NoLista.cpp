@@ -72,7 +72,7 @@ Arco* NoLista::buscaArco(No* noDestino){
 Arco* NoLista::buscaArco(uint noDestino){
     for(itInicio(); !itEhFim(); itProx()){
         Arco *arco = this->getIt();
-        if(arco->getNoDestino()->getID() == id)
+        if(arco->getNoDestino()->getID() == noDestino)
             return arco;
     }
 

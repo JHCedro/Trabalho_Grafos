@@ -2,6 +2,7 @@
 #define HASHING_H_INCLUDED
 #include <iostream>
 #include <stdlib.h>
+#include <stack>
 
 using namespace std;
 typedef unsigned int uint;
@@ -14,6 +15,7 @@ private:
 
     ///Iterador da tabela
     uint it;
+    stack<uint> itPilha;
 
     ///Elemento nulo e elemento Removido:
     T NULO, RM;
@@ -34,6 +36,8 @@ public:
     void setGetID(uint (*funcao)(T));
 
     T getIt();
+    void pushIt();
+    void popIt();
     void itInicio();
     void itProx();
     bool itEhFim();
@@ -184,6 +188,19 @@ bool THash<T>::remover(uint id){
 template<class T>
 T THash<T>::getIt(){
     return tabela[it];
+}
+
+
+template<class T>void THash<T>::pushIt(){
+    itPilha.push(it);
+}
+
+template<class T>
+void THash<T>::popIt(){
+    if(!itPilha.empty()){
+        it = itPilha.top();
+        itPilha.pop();
+    }
 }
 
 template<class T>

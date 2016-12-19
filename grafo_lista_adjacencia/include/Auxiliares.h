@@ -33,8 +33,8 @@ void geraArquivoDeEntrada(uint tam){
     arq.open("data.g");
     arq<<tam<<endl;
     for(uint k=0; k< tam; k++){
-        if( (int)(100.0 * k/tam) > porcento ){
-            porcento = (int)(100.0 * k/tam);
+        if( (uint)(100.0 * k/tam) > porcento ){
+            porcento = (uint)(100.0 * k/tam);
             cout<<"#";
         }
         i = k + 1;
@@ -131,7 +131,7 @@ Grafo* grafoExemplo(bool GHash = false){
     if(GHash)   di = new GrafoHash(10);
     else        di = new GrafoLista();
 
-    for(int i=1;i<=8;i++)
+    for(uint i=1;i<=8;i++)
         di->insereNo(i);
 
     di->insereArcoID(1,2,1);
@@ -189,23 +189,26 @@ RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO Eh O NÚMERO DE NÓS TE
 AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
 Aloca o Grafo *G passado por referencia
 */
-uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
+uint* leituraIntanciaSteiner(string nomeArq, Grafo *&G, bool GHash = false){
     ifstream entrada;
     entrada.open(nomeArq, ios::in);
 
     uint n_nos, n_arcos;
 
-    if(GHash) G = new GrafoHash(n_nos*1.5, false);
-    else      G = new GrafoLista(false);
-
-    char aux[100];
+    string aux;
     entrada>>aux;
-    while(((string)aux) != "SECTION Graph"){
-        entrada.getline(aux, 100);
+    while(((string)aux) != "SECTION"){
+        entrada >> aux;
     }
+    entrada >> aux;
+
     entrada>>aux>>n_nos;
     entrada>>aux>>n_arcos;
     ///insere todos os nos
+
+    if(GHash) G = new GrafoHash(n_nos*1.5, false);
+    else      G = new GrafoLista(false);
+
     for(uint i=1; i<=n_nos; i++)
         G->insereNo(i);
 
@@ -218,22 +221,23 @@ uint* leituraIntanciasSteiner(string nomeArq, Grafo* &G, bool GHash = false){
         entrada >> aux >> i >> j >> peso;
         G->insereArcoID(i, j, 1, false, peso);
     }
+    G->atualizaGrau();
 
     entrada>>aux>>aux>>aux>>aux;
 
-    uint n_terminais, *terminais, idx=0;
+    uint n_terminais, *infoTerminais;
     entrada>>n_terminais;
 
-    terminais = new uint[n_terminais + 1];
-    terminais[0] = n_terminais;
+    infoTerminais = new uint[n_terminais + 1];
+    infoTerminais[0] = n_terminais;
 
     ///leitura de terminais
     for(int linha=0; linha<n_terminais; linha++){
         entrada >> aux >>i;
         ///insere ids sempre uma posicao a frente pos na posicao 0 temos o numero de terminais
-        terminais[linha + 1] = i;
+        infoTerminais[linha + 1] = i;
     }
-    return terminais;
+    return infoTerminais;
 }
 
 #endif // AUXILIARES_H_INCLUDED
