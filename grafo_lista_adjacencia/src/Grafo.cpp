@@ -522,6 +522,9 @@ Grafo* Grafo::clone(){
  * subtrai 1 dos adjacentes, como se o no marcado tivesse sido removido do grafo.
  */
 vector<No*> Grafo::ordenacaoTopologicaDAG(){
+    if(!direcionado)
+        cout << "\nUSANDO ORDENACAO TOPOLOGICA DE GRAFO NAO DIRECIONADO!" << endl;
+
     vector<No*> solucao;
     this->atualizaGrausEntradaSaidaDosNos();
     for(uint k = 0; solucao.size() < this->getNumeroNos(); k++){
@@ -549,6 +552,9 @@ vector<No*> Grafo::ordenacaoTopologicaDAG(){
   * nao eh k conexo, mas k+1 (ou maior) conexo.
   */
 bool Grafo::ehKConexo(int k){
+    if(direcionado)
+        cout << "\nVERIFICANDO SE GRAFO DIRECIONADO EH K-CONEXO!" << endl;
+
     if(k >= this->numeroNos) return false; ///Tratamento para remocao de todos os nos.
     if(k < 1)   return true;
 
@@ -630,7 +636,7 @@ int Grafo::numeroComponentesConexas(){
 */
 vector<vector<No*>> Grafo::retornarComponentesConexas(){
     if(direcionado)
-        cout << "\nUSANDO TERORNANDO COMPONENTES CONEXAS DE GRAFO DIRECIONADO!" << endl;
+        cout << "\nUSANDO RETORNAR COMPONENTES CONEXAS DE GRAFO DIRECIONADO!" << endl;
 
     this->desmarcaNos();
     int num=0;

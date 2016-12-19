@@ -185,8 +185,8 @@ vector<string> listarInstanciasSteiner(){
 }
 
 /**
-RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO Eh O NÚMERO DE NÓS TERMINAIS
-AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
+RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSICAO Eh O NUMERO DE NOS TERMINAIS
+AS DEMAIS POSICOES SAO OS IDS DOS TERMINAIS
 Aloca o Grafo *G passado por referencia
 */
 uint* leituraIntanciaSteiner(string nomeArq, Grafo *&G, bool GHash = false){
