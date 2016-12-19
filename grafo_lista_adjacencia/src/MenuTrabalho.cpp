@@ -48,29 +48,30 @@ MenuTrabalho::MenuTrabalho(){
         " 6 - Remover arco",
         " 7 - Obter grau do grafo",
         " 8 - Obter grau de um vertice",
-        " 9 - Verificar se eh k-regular",
-        "10 - Verificar se eh completo",
-        "11 - Verificar se dois nos sao adjacentes",
-        "12 - Percurso em profundidade",
-        "13 - Percurso em largura",
-        "14 - Verificar se eh conexo",
-        "15 - Verificar se dois vertices estao na mesma componente conexa",
-        "16 - Verificar se um vertice eh articulacao",
-        "17 - Verificar se um arco eh ponte",
-        "18 - Obter vizinhanca de um vertice",
-        "19 - Obter fechamento transitivo",
-        "20 - Obter ordenacao topologica",
-        "21 - Obter caminho minimo entre dois vertices",
-        "22 - Algoritmo de Djikstra",
-        "23 - Algoritmo de Floyd",
-        "24 - Obter subgrafo induzido por conjunto de vertices",
-        "25 - Listar componentes conexas",
-        "26 - Efetuar produto cartesiano com outro grafo",
-        "27 - Algoritmo de Prim",
-        "28 - Algoritmo de Kruskal",
-        "29 - Verificar se eh k-conexo",
-        "30 - Verificar se eh euleriano",
-        "31 - Arvore de Steiner",
+        " 9 - Obter sequencia de grau",
+        "10 - Verificar se eh k-regular",
+        "11 - Verificar se eh completo",
+        "12 - Verificar se dois nos sao adjacentes",
+        "13 - Percurso em profundidade",
+        "14 - Percurso em largura",
+        "15 - Verificar se eh conexo",
+        "16 - Verificar se dois vertices estao na mesma componente conexa",
+        "17 - Verificar se um vertice eh articulacao",
+        "18 - Verificar se um arco eh ponte",
+        "19 - Obter vizinhanca de um vertice",
+        "20 - Obter fechamento transitivo",
+        "21 - Obter ordenacao topologica",
+        "22 - Obter caminho minimo entre dois vertices",
+        "23 - Algoritmo de Djikstra",
+        "24 - Algoritmo de Floyd",
+        "25 - Obter subgrafo induzido por conjunto de vertices",
+        "26 - Listar componentes conexas",
+        "27 - Efetuar produto cartesiano com outro grafo",
+        "28 - Algoritmo de Prim",
+        "29 - Algoritmo de Kruskal",
+        "30 - Verificar se eh k-conexo",
+        "31 - Verificar se eh euleriano",
+        "32 - Arvore de Steiner",
         " 0 - VOLTAR"
     });
 
@@ -161,30 +162,31 @@ void MenuTrabalho::escolherFuncao(){
             case  6: this->removerArco();                       break;
             case  7: this->grau();                              break;
             case  8: this->grauNo();                            break;
-            case  9: this->ehKRegular();                        break;
-            case 10: this->ehCompleto();                        break;
-            case 11: this->nosSaoAdjacentes();                  break;
-            case 12: this->buscaProfundidade();                 break;
-            case 13: this->buscaLargura();                      break;
-            case 14: this->ehConexo();                          break;
-            case 15: this->nosMesmaComponenteConexa();          break;
-            case 16: this->noEhArticulacao();                   break;
-            case 17: this->arestaEhPonte();                     break;
-            case 18: this->vizinhancaNo();                      break;
-            case 19: this->fechamentoTransitivo();              break;
-            case 20: this->ordenacaoTopologica();               break;
-            case 21: this->caminhoMinimo();                     break;
-            case 22: this->djikstra();                          break;
-            case 23: this->floyd();                             break;
-            case 24: this->subGrafoInduzido();                  break;
-            case 25: this->componentesConexas();                break;
-            case 26: this->produtoCartesiano();                 break;
-            case 27: this->prim();                              break;
-            case 28: this->kruskal();                           break;
-            case 29: this->ehKConexo();                         break;
-            case 30: this->ehEuleriano();                       break;
+            case  9: this->sequenciaGrau();                     break;
+            case 10: this->ehKRegular();                        break;
+            case 11: this->ehCompleto();                        break;
+            case 12: this->nosSaoAdjacentes();                  break;
+            case 13: this->buscaProfundidade();                 break;
+            case 14: this->buscaLargura();                      break;
+            case 15: this->ehConexo();                          break;
+            case 16: this->nosMesmaComponenteConexa();          break;
+            case 17: this->noEhArticulacao();                   break;
+            case 18: this->arestaEhPonte();                     break;
+            case 19: this->vizinhancaNo();                      break;
+            case 20: this->fechamentoTransitivo();              break;
+            case 21: this->ordenacaoTopologica();               break;
+            case 22: this->caminhoMinimo();                     break;
+            case 23: this->djikstra();                          break;
+            case 24: this->floyd();                             break;
+            case 25: this->subGrafoInduzido();                  break;
+            case 26: this->componentesConexas();                break;
+            case 27: this->produtoCartesiano();                 break;
+            case 28: this->prim();                              break;
+            case 29: this->kruskal();                           break;
+            case 30: this->ehKConexo();                         break;
+            case 31: this->ehEuleriano();                       break;
 
-            case 31: this->heuristicaSteiner(grafoSelecionado); break;
+            case 32: this->heuristicaSteiner(grafoSelecionado); break;
 
             default: cout << "Funcao invalida!" << endl;        break;
         }
@@ -481,6 +483,15 @@ void MenuTrabalho::grauNo(){
     else
         cout << "Vertice nao encontrado!";
 }
+
+void MenuTrabalho::sequenciaGrau(){
+    cout << "Sequencia de grau:" << endl;
+    uint *sequencia = grafoSelecionado->sequenciaGrau();
+    for (int i=0; i < grafoSelecionado->getNumeroNos(); i++){
+        cout << "\t" << sequencia[i] << endl;
+    }
+}
+
 
 void MenuTrabalho::ehKRegular(){
     cout << "\n Verificar k-regularidade:" << endl;

@@ -314,7 +314,7 @@ uint* Grafo::sequenciaGrau(){
     for(itInicio(); !itEhFim(); itProx())
         seq[cont++] = this->getIt()->getGrau();
 
-    sort(seq, seq+cont, compareReverse);
+    sort(seq, seq+this->numeroNos, compareReverse);
     return seq;
 }
 

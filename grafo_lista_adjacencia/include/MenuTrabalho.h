@@ -46,31 +46,32 @@ class MenuTrabalho{
         /**  6 */ void removerArco();
         /**  7 */ void grau();
         /**  8 */ void grauNo();
-        /**  9 */ void ehKRegular();
-        /** 10 */ void ehCompleto();
-        /** 11 */ void nosSaoAdjacentes();
-        /** 12 */ void buscaProfundidade();
-        /** 13 */ void buscaLargura();
-        /** 14 */ void ehConexo();
-        /** 15 */ void nosMesmaComponenteConexa();
-        /** 16 */ void noEhArticulacao();
-        /** 17 */ void arestaEhPonte();
-        /** 18 */ void vizinhancaNo();
-        /** 19 */ void fechamentoTransitivo();
-        /** 20 */ void ordenacaoTopologica();
-        /** 21 */ void caminhoMinimo();
-        /** 22 */ void djikstra();
-        /** 23 */ void floyd();
-        /** 24 */ void subGrafoInduzido();
-        /** 25 */ void componentesConexas();
-        /** 26 */ void produtoCartesiano();
-        /** 27 */ void prim();
-        /** 28 */ void kruskal();
-        /** 29 */ void ehKConexo();
-        /** 30 */ void ehEuleriano();
+        /**  9 */ void sequenciaGrau();
+        /** 10 */ void ehKRegular();
+        /** 11 */ void ehCompleto();
+        /** 12 */ void nosSaoAdjacentes();
+        /** 13 */ void buscaProfundidade();
+        /** 14 */ void buscaLargura();
+        /** 15 */ void ehConexo();
+        /** 16 */ void nosMesmaComponenteConexa();
+        /** 17 */ void noEhArticulacao();
+        /** 18 */ void arestaEhPonte();
+        /** 19 */ void vizinhancaNo();
+        /** 20 */ void fechamentoTransitivo();
+        /** 21 */ void ordenacaoTopologica();
+        /** 22 */ void caminhoMinimo();
+        /** 23 */ void djikstra();
+        /** 24 */ void floyd();
+        /** 25 */ void subGrafoInduzido();
+        /** 26 */ void componentesConexas();
+        /** 27 */ void produtoCartesiano();
+        /** 28 */ void prim();
+        /** 29 */ void kruskal();
+        /** 30 */ void ehKConexo();
+        /** 31 */ void ehEuleriano();
 
         /// FUNCOES DA ARVORE DE STEINER
-        /** 31 */ void heuristicaSteiner(Grafo *G, uint *infoTerminais = NULL);
+        /** 32 */ void heuristicaSteiner(Grafo *G, uint *infoTerminais = NULL);
 
         /// Auxiliares
         vector<string> listarArquivos(string pasta);
