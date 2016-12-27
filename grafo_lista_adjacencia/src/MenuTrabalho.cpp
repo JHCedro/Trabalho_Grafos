@@ -793,6 +793,7 @@ void MenuTrabalho::ehEuleriano(){
 void  MenuTrabalho::heuristicaSteiner(Grafo *G, uint* infoTerminais){
     cout << "Problema da Arvore de Steiner: " << endl;
     usint heuristica;
+    int semente = 1;
     cout << "Selecione a heuristica a ser utilizada:" << endl;
     cout << "\t 1 - Algoritmo Guloso" << endl;
     cout << "\t 2 - Algoritmo Guloso Randomizado" << endl;
@@ -824,15 +825,19 @@ void  MenuTrabalho::heuristicaSteiner(Grafo *G, uint* infoTerminais){
             cin >> alpha;
         }
 
+        if(heuristica != 1){
+            cout << ">> escolha a semente de randomizacao (int): "; cin >> semente;
+        }
+
         char opImprimir;
         cout << ">> imprimir solucao? (s/n): ";    cin >> opImprimir;
 
         double resultado;
         switch(heuristica){
         case 1: resultado = G->gulosoSteiner(idTerminais, nTerminais, (opImprimir == 's'));                          break;
-        case 2: resultado = G->gulosoRandomizadoSteiner(idTerminais, nTerminais, alpha, 30, (opImprimir == 's'));    break;
-        case 3: resultado = G->gulosoRandomizadoReativoSteiner(idTerminais, nTerminais, (opImprimir == 's'));        break;
-        case 4: resultado = G->gulosoRandomizadoAdaptadoSteiner(idTerminais, nTerminais, (opImprimir == 's'));       break;
+        case 2: resultado = G->gulosoRandomizadoSteiner(idTerminais, nTerminais, alpha, 30, semente, (opImprimir == 's'));    break;
+        case 3: resultado = G->gulosoRandomizadoReativoSteiner(idTerminais, nTerminais, semente, (opImprimir == 's'));        break;
+        case 4: resultado = G->gulosoRandomizadoAdaptadoSteiner(idTerminais, nTerminais, semente, (opImprimir == 's'));       break;
         }
     }
 }

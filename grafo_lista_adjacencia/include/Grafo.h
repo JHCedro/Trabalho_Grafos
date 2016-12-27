@@ -29,7 +29,7 @@ protected:
     double mediaPesosArcos;
     bool auxKConexo(uint offset, int k, vector<No*> people, vector<No*> combination);
     bool verificaSeEhConexoSemOsNos(vector<No*> nos);
-    vector<Arco*> auxGulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, uint semente);
+    vector<Arco*> auxGulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int semente);
 
     ///funcoes de iteracao na lista de nos
 public:
@@ -160,12 +160,12 @@ public:
     bool nosMesmaComponenteConexa(vector<No*> nos);
 
     void calculaMediaPesosArcos();
-    void definirNivelNos();
+    void definirNivelNos(uint nTerminais);
 
     double gulosoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
-    double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes, bool imprimeSolucao = false);
-    double gulosoRandomizadoReativoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
-    double gulosoRandomizadoAdaptadoSteiner(uint ids[], uint tam, bool imprimeSolucao = false);
+    double gulosoRandomizadoSteiner(uint ids[], uint tam, double alpha, int num_iteracoes, int semente, bool imprimeSolucao = false);
+    double gulosoRandomizadoReativoSteiner(uint ids[], uint tam, int semente, bool imprimeSolucao = false);
+    double gulosoRandomizadoAdaptadoSteiner(uint ids[], uint tam, int semente, bool imprimeSolucao = false);
     vector<Arco*> podarArcosSteiner(vector<Arco*> solucao);
     void zeraGraus();
     void imprimirIdsArvore();
