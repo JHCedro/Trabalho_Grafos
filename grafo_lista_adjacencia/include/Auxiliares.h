@@ -244,15 +244,11 @@ uint* leituraIntanciaSteiner(string nomeArq, Grafo *&G, bool GHash = false){
 ///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
 /** argv = {instancia, heuristica, semente} */
 int desempenhoHeuristicas(int args, char **argv){
-//    for (int i=0; i < args; i++){
-//        cout << i << " - " << argv[i] << endl;
-//    }
-
     string arquivo = string(argv[1]);
     usint heuristica = atoi(argv[2]);    int semente = atoi(argv[3]);
     uint nTSementes = atoi(argv[4]);
 
-    string heuristicas[3] = { "Guloso", "Randomizado", "Reativo" };
+    string heuristicas[4] = { "Guloso", "Randomizado", "Adaptado", "Reativo" };
     ofstream tabela;
 
     /// Executar heuristicas
@@ -271,6 +267,8 @@ int desempenhoHeuristicas(int args, char **argv){
     if(heuristica==2)
         solucao = g->gulosoRandomizadoSteiner(infoTerminais + 1, infoTerminais[0], 0.25, 30, semente);
     if(heuristica==3)
+        solucao = g->gulosoRandomizadoReativoSteiner(infoTerminais + 1, infoTerminais[0], semente);
+    if(heuristica==4)
         solucao = g->gulosoRandomizadoReativoSteiner(infoTerminais + 1, infoTerminais[0], semente);    tempo = clock() - tempo;
 
     cout << "\n\t solucao: " << solucao << endl;
@@ -278,19 +276,14 @@ int desempenhoHeuristicas(int args, char **argv){
     /// Persistir resultados
     arquivo.erase(0, arquivo.find_last_of('\\')+1);
 
-
-    char gambiarraParalela[10];
-//    usint aux = semente%6;  cout << "aux: " << aux << endl;
-//    if(aux == 0)  aux = 6;  cout << "aux: " << aux << endl;
-    sprintf(gambiarraParalela, "%d/", (semente%6 == 0 ? 6 : semente%6));
-    arquivo = "Desempenho/Heuristicas/" + (string)gambiarraParalela + arquivo + ".csv";
+    arquivo = "Desempenho/Heuristicas/" + arquivo + ".csv";
     cout << "salvando no arquivo: " << arquivo << endl << endl;
 
     tabela.open(arquivo, ofstream::out | ofstream::app);
 
     if(heuristica == 1)        tabela << semente << ";";
     tabela << solucao << ";" << (double) tempo / CLOCKS_PER_SEC << ";" << tempo << ";";
-    if(heuristica == 3)        tabela << endl;
+    if(heuristica == 4)        tabela << endl;
 
     tabela.close();
 }

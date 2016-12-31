@@ -24,22 +24,20 @@ vector<string> listarArquivosPasta(string nome){
 int main(){
     cout << "Inicializando tabelas:" << endl;
     string pasta = "Desempenho/Heuristicas/";
-    string heuristicas[3] = { "Guloso", "Randomizado", "Reativo" };
+    string heuristicas[4] = { "Guloso", "Randomizado", "Adaptado", "Reativo" };
     vector<string> instancias = listarArquivosPasta("instanciasTestesSteiner");
     string arquivo;
     ofstream tabela;
 
-    char gambiarraParalela[10];
     for (int p=1; p <= 6; p++){
-        sprintf(gambiarraParalela, "%d/", p);
         for (string instancia : instancias){
-            arquivo = pasta + (string) gambiarraParalela + instancia + ".csv";
+            arquivo = pasta + instancia + ".csv";
             cout << '\t' << arquivo << endl;
             tabela.open(arquivo.c_str());
             tabela << instancia << endl;
-            tabela << "Semente;Guloso;;;Randomizado;;;Reativo" << endl;
+            tabela << "Semente;Guloso;;;Randomizado;;;Adaptado;;;Reativo" << endl;
             tabela << ";";
-            for (int i=0; i < 3; i++)
+            for (int i=0; i < 4; i++)
                 tabela << "Solucao;Tempo(s);Clocks;";
             tabela << endl;
             tabela.close();

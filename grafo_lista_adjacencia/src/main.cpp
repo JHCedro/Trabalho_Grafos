@@ -10,7 +10,7 @@ using namespace std;
 int main(int args, char **argv){
     #ifndef TESTE
     if(args > 1)
-        /// existem argumentos para testar desempenho das heuristicas
+        /// se existem argumentos para testar desempenho das heuristicas
         desempenhoHeuristicas(args, argv);
     else
         /// exibir o menu do trabalho
