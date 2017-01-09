@@ -3,6 +3,5 @@
 	<Workspace title="CG">
 		<Project filename="src/_linux64.cbp" />
 		<Project filename="src/_windows.cbp" />
-		<Project filename="../Sons/Sons.cbp" />
 	</Workspace>
 </CodeBlocks_workspace_file>

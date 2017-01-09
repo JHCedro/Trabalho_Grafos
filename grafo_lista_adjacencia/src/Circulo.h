@@ -77,7 +77,7 @@ public:
     }
 
     bool Dentro(double x, double y){
-        ///verifica se um ponto (x, y) está no circulo
+        ///verifica se um ponto (x, y) estï¿½ no circulo
         ///distancia de (x, y) a cada foco, f1 e f2
         if( distancia(x, y, this->cx, this->cy) < this->raio )
             return true;
@@ -85,7 +85,7 @@ public:
     }
 
     double Colisao(Circulo *circulo){
-        ///verifica se a distância eh menor que a soma dos raios
+        ///verifica se a distï¿½ncia eh menor que a soma dos raios
         if (distancia(this->cx, this->cy, circulo->getCx(), circulo->getCy()) < this->raio + circulo->getRaio() ){
             ///contornar a situacao de uma circulo dentro de outra
             if (circulo->Dentro(this->cx, this->cy))

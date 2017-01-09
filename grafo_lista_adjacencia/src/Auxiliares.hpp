@@ -5,12 +5,12 @@
 #include <stdlib.h>
 #include <iostream>
 #include <vector>
-#include <math.h>
-    #define M_PI		3.14159265358979323846
-    #define M_PI_2		1.57079632679489661923
 #include <string>
 #include <time.h>       ///funcoes de tempo
 #include <algorithm>    ///sort do placar
+#include <math.h>
+    #define M_PI		3.14159265358979323846
+    #define M_PI_2		1.57079632679489661923
 
 using namespace std;
 

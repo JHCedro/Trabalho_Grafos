@@ -47,7 +47,7 @@
 		<Unit filename="Grafo/Grafo.h" />
 		<Unit filename="Grafo/No.cpp" />
 		<Unit filename="Grafo/No.h" />
-		<Unit filename="teste.cpp" />
+		<Unit filename="main.cpp" />
 		<Extensions>
 			<code_completion />
 			<debugger />
