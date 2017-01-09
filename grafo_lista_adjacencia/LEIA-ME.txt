@@ -1,0 +1,7 @@
+Os arquivos a serem compilados para a execução do programa são os da pasta "src/" exetuando-se "criarTabela.cpp" (build_run.sh), pois este possui um "main" e destina-se à criação das tabelas de teste das heurísticas (procedimentoTestes.bat no Windows).
+
+Ao compilar é necessário incluir a pasta "include/" e definir "-std=c++11".
+
+Executar o programa sem parâmetros exibe o menu do trabalho. A passagem de parâmetros é utilizada para os procedimentos de teste.
+
+Algumas funções de teste de desempenho (não ativas) utilizam o script "plotDesempenho.py" para gerar gráficos. Requer Python 2 ou 3 com o a biblioteca matplotlib instalada.

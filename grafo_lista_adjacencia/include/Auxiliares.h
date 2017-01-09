@@ -16,6 +16,7 @@
 #define pastaDesempenho "Desempenho/"
 
 using namespace std;
+typedef unsigned short int usint;
 
 bool buscaVetor(uint j, uint aux[], uint tam){
     cout<<"busca:"<<j<<endl;
@@ -185,8 +186,8 @@ vector<string> listarInstanciasSteiner(){
 }
 
 /**
-RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSIÇÃO Eh O NÚMERO DE NÓS TERMINAIS
-AS DEMAIS POSIÇÕES SÃO OS IDS DOS TERMINAIS
+RETORNA UM VETOR DE INTEIROS EM QUE A PRIMEIRA POSICAO Eh O NUMERO DE NOS TERMINAIS
+AS DEMAIS POSICOES SAO OS IDS DOS TERMINAIS
 Aloca o Grafo *G passado por referencia
 */
 uint* leituraIntanciaSteiner(string nomeArq, Grafo *&G, bool GHash = false){
@@ -239,5 +240,54 @@ uint* leituraIntanciaSteiner(string nomeArq, Grafo *&G, bool GHash = false){
     }
     return infoTerminais;
 }
+
+///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
+/** argv = {instancia, heuristica, semente} */
+int desempenhoHeuristicas(int args, char **argv){
+    string arquivo = string(argv[1]);
+    usint heuristica = atoi(argv[2]);    int semente = atoi(argv[3]);
+    uint nTSementes = atoi(argv[4]);
+
+    string heuristicas[4] = { "Guloso", "Randomizado", "Adaptado", "Reativo" };
+    ofstream tabela;
+
+    /// Executar heuristicas
+    cout << "arquivo: " << arquivo << endl;
+    cout << "heuristica: " << heuristicas[heuristica-1] << endl;
+    cout << "semente: " << semente << endl;
+
+    Grafo* g = new GrafoLista(false);
+    double solucao = INFINITY;
+    uint * infoTerminais = leituraIntanciaSteiner(arquivo, g, false);
+
+    unsigned long long tempo;
+    tempo = clock();
+    if(heuristica==1)
+        solucao = g->gulosoSteiner(infoTerminais + 1, infoTerminais[0]);
+    if(heuristica==2)
+        solucao = g->gulosoRandomizadoSteiner(infoTerminais + 1, infoTerminais[0], 0.25, 30, semente);
+    if(heuristica==3)
+        solucao = g->gulosoRandomizadoReativoSteiner(infoTerminais + 1, infoTerminais[0], semente);
+    if(heuristica==4)
+        solucao = g->gulosoRandomizadoReativoSteiner(infoTerminais + 1, infoTerminais[0], semente);    tempo = clock() - tempo;
+
+    cout << "\n\t solucao: " << solucao << endl;
+
+    /// Persistir resultados
+    arquivo.erase(0, arquivo.find_last_of('\\')+1);
+
+    arquivo = "Desempenho/Heuristicas/" + arquivo + ".csv";
+    cout << "salvando no arquivo: " << arquivo << endl << endl;
+
+    tabela.open(arquivo, ofstream::out | ofstream::app);
+
+    if(heuristica == 1)        tabela << semente << ";";
+    tabela << solucao << ";" << (double) tempo / CLOCKS_PER_SEC << ";" << tempo << ";";
+    if(heuristica == 4)        tabela << endl;
+
+    tabela.close();
+}
+///---------------------------------------------TESTES EMAIL DO STENIO------------------------------------------
+
 
 #endif // AUXILIARES_H_INCLUDED
