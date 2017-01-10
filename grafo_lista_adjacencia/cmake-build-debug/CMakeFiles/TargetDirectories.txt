@@ -1,3 +1,0 @@
-C:/Users/GET/Documents/GitHub/Trabalho_Grafos/grafo_lista_adjacencia/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/GET/Documents/GitHub/Trabalho_Grafos/grafo_lista_adjacencia/cmake-build-debug/CMakeFiles/grafo_lista_adjacencia.dir
-C:/Users/GET/Documents/GitHub/Trabalho_Grafos/grafo_lista_adjacencia/cmake-build-debug/CMakeFiles/rebuild_cache.dir

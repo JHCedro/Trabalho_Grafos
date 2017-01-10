@@ -1,8 +1,8 @@
-*.xml
-*.layout
-*.depend
-*.o
-grafo_lista_adjacencia/bin/
-grafo_lista_adjacencia/obj/
-*.save-failed
-grafo_lista_adjacencia/src/Grafo/AuxTestes.h.gch
+CMakeCache.txt
+CMakeFiles
+CMakeScripts
+Makefile
+cmake_install.cmake
+install_manifest.txt
+.idea
+*.cbp

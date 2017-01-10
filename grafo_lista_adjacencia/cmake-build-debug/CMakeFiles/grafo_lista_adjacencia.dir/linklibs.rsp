@@ -1,1 +1,0 @@
- -LC:/Users/GET/Documents/GitHub/Trabalho_Grafos/grafo_lista_adjacencia/lib -Wl,-Bstatic -lfreeglut -lglew32 -Wl,-Bdynamic -lglew32 -Wl,-Bstatic -lglui32 -lglui_linux -lpng -lopengl32 -lpng12_linux32 -lpng12_linux64 -lz -Wl,-Bdynamic -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32 
