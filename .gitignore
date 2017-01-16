@@ -4,5 +4,6 @@ CMakeScripts
 Makefile
 cmake_install.cmake
 install_manifest.txt
-.idea
+.idea/
+cmake-build-debug/
 *.cbp
