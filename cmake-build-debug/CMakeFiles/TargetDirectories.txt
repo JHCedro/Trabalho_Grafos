@@ -1,3 +1,0 @@
-/home/jhcedro/Documentos/Git/Trabalho_Grafos/cmake-build-debug/CMakeFiles/edit_cache.dir
-/home/jhcedro/Documentos/Git/Trabalho_Grafos/cmake-build-debug/CMakeFiles/rebuild_cache.dir
-/home/jhcedro/Documentos/Git/Trabalho_Grafos/cmake-build-debug/CMakeFiles/grafo_lista_adjacencia.dir
